@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mojito.ServiceDesk.Core", "src\Mojito.ServiceDesk.Core\Mojito.ServiceDesk.Core.csproj", "{A799EA36-7BED-4CE8-900C-E6A5C1A8A695}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mojito.ServiceDesk.Infrastructure", "src\Mojito.ServiceDesk.Infrastructure\Mojito.ServiceDesk.Infrastructure.csproj", "{1CA820AD-8ACB-4208-BD09-3CB53AB5E8D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DD61CD17-1B94-4AEC-A7B0-0DDF7D8CC06B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1F1E422D-C7A9-4515-8204-FB9085929380}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mojito.ServiceDesk.Application", "src\Mojito.ServiceDesk.Application\Mojito.ServiceDesk.Application.csproj", "{EF2214FD-D20D-4723-9FE5-FE696E2C9DBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mojito.ServiceDesk.Web", "src\Mojito.ServiceDesk.Web\Mojito.ServiceDesk.Web.csproj", "{6C38A988-8E1F-4CE7-82B9-6F5B5BC83FC4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A799EA36-7BED-4CE8-900C-E6A5C1A8A695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A799EA36-7BED-4CE8-900C-E6A5C1A8A695}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A799EA36-7BED-4CE8-900C-E6A5C1A8A695}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A799EA36-7BED-4CE8-900C-E6A5C1A8A695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CA820AD-8ACB-4208-BD09-3CB53AB5E8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CA820AD-8ACB-4208-BD09-3CB53AB5E8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CA820AD-8ACB-4208-BD09-3CB53AB5E8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CA820AD-8ACB-4208-BD09-3CB53AB5E8D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF2214FD-D20D-4723-9FE5-FE696E2C9DBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF2214FD-D20D-4723-9FE5-FE696E2C9DBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF2214FD-D20D-4723-9FE5-FE696E2C9DBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF2214FD-D20D-4723-9FE5-FE696E2C9DBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C38A988-8E1F-4CE7-82B9-6F5B5BC83FC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C38A988-8E1F-4CE7-82B9-6F5B5BC83FC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C38A988-8E1F-4CE7-82B9-6F5B5BC83FC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C38A988-8E1F-4CE7-82B9-6F5B5BC83FC4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A799EA36-7BED-4CE8-900C-E6A5C1A8A695} = {DD61CD17-1B94-4AEC-A7B0-0DDF7D8CC06B}
+		{1CA820AD-8ACB-4208-BD09-3CB53AB5E8D0} = {DD61CD17-1B94-4AEC-A7B0-0DDF7D8CC06B}
+		{EF2214FD-D20D-4723-9FE5-FE696E2C9DBD} = {DD61CD17-1B94-4AEC-A7B0-0DDF7D8CC06B}
+		{6C38A988-8E1F-4CE7-82B9-6F5B5BC83FC4} = {DD61CD17-1B94-4AEC-A7B0-0DDF7D8CC06B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2E939A20-1940-4A8A-98D9-9D223F435EAF}
+	EndGlobalSection
+EndGlobal

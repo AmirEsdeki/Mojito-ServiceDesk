@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Mojito.ServiceDesk.Core</AssemblyName>
+    <RootNamespace>Mojito.ServiceDesk.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Common\Services\**" />
+    <EmbeddedResource Remove="Common\Services\**" />
+    <None Remove="Common\Services\**" />
+  </ItemGroup>
+
+
+</Project>
