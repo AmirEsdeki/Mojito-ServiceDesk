@@ -1,8 +1,10 @@
-﻿namespace Mojito.ServiceDesk.Application.Common.Interfaces
+﻿using System;
+
+namespace Mojito.ServiceDesk.Application.Common.Interfaces
 {
     public interface ICurrentUserService
     {
-		public int UserId { get; set; }
+		public string UserId { get; set; }
 
 		public int SematId { get; set; }
 

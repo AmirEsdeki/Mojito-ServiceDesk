@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using AutoWrapper.Wrappers;
-using Mojito.ServiceDesk.Application.Common.Exceptions;
-using Mojito.ServiceDesk.Web.Modules.AutoWrapper;
+﻿using AutoWrapper.Wrappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Mojito.ServiceDesk.Application.Common.Exceptions;
+using Mojito.ServiceDesk.Web.Modules.AutoWrapper;
+using System;
+using System.Linq;
+using System.Net;
 
 namespace Mojito.ServiceDesk.Web.Controllers
 {
@@ -43,15 +41,15 @@ namespace Mojito.ServiceDesk.Web.Controllers
                 throw new ApiException(ex, ex.StatusCode);
                 throw;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new ApiException(ex);
             }
 
-//            throw new InvalidTokenException();
+            //            throw new InvalidTokenException();
             //throw new EntityDoesNotExistException();
             var rng = new Random();
-            var data = Enumerable.Range(1,1).Select(index => new WeatherForecast
+            var data = Enumerable.Range(1, 1).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),

@@ -19,20 +19,19 @@
     <Compile Remove="Persistence\EF\Migrations\20201103115125_changeticketstatusSchema.Designer.cs" />
     <Compile Remove="Persistence\EF\Migrations\20201103130957_checkIfAnyThingChangedAfterReadingConfigFromAssembely.cs" />
     <Compile Remove="Persistence\EF\Migrations\20201103130957_checkIfAnyThingChangedAfterReadingConfigFromAssembely.Designer.cs" />
+    <Compile Remove="Persistence\EF\Migrations\20201103202721_init.cs" />
+    <Compile Remove="Persistence\EF\Migrations\20201103202721_init.Designer.cs" />
+    <Compile Remove="Persistence\EF\Migrations\20201103203028_init.cs" />
+    <Compile Remove="Persistence\EF\Migrations\20201103203028_init.Designer.cs" />
+    <Compile Remove="Persistence\EF\Migrations\20201103203212_init.cs" />
+    <Compile Remove="Persistence\EF\Migrations\20201103203212_init.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
-    <PackageReference Include="Camunda.Api.Client" Version="2.5.2" />
-    <PackageReference Include="CSharpFunctionalExtensions" Version="2.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="3.1.9" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="9.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
-
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -42,14 +41,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.9" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.9" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.9" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.9" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     
     <!--<PackageReference Include="AutoMapper" Version="8.1.1" />
     <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
@@ -67,10 +62,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mojito.ServiceDesk.Application\Mojito.ServiceDesk.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Persistence\EF\Migrations\" />
   </ItemGroup>
 
  

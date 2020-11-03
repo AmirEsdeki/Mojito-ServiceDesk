@@ -48,7 +48,7 @@ namespace Mojito.ServiceDesk.Api.Modules
 				if (selfAuth)
 				{
 
-					if (userId != long.Parse(context.RouteData.Values["id"].ToString()))
+					if (userId.ToString() != context.RouteData.Values["id"].ToString())
 					{
 						throw new UnauthorizedException();
 					}

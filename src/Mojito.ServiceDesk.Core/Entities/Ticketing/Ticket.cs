@@ -8,19 +8,21 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
     {
         new public long Id { get; set; }
 
+        public string Identifier { get; set; }
+
         public string Title { get; set; }
 
         #region relations
-        public int? OpenedById { get; set; }
+        public string OpenedById { get; set; }
         public User OpenedBy { get; set; }
 
-        public int? AssigneeId { get; set; }
+        public string AssigneeId { get; set; }
         public User Assignee { get; set; }
 
         public int? GroupId { get; set; }
         public Group Group { get; set; }
 
-        public int? ClosedById { get; set; }
+        public string ClosedById { get; set; }
         public User ClosedBy { get; set; }
 
         public int? IssueUrlId { get; set; }
@@ -33,6 +35,9 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
         public Priority Priority { get; set; }
 
         public ICollection<Conversation> Conversations { get; set; }
+
+        public ICollection<TicketTicketLabel> TicketLabels { get; set; }
+
         #endregion
 
     }

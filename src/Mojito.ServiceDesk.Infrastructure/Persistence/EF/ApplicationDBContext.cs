@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Mojito.ServiceDesk.Application.Common.Interfaces;
 using Mojito.ServiceDesk.Core.Entities.BaseEntities;
 using Mojito.ServiceDesk.Core.Entities.Identity;
-using Mojito.ServiceDesk.Core.Entities.Ticketing;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Infrastructure.Data.EF
 {
-    public class ApplicationDBContext : DbContext, IApplicationDBContext
+    public class ApplicationDBContext : IdentityDbContext<User>
     {
         private readonly IDateTime dateTime;
         private readonly IAuthenticationService authenticationService;
@@ -22,8 +22,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Data.EF
         protected override void OnModelCreating(ModelBuilder builder)
         {
             #region Configuration
-           // builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDBContext).Assembly);
-
+            builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDBContext).Assembly);
+            builder.HasDefaultSchema("identity");
             base.OnModelCreating(builder);
             #endregion
 

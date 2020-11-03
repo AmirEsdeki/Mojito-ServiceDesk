@@ -1,10 +1,11 @@
 ﻿using Mojito.ServiceDesk.Core.Entities.BaseEntities;
+using System;
 
 namespace Mojito.ServiceDesk.Core.Entities.Identity
 {
     public class UserGroup : BaseEntity
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public User User { get; set; }
 

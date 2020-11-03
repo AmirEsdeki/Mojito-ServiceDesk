@@ -7,6 +7,8 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
     {
         public string Message { get; set; }
 
+        public bool IsPublic { get; set; }
+
         #region relations
         public long? TicketId { get; set; }
         public Ticket Ticket { get; set; }

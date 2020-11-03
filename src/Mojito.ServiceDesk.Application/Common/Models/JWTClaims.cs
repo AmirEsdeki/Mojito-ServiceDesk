@@ -1,11 +1,12 @@
 ﻿using Mojito.ServiceDesk.Application.Common.Interfaces;
 using Mojito.ServiceDesk.Core.Constant;
+using System;
 
 namespace Mojito.ServiceDesk.Application.Common.Models
 {
 	public class JwtClaims : ICurrentUserService
 	{
-		public int UserId { get; set; }
+		public string UserId { get; set; }
 
 		public int SematId { get; set; }
 

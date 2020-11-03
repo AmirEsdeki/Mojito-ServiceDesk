@@ -1,5 +1,6 @@
 ﻿using Mojito.ServiceDesk.Core.Entities.BaseEntities;
 using Mojito.ServiceDesk.Core.Entities.Identity;
+using Mojito.ServiceDesk.Core.Entities.Proprietary;
 using System.Collections.Generic;
 
 namespace Mojito.ServiceDesk.Core.Entities.Ticketing
@@ -10,8 +11,10 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 
         #region relations
         public int GroupId { get; set; }
-
         public Group Group { get; set; }
+
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
 
         public ICollection<UserIssueUrl> Users { get; set; }
         #endregion

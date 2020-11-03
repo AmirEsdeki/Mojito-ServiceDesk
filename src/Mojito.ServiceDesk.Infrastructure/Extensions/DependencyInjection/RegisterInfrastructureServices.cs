@@ -7,6 +7,10 @@ using Mojito.ServiceDesk.Infrastructure.Services.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using Mojito.ServiceDesk.Infrastructure.Modules;
+using Mojito.ServiceDesk.Core.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
 {
@@ -36,7 +40,30 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
                         b => b.MigrationsAssembly(typeof(ApplicationDBContext).Assembly.FullName)));
             }
 
-            services.AddScoped<IApplicationDBContext>(provider => provider.GetService<ApplicationDBContext>());
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+            })
+                .AddEntityFrameworkStores<ApplicationDBContext>()
+                .AddDefaultTokenProviders()
+                .AddErrorDescriber<PersianIdentityErrorDescriber>();
+
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IEndPointAddresses, ExternalServiceEndPoints>();

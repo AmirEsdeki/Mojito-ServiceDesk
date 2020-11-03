@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace Mojito.ServiceDesk.Web
 {
@@ -36,6 +38,8 @@ namespace Mojito.ServiceDesk.Web
 
 			services.AddInfrastructureServices(Configuration);
 			services.AddApplicationServices();
+
+			
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
