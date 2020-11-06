@@ -27,11 +27,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
                 services.AddDbContext<ApplicationDBContext>(options =>
                     options.UseInMemoryDatabase("TicketInMemoryDb"));
             }
-            else if (configuration.GetValue<bool>("UseSqliteDatabase"))
-            {
-                services.AddDbContext<ApplicationDBContext>(options =>
-                    options.UseSqlite("TicketSqliteDb"));
-            }
             else
             {
                 services.AddDbContext<ApplicationDBContext>(options =>
