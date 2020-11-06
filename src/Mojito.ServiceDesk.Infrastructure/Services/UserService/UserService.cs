@@ -92,20 +92,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 if (user == null)
                     throw new EntityDoesNotExistException();
 
-                var result = await userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, arg.Code);
-
-                if (result.Succeeded)
-                {
-                    if (user != null)
-                    {
-                        //await SignInAsync(user, isPersistent: false);
-                    }
-                }
-
-                else
-                {
-                    throw new ValidationException(result.Errors);
-                }
+                SendVerificationCodeAsync(user);
             }
             catch (System.Exception ex)
             {

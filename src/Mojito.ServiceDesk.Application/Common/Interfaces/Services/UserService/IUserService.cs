@@ -8,5 +8,7 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
         Task RegisterAsync(SignupDTO arg);
 
         Task VerifyUserAsync(VerifyUserDTO arg);
+
+        Task ResendVerificationCodeAsync(string userId);
     }
 }
