@@ -1,4 +1,6 @@
-﻿namespace Mojito.ServiceDesk.Application.Common.Interfaces.DTOs.User
+﻿using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
+
+namespace Mojito.ServiceDesk.Application.DTOs.User
 {
     public class UserDTOIn : IBaseDTOIn
     {

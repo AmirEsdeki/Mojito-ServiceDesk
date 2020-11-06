@@ -8,8 +8,6 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
 {
     public class User : IdentityUser
     {
-        public string Password { get; set; }
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -30,7 +28,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
         public int? CustomerOrganizationId { get; set; }
         public CustomerOrganization CustomerOrganization { get; set; }
 
-        public int ProfileImageId { get; set; }
+        public int? ProfileImageId { get; set; }
         public ProfileImage ProfileImage { get; set; }
 
         public ICollection<UserGroup> Groups { get; set; }

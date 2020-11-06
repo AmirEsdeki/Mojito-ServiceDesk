@@ -1,10 +1,10 @@
 ﻿namespace Mojito.ServiceDesk.Core.Constant
 {
-    //تمام دسترسی های موردنیاز در بیزینس پروژه
-    public enum Roles : byte
+    public static class Roles
     {
-        Admin = 1,
-        User = 2,
-        Reporter = 3,
+        public static string Admin => "admin";
+        public static string User => "user";
+        public static string Employee => "employee";
+
     }
 }

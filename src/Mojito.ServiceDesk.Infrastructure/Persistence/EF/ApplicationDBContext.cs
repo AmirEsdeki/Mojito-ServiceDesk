@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Mojito.ServiceDesk.Application.Common.Interfaces;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Common;
 using Mojito.ServiceDesk.Core.Entities.BaseEntities;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using System.Threading;
@@ -10,10 +12,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Data.EF
 {
     public class ApplicationDBContext : IdentityDbContext<User>
     {
-        private readonly IDateTime dateTime;
+        private readonly IDateTimeService dateTime;
         private readonly IAuthenticationService authenticationService;
 
-        public ApplicationDBContext(DbContextOptions options, IDateTime dateTime, IAuthenticationService authenticationService) : base(options)
+        public ApplicationDBContext(DbContextOptions options, IDateTimeService dateTime, IAuthenticationService authenticationService) : base(options)
         {
             this.dateTime = dateTime;
             this.authenticationService = authenticationService;
@@ -33,17 +35,35 @@ namespace Mojito.ServiceDesk.Infrastructure.Data.EF
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            var userId = authenticationService?.Identity?.UserId;
+
             foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<BaseEntity> entry in ChangeTracker.Entries<BaseEntity>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedById = authenticationService.Identity.UserId;
+                        entry.Entity.CreatedById = userId;
                         entry.Entity.Created = dateTime.Now;
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedById = authenticationService.Identity.UserId;
+                        entry.Entity.LastModifiedById = userId;
+                        entry.Entity.LastModified = dateTime.Now;
+                        break;
+                }
+            }
+
+            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<User> entry in ChangeTracker.Entries<User>())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.CreatedById = userId;
+                        entry.Entity.Created = dateTime.Now;
+                        break;
+
+                    case EntityState.Modified:
+                        entry.Entity.LastModifiedById = userId;
                         entry.Entity.LastModified = dateTime.Now;
                         break;
                 }

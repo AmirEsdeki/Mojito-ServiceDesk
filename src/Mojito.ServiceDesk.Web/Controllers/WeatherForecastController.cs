@@ -30,21 +30,21 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public ApiResponse Get()
         {
-            try
-            {
-                throw new InvalidTokenException();
-                //throw new NullReferenceException();
+            //try
+            //{
+            //    throw new InvalidTokenException();
+            //    //throw new NullReferenceException();
 
-            }
-            catch (CustomException ex)
-            {
-                throw new ApiException(ex, ex.StatusCode);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ApiException(ex);
-            }
+            //}
+            //catch (CustomException ex)
+            //{
+            //    throw new ApiException(ex, ex.StatusCode);
+            //    throw;
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new ApiException(ex);
+            //}
 
             //            throw new InvalidTokenException();
             //throw new EntityDoesNotExistException();

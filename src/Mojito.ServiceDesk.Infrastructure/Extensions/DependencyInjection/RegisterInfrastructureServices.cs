@@ -1,16 +1,22 @@
-﻿using Mojito.ServiceDesk.Application.Common.Interfaces;
-using Mojito.ServiceDesk.Infrastructure.Constant;
-using Mojito.ServiceDesk.Infrastructure.Data.EF;
-using Mojito.ServiceDesk.Infrastructure.Interfaces;
-using Mojito.ServiceDesk.Infrastructure.RemoteServices;
-using Mojito.ServiceDesk.Infrastructure.Services.Common;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using Mojito.ServiceDesk.Infrastructure.Modules;
+using Mojito.ServiceDesk.Application.Common.Interfaces;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Common;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.Common;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Core.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
+using Mojito.ServiceDesk.Infrastructure.Constant;
+using Mojito.ServiceDesk.Infrastructure.Data.EF;
+using Mojito.ServiceDesk.Infrastructure.Interfaces;
+using Mojito.ServiceDesk.Infrastructure.Modules;
+using Mojito.ServiceDesk.Infrastructure.RemoteServices;
+using Mojito.ServiceDesk.Infrastructure.Services.Common;
+using Mojito.ServiceDesk.Infrastructure.Services.SendMessagesService;
+using Mojito.ServiceDesk.Infrastructure.Services.UserService;
+using System;
 
 namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
 {
@@ -59,9 +65,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
                 .AddDefaultTokenProviders()
                 .AddErrorDescriber<PersianIdentityErrorDescriber>();
 
+            services.AddScoped<ISendEmailService, SendEmailService>();
+            services.AddScoped<IRandomService, RandomNumberGeneratorService>();
 
-            services.AddTransient<IDateTime, DateTimeService>();
+            services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IEndPointAddresses, ExternalServiceEndPoints>();
+            services.AddTransient<IUserService, UserService>();
+
 
             return services;
         }

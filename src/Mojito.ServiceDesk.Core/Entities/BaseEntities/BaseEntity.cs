@@ -16,9 +16,9 @@ namespace Mojito.ServiceDesk.Core.Entities.BaseEntities
         public bool IsDeleted { get; set; }
 
         #region relations
-        public string LastModifiedById { get; set; }
+        public Guid? LastModifiedById { get; set; }
 
-        public string CreatedById { get; set; }
+        public Guid? CreatedById { get; set; }
         #endregion
     }
 }

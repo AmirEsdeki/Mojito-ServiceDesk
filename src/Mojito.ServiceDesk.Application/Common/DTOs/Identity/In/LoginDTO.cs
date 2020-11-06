@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity
+namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
 {
     public class LoginDTO
     {
