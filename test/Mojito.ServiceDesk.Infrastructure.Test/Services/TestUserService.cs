@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Mojito.ServiceDesk.Application.Common.DTOs.Identity;
-using Mojito.ServiceDesk.Application.Common.Interfaces.Services.Common;
+using Mojito.ServiceDesk.Application.Common.DTOs.Identity.In;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Infrastructure.Services.UserService;
@@ -19,7 +18,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Test.Services
         private readonly Mock<UserManager<User>> userManager;
         private readonly Mock<SignInManager<User>> signInManager;
         private readonly Mock<ISendEmailService> emailService;
-        private readonly Mock<IRandomService> randomService;
         private readonly Mock<IMapper> mapper;
 
         public TestUserService()
@@ -27,7 +25,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Test.Services
             this.userManager = new Mock<UserManager<User>>();
             this.signInManager = new Mock<SignInManager<User>>();
             this.emailService = new Mock<ISendEmailService>();
-            this.randomService = new Mock<IRandomService>();
             this.mapper = new Mock<IMapper>();
         }
         #endregion
@@ -55,7 +52,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Test.Services
             var service = new UserService(userManager.Object,
                 signInManager.Object,
                 emailService.Object,
-                randomService.Object,
                 mapper.Object);
             Assert.True(emailSent);
         }

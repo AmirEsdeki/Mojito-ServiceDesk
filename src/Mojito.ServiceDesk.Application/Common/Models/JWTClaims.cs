@@ -10,7 +10,7 @@ namespace Mojito.ServiceDesk.Application.Common.Models
 
 		public int SematId { get; set; }
 
-		public Roles Role { get; set; }
+		public string Role { get; set; }
 
 		public string UserName { get; set; }
 
