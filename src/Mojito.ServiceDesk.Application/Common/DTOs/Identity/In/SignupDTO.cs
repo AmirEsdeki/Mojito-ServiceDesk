@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
 {
-    public class SignupDTO : IMapFrom<User>, IBaseDTOIn
+    public class SignUpDTO : IMapFrom<User>
     {
         [Required]
         [StringLength(255)]
@@ -41,7 +41,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<SignupDTO, User>();
+            profile.CreateMap<SignUpDTO, User>();
         }
     }
 }

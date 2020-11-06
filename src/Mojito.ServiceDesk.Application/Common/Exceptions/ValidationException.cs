@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.Exceptions
     public class ValidationException : CustomException
     {
         public ValidationException(IEnumerable<IdentityError> errors, Exception ex = null)
-            : base($"خطا در ایجاد کاربر به دلایل ذیل:", 400, ex)
+            : base("خطا به دلایل ذیل:", 400, ex)
         {
             Errors = errors;
         }

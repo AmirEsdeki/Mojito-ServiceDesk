@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Mojito.ServiceDesk.Application.Common.Interfaces;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Common;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.Common;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.RoleService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Core.Entities.Identity;
@@ -14,6 +16,8 @@ using Mojito.ServiceDesk.Infrastructure.Interfaces;
 using Mojito.ServiceDesk.Infrastructure.Modules;
 using Mojito.ServiceDesk.Infrastructure.RemoteServices;
 using Mojito.ServiceDesk.Infrastructure.Services.Common;
+using Mojito.ServiceDesk.Infrastructure.Services.JWTService;
+using Mojito.ServiceDesk.Infrastructure.Services.RoleService;
 using Mojito.ServiceDesk.Infrastructure.Services.SendMessagesService;
 using Mojito.ServiceDesk.Infrastructure.Services.UserService;
 using System;
@@ -67,10 +71,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
 
             services.AddScoped<ISendEmailService, SendEmailService>();
             services.AddScoped<IRandomService, RandomNumberGeneratorService>();
+            services.AddScoped<IJwtService, JwtService>();
 
             services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IEndPointAddresses, ExternalServiceEndPoints>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRoleService, RoleService>();
 
 
             return services;

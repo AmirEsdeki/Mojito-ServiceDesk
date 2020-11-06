@@ -3,10 +3,10 @@ using System;
 
 namespace Mojito.ServiceDesk.Application.Common.Exceptions
 {
-    public class InvalidTokenException : CustomException
+    public class AccountLockedException : CustomException
     {
-        public InvalidTokenException(Exception ex = null)
-            : base(ErrorMessages.InvalidToken, 401, ex)
+        public AccountLockedException(Exception ex = null)
+            : base(ErrorMessages.AccountHasLocked, 401, ex)
         {
         }
     }

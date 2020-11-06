@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Mojito.ServiceDesk.Core\Mojito.ServiceDesk.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\DTOs\Role\Out\" />
+  </ItemGroup>
+
 </Project>

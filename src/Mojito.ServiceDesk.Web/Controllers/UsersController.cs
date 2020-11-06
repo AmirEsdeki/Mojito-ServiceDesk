@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Mojito.ServiceDesk.Application.Common.Constants.Messages;
+using Mojito.ServiceDesk.Application.Common.DTOs.Common;
 using Mojito.ServiceDesk.Application.Common.DTOs.Identity.In;
+using Mojito.ServiceDesk.Application.Common.DTOs.Identity.Out;
 using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
@@ -28,14 +30,15 @@ namespace Mojito.ServiceDesk.Web.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(GuidIdDTO), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> Register([FromBody] SignupDTO arg)
+        public async Task<ApiResponse> Register([FromBody] SignUpDTO arg)
         {
             try
             {
-                await userService.RegisterAsync(arg);
+                var userId = await userService.SignUpAsync(arg);
+                return new ApiResponse(InfoMessages.UserCreated, userId, HttpStatusCode.Created.ToInt()); 
             }
             catch (ValidationException ex)
             {
@@ -49,19 +52,19 @@ namespace Mojito.ServiceDesk.Web.Controllers
             {
                 throw new ApiException(ex);
             }
-            return new ApiResponse(InfoMessages.UserCreated, null, HttpStatusCode.Created.ToInt());
         }
 
         [HttpPost]
         [Route("[action]")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(UserTokenDTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> VerifyUser([FromBody] VerifyUserDTO arg)
         {
             try
             {
-                await userService.VerifyUserAsync(arg);
+                var token = await userService.VerifyUserAsync(arg);
+                return new ApiResponse(InfoMessages.UserVerified, token, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
             {
@@ -75,7 +78,6 @@ namespace Mojito.ServiceDesk.Web.Controllers
             {
                 throw new ApiException(ex);
             }
-            return new ApiResponse(InfoMessages.UserVerified, null, HttpStatusCode.OK.ToInt());
         }
 
         [HttpPost]
@@ -83,11 +85,11 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> ResendVerificationCode([FromBody] UserIdDTO arg)
+        public async Task<ApiResponse> ResendVerificationCode([FromBody] GuidIdDTO arg)
         {
             try
             {
-                await userService.ResendVerificationCodeAsync(arg.UserId);
+                await userService.ResendVerificationCodeAsync(arg.Id);
             }
             catch (CustomException ex)
             {
@@ -98,6 +100,28 @@ namespace Mojito.ServiceDesk.Web.Controllers
                 throw new ApiException(ex);
             }
             return new ApiResponse(InfoMessages.CodeHasSent, null, HttpStatusCode.OK.ToInt());
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(UserTokenDTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> SignIn([FromBody] SignInDTO arg)
+        {
+            try
+            {
+                var token = await userService.SignInAsync(arg);
+                return new ApiResponse(InfoMessages.SuccesfullySignedIn, token, HttpStatusCode.OK.ToInt());
+            }
+            catch (CustomException ex)
+            {
+                throw new ApiException(ex, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
         }
     }
 }

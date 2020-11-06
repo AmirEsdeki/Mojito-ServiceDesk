@@ -2,7 +2,7 @@
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
 {
-    public class LoginDTO
+    public class SignInDTO
     {
         [Required]
         public string Username { get; set; }
@@ -11,5 +11,6 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
         public string Password { get; set; }
 
         public bool RememberMe { get; set; }
+
     }
 }
