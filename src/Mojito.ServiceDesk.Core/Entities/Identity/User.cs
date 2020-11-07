@@ -23,17 +23,19 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
 
         #region relations
         public int? PostId { get; set; }
-        public Post Post { get; set; }
+        public virtual Post Post { get; set; }
 
         public int? CustomerOrganizationId { get; set; }
-        public CustomerOrganization CustomerOrganization { get; set; }
+        public virtual CustomerOrganization CustomerOrganization { get; set; }
 
         public int? ProfileImageId { get; set; }
-        public ProfileImage ProfileImage { get; set; }
+        public virtual ProfileImage ProfileImage { get; set; }
 
-        public ICollection<UserGroup> Groups { get; set; }
+        public virtual ICollection<UserGroup> Groups { get; set; }
 
-        public ICollection<UserIssueUrl> IssueUrls { get; set; }
+        public virtual ICollection<UserIssueUrl> IssueUrls { get; set; }
+
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
 
         public Guid? LastModifiedById { get; set; }
 

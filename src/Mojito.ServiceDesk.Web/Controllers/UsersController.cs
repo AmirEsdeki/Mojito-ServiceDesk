@@ -1,4 +1,5 @@
 ﻿using AutoWrapper.Wrappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Mojito.ServiceDesk.Application.Common.Constants.Messages;
@@ -7,6 +8,7 @@ using Mojito.ServiceDesk.Application.Common.DTOs.Identity.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.Identity.Out;
 using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Extensions;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.Common;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Web.Modules.AutoWrapper;
 using System;
@@ -15,19 +17,25 @@ using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Web.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> logger;
         private readonly IUserService userService;
+        private readonly IHttpService httpService;
 
-        public UsersController(ILogger<UsersController> logger, IUserService userService)
+        public UsersController(ILogger<UsersController> logger,
+            IUserService userService,
+            IHttpService ipService)
         {
             this.logger = logger;
             this.userService = userService;
+            this.httpService = ipService;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(typeof(GuidIdDTO), (int)HttpStatusCode.Created)]
@@ -38,7 +46,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 var userId = await userService.SignUpAsync(arg);
-                return new ApiResponse(InfoMessages.UserCreated, userId, HttpStatusCode.Created.ToInt()); 
+                return new ApiResponse(InfoMessages.UserCreated, userId, HttpStatusCode.Created.ToInt());
             }
             catch (ValidationException ex)
             {
@@ -54,6 +62,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(typeof(UserTokenDTO), (int)HttpStatusCode.OK)]
@@ -63,7 +72,11 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                var token = await userService.VerifyUserAsync(arg);
+                var ip = httpService.IpAddress(Request, HttpContext);
+
+                var token = await userService.VerifyUserAsync(arg, ip);
+
+                httpService.SetCookie("refreshToken", token.RefreshToken, Response);
                 return new ApiResponse(InfoMessages.UserVerified, token, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
@@ -80,6 +93,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
@@ -90,6 +104,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 await userService.ResendVerificationCodeAsync(arg.Id);
+                return new ApiResponse(InfoMessages.CodeHasSent, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
             {
@@ -99,9 +114,9 @@ namespace Mojito.ServiceDesk.Web.Controllers
             {
                 throw new ApiException(ex);
             }
-            return new ApiResponse(InfoMessages.CodeHasSent, null, HttpStatusCode.OK.ToInt());
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(typeof(UserTokenDTO), (int)HttpStatusCode.OK)]
@@ -111,7 +126,8 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                var token = await userService.SignInAsync(arg);
+                var ip = httpService.IpAddress(Request, HttpContext);
+                var token = await userService.SignInAsync(arg, ip);
                 return new ApiResponse(InfoMessages.SuccesfullySignedIn, token, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -122,6 +138,43 @@ namespace Mojito.ServiceDesk.Web.Controllers
             {
                 throw new ApiException(ex);
             }
+        }
+
+        // Accepts token from request body or cookie
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("revoke-token")]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        public async Task<ApiResponse> RevokeToken([FromBody] RevokeTokenRequestDTO arg)
+        {
+            var token = arg.Token ?? Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(token))
+                throw new ApiException(ErrorMessages.TokenIsEmpty, HttpStatusCode.BadRequest.ToInt());
+
+            var response = await userService.RevokeToken(token, httpService.IpAddress(Request, HttpContext));
+
+            if (!response)
+                throw new ApiException(ErrorMessages.TokenNotFound, HttpStatusCode.NotFound.ToInt());
+
+            return new ApiResponse(InfoMessages.RevokedSuccessfully, null, HttpStatusCode.OK.ToInt());
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.Unauthorized)]
+        public async Task<ApiResponse> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var response = await userService.RefreshToken(refreshToken, httpService.IpAddress(Request, HttpContext));
+
+            if (response == null)
+                throw new ApiException(ErrorMessages.InvalidToken, HttpStatusCode.Unauthorized.ToInt());
+
+            httpService.SetCookie("refreshToken", response.RefreshToken, Response);
+
+            return new ApiResponse(HttpStatusCode.OK.ToInt());
         }
     }
 }

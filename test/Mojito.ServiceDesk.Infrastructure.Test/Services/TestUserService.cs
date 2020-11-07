@@ -4,6 +4,7 @@ using Mojito.ServiceDesk.Application.Common.DTOs.Identity.In;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Core.Entities.Identity;
+using Mojito.ServiceDesk.Infrastructure.Data.EF;
 using Mojito.ServiceDesk.Infrastructure.Services.UserService;
 using Moq;
 using System.Collections;
@@ -20,6 +21,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Test.Services
         private readonly Mock<SignInManager<User>> signInManager;
         private readonly Mock<ISendEmailService> emailService;
         private readonly Mock<IJwtService> jwtService;
+        private readonly Mock<ApplicationDBContext> db;
         private readonly Mock<IMapper> mapper;
 
         public TestUserService()
@@ -28,6 +30,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Test.Services
             this.signInManager = new Mock<SignInManager<User>>();
             this.emailService = new Mock<ISendEmailService>();
             this.jwtService = new Mock<IJwtService>();
+            this.db = new Mock<ApplicationDBContext>();
             this.mapper = new Mock<IMapper>();
         }
         #endregion
@@ -56,6 +59,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Test.Services
                 signInManager.Object,
                 emailService.Object,
                 jwtService.Object,
+                db.Object,
                 mapper.Object);
             Assert.True(emailSent);
         }

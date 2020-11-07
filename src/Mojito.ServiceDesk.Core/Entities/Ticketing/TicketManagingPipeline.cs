@@ -10,7 +10,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
         public TicketIssue TicketIssue { get; set; }
 
         public int GroupId { get; set; }
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
 
         #endregion
     }

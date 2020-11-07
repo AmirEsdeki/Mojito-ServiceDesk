@@ -14,29 +14,29 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 
         #region relations
         public string OpenedById { get; set; }
-        public User OpenedBy { get; set; }
+        public virtual User OpenedBy { get; set; }
 
         public string AssigneeId { get; set; }
-        public User Assignee { get; set; }
+        public virtual User Assignee { get; set; }
 
         public int? GroupId { get; set; }
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
 
         public string ClosedById { get; set; }
-        public User ClosedBy { get; set; }
+        public virtual User ClosedBy { get; set; }
 
         public int? IssueUrlId { get; set; }
-        public IssueUrl IssueUrl { get; set; }
+        public virtual IssueUrl IssueUrl { get; set; }
 
         public int? TicketStatusId { get; set; }
-        public TicketStatus TicketStatus { get; set; }
+        public virtual TicketStatus TicketStatus { get; set; }
 
         public int? PriorityId { get; set; }
-        public Priority Priority { get; set; }
+        public virtual Priority Priority { get; set; }
 
-        public ICollection<Conversation> Conversations { get; set; }
+        public virtual ICollection<Conversation> Conversations { get; set; }
 
-        public ICollection<TicketTicketLabel> TicketLabels { get; set; }
+        public virtual ICollection<TicketTicketLabel> TicketLabels { get; set; }
 
         #endregion
 

@@ -6,10 +6,10 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
     {
         public int TicketLabelId { get; set; }
 
-        public TicketLabel TicketLabel { get; set; }
+        public virtual TicketLabel TicketLabel { get; set; }
 
         public long TicketId { get; set; }
 
-        public Ticket Ticket { get; set; }
+        public virtual Ticket Ticket { get; set; }
     }
 }

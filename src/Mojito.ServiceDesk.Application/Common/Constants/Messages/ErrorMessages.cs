@@ -8,5 +8,7 @@
         public static string Unauthorized => "شما دسترسی به این سرویس را ندارید.";
         public static string WrongCredentials => "نام کاربری یا رمز عبور اشتباه است.";
         public static string AccountNotVerified => "حساب کاربری شما تایید نشده، ابتدا نسبت به تایید آن اقدام فرمایید.";
+        public static string TokenIsEmpty => "وجود توکن در درخواست اجباری است.";
+        public static string TokenNotFound => "توکن یافت نشد.";
     }
 }

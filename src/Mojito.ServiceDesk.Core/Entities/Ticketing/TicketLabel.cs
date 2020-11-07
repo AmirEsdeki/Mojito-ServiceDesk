@@ -10,9 +10,9 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 
         #region relations
         public int? CustomerOrganizationId { get; set; }
-        public CustomerOrganization CustomerOrganization { get; set; }
+        public virtual CustomerOrganization CustomerOrganization { get; set; }
 
-        public ICollection<TicketTicketLabel> Tickets { get; set; }
+        public virtual ICollection<TicketTicketLabel> Tickets { get; set; }
         #endregion
     }
 }

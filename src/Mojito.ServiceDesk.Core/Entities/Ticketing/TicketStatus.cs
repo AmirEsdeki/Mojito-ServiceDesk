@@ -8,7 +8,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
         public string Title { get; set; }
 
         #region relations
-        public ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<Ticket> Tickets { get; set; }
         #endregion
     }
 }

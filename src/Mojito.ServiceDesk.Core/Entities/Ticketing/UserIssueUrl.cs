@@ -7,10 +7,10 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
     {
         public string UserId { get; set; }
 
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
         public int IssueUrlId { get; set; }
 
-        public IssueUrl IssueUrl { get; set; }
+        public virtual IssueUrl IssueUrl { get; set; }
     }
 }

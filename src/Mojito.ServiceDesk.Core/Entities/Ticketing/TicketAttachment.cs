@@ -9,7 +9,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 
         #region relation
         public int ConversationId { get; set; }
-        public Conversation Conversation  { get; set; }
+        public virtual Conversation Conversation  { get; set; }
         #endregion
     }
 }

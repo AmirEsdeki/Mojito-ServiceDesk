@@ -35,12 +35,14 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
             {
                 services.AddDbContext<ApplicationDBContext>(options =>
-                    options.UseInMemoryDatabase("TicketInMemoryDb"));
+                    options.UseLazyLoadingProxies()
+                    .UseInMemoryDatabase("TicketInMemoryDb"));
             }
             else
             {
                 services.AddDbContext<ApplicationDBContext>(options =>
-                    options.UseSqlServer(
+                options.UseLazyLoadingProxies()
+                    .UseSqlServer(
                         configuration.GetConnectionString("DefaultConnection"),
                         b => b.MigrationsAssembly(typeof(ApplicationDBContext).Assembly.FullName)));
             }
@@ -72,6 +74,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             services.AddScoped<ISendEmailService, SendEmailService>();
             services.AddScoped<IRandomService, RandomNumberGeneratorService>();
             services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IHttpService, HttpService>();
 
             services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IEndPointAddresses, ExternalServiceEndPoints>();

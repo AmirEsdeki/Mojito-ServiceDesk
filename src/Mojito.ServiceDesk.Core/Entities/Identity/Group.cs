@@ -11,11 +11,11 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
         #region relations
         public int GroupTypeId { get; set; }
 
-        public GroupType groupType { get; set; }
+        public virtual GroupType groupType { get; set; }
 
-        public ICollection<UserGroup> Users { get; set; }
+        public virtual ICollection<UserGroup> Users { get; set; }
 
-        public ICollection<IssueUrl> IssueUrls { get; set; }
+        public virtual ICollection<IssueUrl> IssueUrls { get; set; }
         #endregion
     }
 }

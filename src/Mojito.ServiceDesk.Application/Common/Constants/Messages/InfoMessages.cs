@@ -7,6 +7,7 @@
         public static string CodeHasSent => "کد اعتبارسنجی مجددا برای ایمیل شما ارسال شد.";
         public static string SuccesfullySignedIn => "احراز هویت با موفقیت انجام شد.";
         public static string RoleCreated => "نقش با موفقیت ساخته شد.";
-        
+        public static string RevokedSuccessfully => "خروج با موفقیت انجام شد.";
+
     }
 }

@@ -9,7 +9,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Proprietary
 
         #region relations
         public int CustomerId { get; set; }
-        public CustomerOrganization Customer { get; set; }
+        public virtual CustomerOrganization Customer { get; set; }
         #endregion
     }
 }

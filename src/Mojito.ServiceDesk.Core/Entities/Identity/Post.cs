@@ -8,7 +8,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
         public string Title { get; set; }
 
         #region relations
-        public ICollection<User> Users { get; set; }
+        public virtual ICollection<User> Users { get; set; }
         #endregion
     }
 }

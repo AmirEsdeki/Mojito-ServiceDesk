@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 
 namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201107190216_addRefreshTokenToUserModel")]
+    partial class addRefreshTokenToUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -994,7 +996,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Identity.RefreshToken", b =>
                 {
-                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.User", "User")
+                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.User", null)
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId");
                 });

@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
         public byte[] Image { get; set; }
 
         #region relation
-        public User User { get; set; }
+        public virtual User User { get; set; }
         #endregion
     }
 }

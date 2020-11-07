@@ -9,10 +9,14 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
     {
         Task<GuidIdDTO> SignUpAsync(SignUpDTO arg);
 
-        Task<UserTokenDTO> VerifyUserAsync(VerifyUserDTO arg);
+        Task<UserTokenDTO> VerifyUserAsync(VerifyUserDTO arg, string ip);
 
         Task ResendVerificationCodeAsync(string userId);
 
-        Task<UserTokenDTO> SignInAsync(SignInDTO arg);
+        Task<UserTokenDTO> SignInAsync(SignInDTO arg, string ip);
+
+        Task<UserTokenDTO> RefreshToken(string token, string ipAddress);
+
+        Task<bool> RevokeToken(string token, string ipAddress);
     }
 }

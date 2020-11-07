@@ -9,6 +9,11 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesServ
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Core.Constant;
 using Mojito.ServiceDesk.Core.Entities.Identity;
+using Mojito.ServiceDesk.Infrastructure.Data.EF;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,15 +26,21 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         private readonly SignInManager<User> signInManager;
         private readonly ISendEmailService emailService;
         private readonly IJwtService jwtService;
+        private readonly ApplicationDBContext db;
         private readonly IMapper mapper;
 
         public UserService(UserManager<User> userManager,
-            SignInManager<User> signInManager, ISendEmailService emailService, IJwtService jwtService, IMapper mapper)
+            SignInManager<User> signInManager,
+            ISendEmailService emailService,
+            IJwtService jwtService,
+            ApplicationDBContext db,
+            IMapper mapper)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailService = emailService;
             this.jwtService = jwtService;
+            this.db = db;
             this.mapper = mapper;
         }
         #endregion
@@ -59,7 +70,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task<UserTokenDTO> VerifyUserAsync(VerifyUserDTO arg)
+        public async Task<UserTokenDTO> VerifyUserAsync(VerifyUserDTO arg, string ip)
         {
             try
             {
@@ -77,8 +88,16 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                         await userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
 
                     var roles = await userManager.GetRolesAsync(user);
-                    return new UserTokenDTO()
-                    { Token = jwtService.GenerateAuthorizationToken(user, roles) };
+                    var refreshToken = jwtService.GenerateRefreshToken(ip);
+
+                    if (user.RefreshTokens == null)
+                        user.RefreshTokens = new List<RefreshToken>();
+
+                    user.RefreshTokens.Add(refreshToken);
+                    await db.SaveChangesAsync();
+
+                    return new UserTokenDTO(jwtService.GenerateAuthorizationToken(user, roles),
+                       refreshToken.Token);
                 }
 
                 else
@@ -100,8 +119,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
                 if (user == null)
                     throw new EntityDoesNotExistException();
-
-                SendVerificationCodeAsync(user);
+                if(!user.PhoneNumberConfirmed)
+                    SendVerificationCodeAsync(user);
             }
             catch (System.Exception ex)
             {
@@ -109,7 +128,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task<UserTokenDTO> SignInAsync(SignInDTO arg)
+        public async Task<UserTokenDTO> SignInAsync(SignInDTO arg, string ip)
         {
             try
             {
@@ -123,8 +142,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 if (result.Succeeded)
                 {
                     var roles = await userManager.GetRolesAsync(user);
-                    return new UserTokenDTO() 
-                        { Token = jwtService.GenerateAuthorizationToken(user, roles) };
+                    var refreshToken = jwtService.GenerateRefreshToken(ip);
+                    user.RefreshTokens.Add(refreshToken);
+                    await db.SaveChangesAsync();
+
+                    return new UserTokenDTO(jwtService.GenerateAuthorizationToken(user, roles),
+                       refreshToken.Token);
                 }
                 else
                 {
@@ -141,6 +164,54 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 throw;
             }
         }
+
+
+        public async Task<bool> RevokeToken(string token, string ipAddress)
+        {
+            var user = db.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+
+            if (user == null) return false;
+
+            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+
+            // return false if token is not active
+            if (!refreshToken.IsActive) return false;
+
+            refreshToken.Revoked = DateTime.Now;
+            refreshToken.RevokedByIp = ipAddress;
+            db.Update(user);
+            await db.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<UserTokenDTO> RefreshToken(string token, string ipAddress)
+        {
+            var user = db.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+
+            if (user == null) return null;
+
+            if (user.RefreshTokens == null) return null;
+
+            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+
+            if (!refreshToken.IsActive) return null;
+
+            var newRefreshToken = GenerateRefreshToken(ipAddress);
+            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.RevokedByIp = ipAddress;
+            refreshToken.ReplacedByToken = newRefreshToken.Token;
+            user.RefreshTokens.Add(newRefreshToken);
+            db.Update(user);
+            db.SaveChanges();
+
+            var roles = await userManager.GetRolesAsync(user);
+            var jwtToken = jwtService.GenerateAuthorizationToken(user, roles);
+
+            return new UserTokenDTO(jwtToken, newRefreshToken.Token);
+        }
+
+
         #region private
         private async void SendVerificationCodeAsync(User user)
         {
@@ -160,6 +231,21 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
+        private RefreshToken GenerateRefreshToken(string ipAddress)
+        {
+            using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
+            {
+                var randomBytes = new byte[64];
+                rngCryptoServiceProvider.GetBytes(randomBytes);
+                return new RefreshToken
+                {
+                    Token = Convert.ToBase64String(randomBytes),
+                    Expires = DateTime.Now.AddDays(7),
+                    Created = DateTime.Now,
+                    CreatedByIp = ipAddress
+                };
+            }
+        }
         #endregion
     }
 }
