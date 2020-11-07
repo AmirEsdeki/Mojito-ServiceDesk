@@ -9,8 +9,5 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
 
         [Required]
         public string Password { get; set; }
-
-        public bool RememberMe { get; set; }
-
     }
 }

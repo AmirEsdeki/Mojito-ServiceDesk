@@ -137,7 +137,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 if (user != null && !user.PhoneNumberConfirmed)
                     throw new AccountNotVerifiedException();
 
-                var result = await signInManager.PasswordSignInAsync(arg.Username, arg.Password, arg.RememberMe, true);
+                var result = await signInManager.CheckPasswordSignInAsync(user, arg.Password, true);
 
                 if (result.Succeeded)
                 {

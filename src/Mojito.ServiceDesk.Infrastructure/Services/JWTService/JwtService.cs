@@ -23,12 +23,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
         #endregion
         public string GenerateAuthorizationToken(User user, IEnumerable<string> roles)
         {
-            byte[] key = Encoding.ASCII.GetBytes(
-                    configuration
+            var secret = configuration
                         .GetSection("AppSettings")
                         .GetSection("Secret")
-                        .ToString()
-                );
+                        .Value;
+
+            byte[] key = Encoding.ASCII.GetBytes(secret);
 
             var rolesObj = Newtonsoft.Json.JsonConvert.SerializeObject(roles);
 
@@ -37,8 +37,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, rolesObj),
-                    new Claim("FullName", 
+                    new Claim("Roles", rolesObj),
+                    new Claim("FullName",
                         new StringBuilder().Append(user.FirstName)
                             .Append(" ")
                             .Append(user.LastName)

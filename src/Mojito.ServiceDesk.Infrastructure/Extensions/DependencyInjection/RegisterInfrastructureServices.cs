@@ -35,8 +35,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
             {
                 services.AddDbContext<ApplicationDBContext>(options =>
-                    options.UseLazyLoadingProxies()
-                    .UseInMemoryDatabase("TicketInMemoryDb"));
+                    options.UseLazyLoadingProxies().UseInMemoryDatabase("TicketInMemoryDb"));
             }
             else
             {

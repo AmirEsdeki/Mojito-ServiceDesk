@@ -1,4 +1,5 @@
 ﻿using AutoWrapper.Wrappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Mojito.ServiceDesk.Application.Common.Exceptions;
@@ -24,7 +25,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             _logger = logger;
         }
-
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(WeatherForecast[]), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
