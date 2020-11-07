@@ -158,7 +158,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             if (!response)
                 throw new ApiException(ErrorMessages.TokenNotFound, HttpStatusCode.NotFound.ToInt());
 
-            return new ApiResponse(InfoMessages.RevokedSuccessfully, null, HttpStatusCode.OK.ToInt());
+            return new ApiResponse(InfoMessages.RefreshTokenRevokedSuccessfully, null, HttpStatusCode.OK.ToInt());
         }
 
         [AllowAnonymous]
@@ -167,14 +167,20 @@ namespace Mojito.ServiceDesk.Web.Controllers
         public async Task<ApiResponse> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            var response = await userService.RefreshToken(refreshToken, httpService.IpAddress(Request, HttpContext));
+            var token = await userService.RefreshToken(refreshToken, httpService.IpAddress(Request, HttpContext));
 
-            if (response == null)
+            if (token == null)
                 throw new ApiException(ErrorMessages.InvalidToken, HttpStatusCode.Unauthorized.ToInt());
 
-            httpService.SetCookie("refreshToken", response.RefreshToken, Response);
+            httpService.SetCookie("refreshToken", token.RefreshToken, Response);
 
-            return new ApiResponse(HttpStatusCode.OK.ToInt());
+            return new ApiResponse(token, HttpStatusCode.OK.ToInt());
+        }
+
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Content("hello");
         }
     }
 }

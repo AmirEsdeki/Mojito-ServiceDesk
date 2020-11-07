@@ -16,127 +16,128 @@ using Mojito.ServiceDesk.Web.Modules;
 
 namespace Mojito.ServiceDesk.Web
 {
-	public class Startup
-	{
-		public Startup(IConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-		public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddCors(options =>
-			{
-				options.AddPolicy("CorsPolicy",
-					builder => builder.AllowAnyOrigin()
-					.AllowAnyMethod()
-					.AllowAnyHeader());
-			});
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
 
-			ConfigureSwaggerServices(services);
+            ConfigureSwaggerServices(services);
 
-			services.AddControllers()
-				.AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
+            services.AddControllers()
+                .AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
 
-			var appSettingsSection = Configuration.GetSection("AppSettings");
-			services.Configure<AppSettings>(appSettingsSection);
-			var appSettings = appSettingsSection.Get<AppSettings>();
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+            var appSettings = appSettingsSection.Get<AppSettings>();
 
-			var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-			services.AddAuthentication(x =>
-			{
-				x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-				x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-			})
-			.AddJwtBearer(x =>
-			{
-				x.RequireHttpsMetadata = false;
-				x.SaveToken = true;
-				x.TokenValidationParameters = new TokenValidationParameters
-				{
-					ValidateIssuerSigningKey = true,
-					IssuerSigningKey = new SymmetricSecurityKey(key),
-					ValidateIssuer = false,
-					ValidateAudience = false,
-					// set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-					ClockSkew = TimeSpan.Zero
-				};
-			}); ;
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    ClockSkew = TimeSpan.Zero
+                };
+            }); ;
 
-			services.AddInfrastructureServices(Configuration);
-			services.AddApplicationServices();
+            services.AddInfrastructureServices(Configuration);
+            services.AddApplicationServices();
 
-			
-		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-			}
-			ConfigureSwagger(app);
+        }
 
-			//Enable AutoWrapper
-			app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions
-			{
-				ShowStatusCode = true,
-				ShowIsErrorFlagForSuccessfulResponse = true,
-				IsDebug = true,
-				UseApiProblemDetailsException = false
-			});
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            ConfigureSwagger(app);
 
-			app.UseCors("CorsPolicy");
+            //Enable AutoWrapper
+            app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions
+            {
+                ShowStatusCode = true,
+                ShowIsErrorFlagForSuccessfulResponse = true,
+                IsDebug = true,
+                UseApiProblemDetailsException = false
+            });
 
-			app.UseStaticFiles();
+            app.UseCors("CorsPolicy");
 
-			app.UseCookiePolicy();
+            app.UseStaticFiles();
 
-			app.UseRouting();
+            app.UseCookiePolicy();
 
-			app.UseAuthentication();
+            app.UseRouting();
 
-			app.UseAuthorization();
+            app.UseAuthentication();
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllers();
-			});
-		}
+            app.UseAuthorization();
 
-		protected virtual void ConfigureSwagger(IApplicationBuilder app)
-		{
-			app.UseSwagger();
-			app.UseSwaggerUI(c =>
-			{
-				var domainName = Configuration.GetSection("EnvironmentDomain").GetSection("Domain").Value;
-				c.SwaggerEndpoint(domainName + "/swagger/v1/swagger.json", "Ticketing API");
-			});
-		}
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
 
-		protected virtual void ConfigureSwaggerServices(IServiceCollection services)
-		{
-			services.AddSwaggerGen(c =>
-			{
-				c.OperationFilter<SwaggerOperationFilter>();
+        protected virtual void ConfigureSwagger(IApplicationBuilder app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                var domainName = Configuration.GetSection("EnvironmentDomain").GetSection("Domain").Value;
+                c.SwaggerEndpoint(domainName + "/swagger/v1/swagger.json", "Ticketing API");
+            });
+        }
 
-				c.SwaggerDoc("v1",
-					new OpenApiInfo
-					{
-						Title = "Authorization API",
-						Version = "v1",
-						Contact = new OpenApiContact { Name = "Amir Esdeki" }
-					});
+        protected virtual void ConfigureSwaggerServices(IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.OperationFilter<SwaggerOperationFilter>();
 
-				//var appEnv = PlatformServices.Default.Application;
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Authorization API",
+                        Version = "v1",
+                        Contact = new OpenApiContact { Name = "Amir Esdeki" }
+                    });
 
-				//c.IncludeXmlComments(Path.Combine(appEnv.ApplicationBasePath, $"{appEnv.ApplicationName}.xml"));
+                //var appEnv = PlatformServices.Default.Application;
 
-			});
-		}
-	}
+                //c.IncludeXmlComments(Path.Combine(appEnv.ApplicationBasePath, $"{appEnv.ApplicationName}.xml"));
+
+            });
+        }
+    }
 }

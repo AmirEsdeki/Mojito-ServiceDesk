@@ -45,7 +45,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
                             .ToString()),
                     new Claim("IsVerified", user.PhoneNumberConfirmed.ToString())
                 }),
-                Expires = DateTime.Now.AddMinutes(3000000000),
+                Expires = DateTime.Now.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
