@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Mojito.ServiceDesk.Application.Common.Interfaces;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Common;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Core.Entities.BaseEntities;
 using Mojito.ServiceDesk.Core.Entities.Identity;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,12 +13,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Data.EF
     public class ApplicationDBContext : IdentityDbContext<User>
     {
         private readonly IDateTimeService dateTime;
-        private readonly IAuthenticationService authenticationService;
+        private readonly IAppUser appUser;
 
-        public ApplicationDBContext(DbContextOptions options, IDateTimeService dateTime, IAuthenticationService authenticationService) : base(options)
+        public ApplicationDBContext(DbContextOptions options, IDateTimeService dateTime, IAppUser appUser) : base(options)
         {
             this.dateTime = dateTime;
-            this.authenticationService = authenticationService;
+            this.appUser = appUser;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -35,7 +35,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Data.EF
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            var userId = authenticationService?.Identity?.UserId;
+            var userId = Guid.Parse(appUser?.Id);
 
             foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<BaseEntity> entry in ChangeTracker.Entries<BaseEntity>())
             {
