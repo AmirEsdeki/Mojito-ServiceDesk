@@ -1,21 +1,18 @@
-﻿using System;
+﻿using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
+using System;
 
-namespace Mojito.ServiceDesk.Application.Common.Interfaces.DTOs
+namespace Mojito.ServiceDesk.Application.Common.DTOs.Base.Out
 {
-    public interface IBaseDTOOut
+    public class BaseDTOOut : IBaseDTOOut
     {
         public int Id { get; set; }
 
         public DateTime Created { get; set; }
 
-
         public DateTime? LastModified { get; set; }
 
-
-        #region relations
         public Guid? LastModifiedById { get; set; }
 
         public Guid? CreatedById { get; set; }
-        #endregion
     }
 }

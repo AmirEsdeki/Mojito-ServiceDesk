@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Mojito.ServiceDesk.Application.Common.DTOs.Common;
 using Mojito.ServiceDesk.Application.Common.DTOs.Identity.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.Identity.Out;
+using Mojito.ServiceDesk.Application.Common.DTOs.User.Out;
 using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
@@ -10,6 +11,7 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Core.Constant;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
+//using Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +47,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         }
         #endregion
 
+        #region authentication
         public async Task<GuidIdDTO> SignUpAsync(SignUpDTO arg)
         {
             User user = mapper.Map<User>(arg);
@@ -57,7 +60,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                     result = await userManager.AddToRoleAsync(user, Roles.User);
                     SendVerificationCodeAsync(user);
                     return new GuidIdDTO()
-                        { Id = user.Id};
+                    { Id = user.Id };
                 }
                 else
                 {
@@ -119,7 +122,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
                 if (user == null)
                     throw new EntityDoesNotExistException();
-                if(!user.PhoneNumberConfirmed)
+                if (!user.PhoneNumberConfirmed)
                     SendVerificationCodeAsync(user);
             }
             catch (System.Exception ex)
@@ -165,7 +168,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-
         public async Task<bool> RevokeToken(string token, string ipAddress)
         {
             var user = db.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
@@ -210,7 +212,11 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
             return new UserTokenDTO(jwtToken, newRefreshToken.Token);
         }
+        #endregion
 
+        #region crud
+
+        #endregion
 
         #region private
         private async void SendVerificationCodeAsync(User user)
@@ -245,6 +251,23 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                     CreatedByIp = ipAddress
                 };
             }
+        }
+
+        public async Task<GetUserDTO> Get(string id)
+        {
+            try
+            {
+                //await ApplicationDBContextSeedData.SeedUserAsync(userManager);
+               // await ApplicationDBContextSeedData.SeedSampleDataAsync(db);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+            return new GetUserDTO();
         }
         #endregion
     }

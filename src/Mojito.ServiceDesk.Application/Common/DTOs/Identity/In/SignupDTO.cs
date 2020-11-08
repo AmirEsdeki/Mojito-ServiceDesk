@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
 using Mojito.ServiceDesk.Application.Common.Mappings;
-using Mojito.ServiceDesk.Core.Entities.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
 {
-    public class SignUpDTO : IMapFrom<User>
+    public class SignUpDTO : IMapFrom<Core.Entities.Identity.User>
     {
         [Required]
         [StringLength(255)]
@@ -41,7 +39,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<SignUpDTO, User>();
+            profile.CreateMap<SignUpDTO, Core.Entities.Identity.User>();
         }
     }
 }

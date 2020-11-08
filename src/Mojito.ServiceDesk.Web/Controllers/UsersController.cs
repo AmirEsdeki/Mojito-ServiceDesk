@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Web.Controllers
 {
-    [Authorize(Roles ="user")]
+    //[Authorize(Roles ="user")]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -181,6 +181,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            userService.Get("1");
             return Content("hello");
         }
     }
