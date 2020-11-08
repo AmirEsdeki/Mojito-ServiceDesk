@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Mojito.ServiceDesk.Web.Modules;
+using Mojito.ServiceDesk.Web.Middlewares;
 
 namespace Mojito.ServiceDesk.Web
 {
@@ -41,6 +42,9 @@ namespace Mojito.ServiceDesk.Web
             services.AddControllers()
                 .AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
 
+            services.AddInfrastructureServices(Configuration);
+            services.AddApplicationServices();
+
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
@@ -62,14 +66,17 @@ namespace Mojito.ServiceDesk.Web
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.Zero,
+                    RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
                 };
             });
 
-            services.AddInfrastructureServices(Configuration);
-            services.AddApplicationServices();
-
-
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Administrator",
+                    p => p.RequireAuthenticatedUser().RequireRole("user")
+                );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,6 +108,8 @@ namespace Mojito.ServiceDesk.Web
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<AppUserMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

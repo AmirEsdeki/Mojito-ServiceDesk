@@ -30,14 +30,15 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
 
             byte[] key = Encoding.ASCII.GetBytes(secret);
 
-            var rolesObj = Newtonsoft.Json.JsonConvert.SerializeObject(roles);
+            //var rolesObj = Newtonsoft.Json.JsonConvert.SerializeObject(roles).Replace("\\","");
+            List<string> rolesObj = roles as List<string>;
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim("Roles", rolesObj),
+                    new Claim(ClaimTypes.Role, rolesObj[0]),
                     new Claim("FullName",
                         new StringBuilder().Append(user.FirstName)
                             .Append(" ")

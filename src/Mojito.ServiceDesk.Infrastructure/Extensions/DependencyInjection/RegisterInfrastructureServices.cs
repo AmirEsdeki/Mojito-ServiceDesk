@@ -12,6 +12,7 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Infrastructure.Constant;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
+using Mojito.ServiceDesk.Infrastructure.Entities;
 using Mojito.ServiceDesk.Infrastructure.Interfaces;
 using Mojito.ServiceDesk.Infrastructure.Modules;
 using Mojito.ServiceDesk.Infrastructure.RemoteServices;
@@ -74,7 +75,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             services.AddScoped<IRandomService, RandomNumberGeneratorService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IHttpService, HttpService>();
-
+            services.AddScoped<IAppUser, AppUser>();
+            
             services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IEndPointAddresses, ExternalServiceEndPoints>();
             services.AddTransient<IUserService, UserService>();

@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Web.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "USER")]
+    [Authorize(Roles ="user")]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
