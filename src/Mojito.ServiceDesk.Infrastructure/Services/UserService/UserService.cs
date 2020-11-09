@@ -374,7 +374,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         {
             try
             {
-                var user = await ReturnUserIfBothExistsElseThrow<IssueUrl>(userId, groupId);
+                var user = await ReturnUserIfBothExistsElseThrow<UserGroup>(userId, groupId);
 
                 (user.Groups ??= new List<UserGroup>()).Add(
                     new UserGroup
@@ -395,7 +395,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         {
             try
             {
-                var user = await ReturnUserIfBothExists<UserIssueUrl>(userId, groupId);
+                var user = await ReturnUserIfBothExists<UserGroup>(userId, groupId);
 
                 if (user == null)
                     return;
@@ -433,7 +433,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         {
             try
             {
-                var user = await ReturnUserIfBothExists<UserIssueUrl>(userId, postId);
+                var user = await ReturnUserIfBothExists<Post>(userId, postId);
 
                 if (user == null)
                     return;
