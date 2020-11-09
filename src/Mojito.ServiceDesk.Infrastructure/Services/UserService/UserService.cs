@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mojito.ServiceDesk.Application.Common.DTOs.Common;
@@ -10,6 +11,7 @@ using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
+using Mojito.ServiceDesk.Application.Common.Mappings;
 using Mojito.ServiceDesk.Core.Constant;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
@@ -220,13 +222,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         {
             var user = await db.Users.FirstOrDefaultAsync(f => f.Id == id);
 
-            if(user != null)
+            if (user != null)
                 return mapper.Map<GetUserDTO>(user);
 
             throw new EntityDoesNotExistException();
         }
 
-        public async Task<IEnumerable<GetUserDTO>> GetAll(GetAllUserParams arg)
+        public async Task<PaginatedList<GetUserDTO>> GetAll(GetAllUserParams arg)
         {
             try
             {
@@ -253,9 +255,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 if (arg.IsEmployee != null)
                     query = query.Where(w => w.IsEmployee == arg.IsEmployee);
 
-                var users = await query.ToListAsync();
+                var list = await new PaginatedListBuilder<User, GetUserDTO>(mapper)
+                    .CreateAsync(query, arg.PageNumber, arg.PageSize);
 
-                return mapper.Map<List<GetUserDTO>>(users ??= new List<User>());
+                return list;
             }
             catch (Exception ex)
             {
@@ -280,6 +283,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
                     user.PhoneNumberConfirmed = true;
                     user.EmailConfirmed = true;
+                    user.IsEmployee = true;
 
                     return new GuidIdDTO()
                     { Id = user.Id };
@@ -304,15 +308,38 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 if (user == null)
                     throw new EntityDoesNotExistException();
 
+                var IsEnteredDataAvailable = true;
+
+                if (arg.Username != null)
+                    IsEnteredDataAvailable = 
+                        !(await db.Users.AnyAsync(a => a.NormalizedUserName == arg.Username.ToUpper() 
+                            && a.Id != userId));
+
+                if (arg.Email != null && IsEnteredDataAvailable)
+                    IsEnteredDataAvailable = 
+                        !(await db.Users.AnyAsync(a => a.NormalizedEmail == arg.Email.ToUpper()
+                            && a.Id != userId));
+
+                if (IsEnteredDataAvailable)
+                {
+                    if (arg.Username != null)
+                        await userManager.SetUserNameAsync(user, arg.Username);
+
+                    if (arg.Email != null)
+                        await userManager.SetEmailAsync(user, arg.Email);
+                }
+                else
+                {
+                    throw new UserNameOrEmailIsNotAvailableException();
+                }
+
                 mapper.Map(arg, user);
 
                 db.Update(user);
                 await db.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }

@@ -39,8 +39,7 @@ namespace Mojito.ServiceDesk.Web
 
             ConfigureSwaggerServices(services);
 
-            services.AddControllers()
-                .AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
+            services.AddControllers();
 
             services.AddInfrastructureServices(Configuration);
             services.AddApplicationServices();

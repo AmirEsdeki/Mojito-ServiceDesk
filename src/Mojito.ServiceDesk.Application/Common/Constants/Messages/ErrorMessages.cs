@@ -17,5 +17,7 @@
         public static string TokenIsEmpty => "وجود توکن در درخواست اجباری است.";
 
         public static string TokenNotFound => "توکن یافت نشد.";
+
+        public static string UserNameOrEmailNotAvailable => "این نام کاربری یا ایمیل در دسترس نیست.";
     }
 }

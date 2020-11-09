@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Common
 {
-    public class PaginatedList<T>
+    public class PaginatedList<TDTO>
     {
-        public List<T> Items { get; }
+        public List<TDTO> Items { get; }
         public int PageIndex { get; }
         public int TotalPages { get; }
         public int TotalCount { get; }
 
-        public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
+        public PaginatedList(List<TDTO> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
@@ -24,13 +25,40 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Common
         public bool HasPreviousPage => PageIndex > 1;
 
         public bool HasNextPage => PageIndex < TotalPages;
+    }
 
-        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
+    public class PaginatedListBuilder<T, TDTO> 
+        where T : class 
+        where TDTO : class
+    {
+        private readonly IMapper mapper;
+
+        public PaginatedListBuilder(IMapper mapper)
+        {
+            this.mapper = mapper;
+        }
+        public async Task<PaginatedList<TDTO>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
         {
             var count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            try
+            {
+                List<T> items;
 
-            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+                if (pageIndex != 0 && pageSize != 0)
+                    items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+                else
+                    items = await source.ToListAsync();
+
+                var mappedItems = mapper.Map<List<TDTO>>(items ??= new List<T>());
+
+                return new PaginatedList<TDTO>(mappedItems, count, pageIndex, pageSize);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
         }
     }
 }

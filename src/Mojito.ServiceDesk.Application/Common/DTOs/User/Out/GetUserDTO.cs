@@ -13,6 +13,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
 {
     public class GetUserDTO : IMapFrom<Core.Entities.Identity.User>
     {
+        public string Id { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

@@ -45,7 +45,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("[action]")]
-        [ProducesResponseType(typeof(GuidIdDTO), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GuidIdDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Register([FromBody] SignUpDTO arg)
@@ -53,7 +53,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 var userId = await userService.SignUpAsync(arg);
-                return new ApiResponse(InfoMessages.UserCreated, userId, HttpStatusCode.Created.ToInt());
+                return new ApiResponse(InfoMessages.UserCreated, userId, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
             {
@@ -72,7 +72,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("[action]")]
-        [ProducesResponseType(typeof(UserTokenDTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<UserTokenDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> VerifyUser([FromBody] VerifyUserDTO arg)
@@ -126,7 +126,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("[action]")]
-        [ProducesResponseType(typeof(UserTokenDTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<UserTokenDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> SignIn([FromBody] SignInDTO arg)
@@ -151,6 +151,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("revoke-token")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
         public async Task<ApiResponse> RevokeToken([FromBody] RevokeTokenRequestDTO arg)
@@ -170,6 +171,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<UserTokenDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.Unauthorized)]
         public async Task<ApiResponse> RefreshToken()
         {
@@ -188,7 +190,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         #region CRUD
         [HttpGet]
         [Route("{id}")]
-        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GetUserDTO>), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GetUserDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Get(string id)
@@ -209,8 +211,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(AutoWrapperResponseSchema<List<GetUserDTO>>), (int)HttpStatusCode.Created)]
-        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<PaginatedList<GetUserDTO>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Get([FromQuery] GetAllUserParams arg)
         {
@@ -238,7 +239,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 var userId = await userService.Create(arg);
-                return new ApiResponse(InfoMessages.UserCreated, userId, HttpStatusCode.Created.ToInt());
+                return new ApiResponse(InfoMessages.UserCreatedByAdmin, userId, HttpStatusCode.Created.ToInt());
             }
             catch (ValidationException ex)
             {
@@ -256,7 +257,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Put(string id, [FromBody] PutUserDTO arg)
@@ -264,7 +265,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 await userService.Update(id, arg);
-                return new ApiResponse(InfoMessages.UserUpdated, null, HttpStatusCode.NoContent.ToInt());
+                return new ApiResponse(InfoMessages.UserUpdated, null, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
             {
@@ -282,7 +283,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Put(string id)
@@ -290,11 +291,175 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 await userService.Delete(id);
-                return new ApiResponse(InfoMessages.UserDeleted, null, HttpStatusCode.NoContent.ToInt());
+                return new ApiResponse(InfoMessages.UserDeleted, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
             {
                 throw new ApiException(ex, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+        #endregion
+
+
+        #region OtherActions
+
+        [HttpPut]
+        [Route("{userId}/add-group/{groupId}")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> AddGroup(string userId, int groupId)
+        {
+            try
+            {
+                await userService.AddGroup(userId, groupId);
+                return new ApiResponse(InfoMessages.GroupAdded, null, HttpStatusCode.OK.ToInt());
+            }
+            catch (CustomException ex)
+            {
+                throw new ApiException(ex, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+
+        [HttpDelete]
+        [Route("{userId}/remove-group/{groupId}")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> RemoveGroup(string userId, int groupId)
+        {
+            try
+            {
+                await userService.RemoveGroup(userId, groupId);
+                return new ApiResponse(InfoMessages.GroupRemoved, null, HttpStatusCode.OK.ToInt());
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+        [HttpPut]
+        [Route("{userId}/add-post/{postId}")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> AddPost(string userId, int postId)
+        {
+            try
+            {
+                await userService.AddPost(userId, postId);
+                return new ApiResponse(InfoMessages.PostAdded, null, HttpStatusCode.OK.ToInt());
+            }
+            catch (CustomException ex)
+            {
+                throw new ApiException(ex, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+
+        [HttpDelete]
+        [Route("{userId}/remove-post/{postId}")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> RemovePost(string userId, int postId)
+        {
+            try
+            {
+                await userService.RemovePost(userId, postId);
+                return new ApiResponse(InfoMessages.PostRemoved, null, HttpStatusCode.OK.ToInt());
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+        [HttpPut]
+        [Route("{userId}/add-customerorganization/{customerOrganizationId}")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> AddCustomerOrganization(string userId, int customerOrganizationId)
+        {
+            try
+            {
+                await userService.AddCustomerOrganization(userId, customerOrganizationId);
+                return new ApiResponse(InfoMessages.CustomerOrganizationAdded, null, HttpStatusCode.OK.ToInt());
+            }
+            catch (CustomException ex)
+            {
+                throw new ApiException(ex, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+
+        [HttpDelete]
+        [Route("{userId}/remove-customerorganization/{customerOrganizationId}")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> RemoveCustomerOrganization(string userId, int customerOrganizationId)
+        {
+            try
+            {
+                await userService.RemoveCustomerOrganization(userId, customerOrganizationId);
+                return new ApiResponse(InfoMessages.CustomerOrganizationRemoved, null, HttpStatusCode.OK.ToInt());
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+        [HttpPut]
+        [Route("{userId}/add-issueurl/{issueUrlId}")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> AddIssueUrl(string userId, int issueUrlId)
+        {
+            try
+            {
+                await userService.AddIssueUrl(userId, issueUrlId);
+                return new ApiResponse(InfoMessages.IssueUrlAdded, null, HttpStatusCode.OK.ToInt());
+            }
+            catch (CustomException ex)
+            {
+                throw new ApiException(ex, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+
+        [HttpDelete]
+        [Route("{userId}/remove-issueurl/{issueUrlId}")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> RemoveIssueUrl(string userId, int issueUrlId)
+        {
+            try
+            {
+                await userService.RemoveIssueUrl(userId, issueUrlId);
+                return new ApiResponse(InfoMessages.IssueUrlRemoved, null, HttpStatusCode.OK.ToInt());
             }
             catch (Exception ex)
             {

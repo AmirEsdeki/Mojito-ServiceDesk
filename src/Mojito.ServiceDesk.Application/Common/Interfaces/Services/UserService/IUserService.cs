@@ -22,7 +22,7 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
 
         Task<bool> RevokeToken(string token, string ipAddress);
 
-        Task<IEnumerable<GetUserDTO>> GetAll(GetAllUserParams arg);
+        Task<PaginatedList<GetUserDTO>> GetAll(GetAllUserParams arg);
 
         Task<GetUserDTO> Get(string id);
 
@@ -31,5 +31,14 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
         Task Update(string id, PutUserDTO arg);
 
         Task Delete(string id);
+
+        Task AddGroup(string userId, int groupId);
+        Task RemoveGroup(string userId, int groupId);
+        Task AddPost(string userId, int postId);
+        Task RemovePost(string userId, int postId);
+        Task AddCustomerOrganization(string userId, int customerOrganizationId);
+        Task RemoveCustomerOrganization(string userId, int customerOrganizationId);
+        Task AddIssueUrl(string userId, int issueUrlId);
+        Task RemoveIssueUrl(string userId, int issueUrlId);
     }
 }

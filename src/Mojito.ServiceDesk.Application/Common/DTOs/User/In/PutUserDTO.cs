@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using Mojito.ServiceDesk.Application.Common.Mappings;
 using System.ComponentModel.DataAnnotations;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.User.In
 {
-    public class PutUserDTO
+    public class PutUserDTO : IMapFrom<Core.Entities.Identity.User>
     {
         [StringLength(255)]
         public string Username { get; set; }

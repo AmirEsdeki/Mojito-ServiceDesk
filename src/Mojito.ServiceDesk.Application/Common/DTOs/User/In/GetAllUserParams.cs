@@ -15,5 +15,10 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.In
         public int PostId { get; set; }
 
         public bool? IsEmployee { get; set; }
+
+        public int PageNumber { get; set; }
+
+        public int PageSize { get; set; }
+
     }
 }
