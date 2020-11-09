@@ -31,7 +31,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [ProducesResponseType(typeof(GuidIdDTO), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> Post([FromBody] RoleDTO arg)
+        public async Task<ApiResponse> Post([FromBody] GetRoleDTO arg)
         {
             try
             {

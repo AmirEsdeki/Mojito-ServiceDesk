@@ -11,7 +11,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.Out
 
         public int UsersCount { get; set; }
 
-        public ProductDTO Product { get; set; }
+        public ProductDTO_Cross Product { get; set; }
 
         public void Mapping(Profile profile)
         {
@@ -20,11 +20,11 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.Out
         }
     }
 
-    public class IssueUrlDTO_Cross : BaseDTOOut, IMapFrom<Core.Entities.Ticketing.IssueUrl>
+    public class IssueUrlDTO_Cross : BaseDTOOut_Cross, IMapFrom<Core.Entities.Ticketing.IssueUrl>
     {
         public string Url { get; set; }
 
-        public ProductDTO Product { get; set; }
+        public ProductDTO_Cross Product { get; set; }
 
         public void Mapping(Profile profile)
         {

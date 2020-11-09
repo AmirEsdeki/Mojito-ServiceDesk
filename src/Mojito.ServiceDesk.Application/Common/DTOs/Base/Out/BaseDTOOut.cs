@@ -3,9 +3,11 @@ using System;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Base.Out
 {
-    public class BaseDTOOut : IBaseDTOOut
+    public abstract class BaseDTOOut : IBaseDTOOut
     {
-        public int Id { get; set; }
+        //taking the Id long for all output classes because we have both int and long Id 
+        //and for mapping it is consumed to be ok in terms of perfomance.
+        public long Id { get; set; }
 
         public DateTime Created { get; set; }
 

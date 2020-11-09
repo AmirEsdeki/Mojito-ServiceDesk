@@ -4,7 +4,7 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.DTOs
 {
     public interface IBaseDTOOut
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public DateTime Created { get; set; }
 

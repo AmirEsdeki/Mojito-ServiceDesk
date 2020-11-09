@@ -25,17 +25,13 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Group.Out
         }
     }
 
-    public class GroupDTO_Cross : BaseDTOOut, IMapFrom<Core.Entities.Identity.Group>
+    public class GroupDTO_Cross : BaseDTOOut_Cross, IMapFrom<Core.Entities.Identity.Group>
     {
         public string Name { get; set; }
 
-        #region relations
-        public GroupTypeDTO_Cross GroupType { get; set; }
-        #endregion
-
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Core.Entities.Identity.Group, GroupDTO_Cross>();
+            profile.CreateMap<Core.Entities.Identity.Group, GroupDTO_Cross>().ReverseMap();
         }
     }
 }

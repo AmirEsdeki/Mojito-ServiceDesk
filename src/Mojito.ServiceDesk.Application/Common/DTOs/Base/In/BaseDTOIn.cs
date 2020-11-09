@@ -2,7 +2,7 @@
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Base.In
 {
-    public class BaseDTOIn : IBaseDTOIn
+    public abstract class BaseDTOIn : IBaseDTOIn
     {
     }
 }

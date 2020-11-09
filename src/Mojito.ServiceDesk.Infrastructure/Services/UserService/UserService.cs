@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Mojito.ServiceDesk.Application.Common.DTOs.Common;
 using Mojito.ServiceDesk.Application.Common.DTOs.Identity.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.Identity.Out;
+using Mojito.ServiceDesk.Application.Common.DTOs.User.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.User.Out;
 using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
@@ -22,7 +24,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 {
     public class UserService : IUserService
     {
-        #region Ctor
+        #region ctor
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
         private readonly ISendEmailService emailService;
@@ -46,7 +48,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         }
         #endregion
 
-        #region authentication
+        #region Authentication
         public async Task<GuidIdDTO> SignUpAsync(SignUpDTO arg)
         {
             User user = mapper.Map<User>(arg);
@@ -213,21 +215,127 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         }
         #endregion
 
-        #region crud
+        #region CRUD
         public async Task<GetUserDTO> Get(string id)
+        {
+            var user = await db.Users.FirstOrDefaultAsync(f => f.Id == id);
+
+            if(user != null)
+                return mapper.Map<GetUserDTO>(user);
+
+            throw new EntityDoesNotExistException();
+        }
+
+        public async Task<IEnumerable<GetUserDTO>> GetAll(GetAllUserParams arg)
         {
             try
             {
-                var user = db.Users.FirstOrDefault(f => f.NormalizedUserName == "TEST");
-                var mpd = mapper.Map<GetUserDTO>(user);
+                IQueryable<User> query = db.Users;
+
+                if (arg.GeneralName != null)
+                    query = query.Where(w => w.UserName.StartsWith(arg.GeneralName)
+                        || w.Email.StartsWith(arg.GeneralName)
+                        || w.PhoneNumber.StartsWith(arg.GeneralName)
+                        || (w.FirstName + "" + w.LastName).StartsWith(arg.GeneralName));
+
+                if (arg.GroupId != 0)
+                    query = query.Where(w => w.Groups.Any(a => a.GroupId == arg.GroupId));
+
+                if (arg.IssueUrlId != 0)
+                    query = query.Where(w => w.IssueUrls.Any(a => a.IssueUrlId == arg.IssueUrlId));
+
+                if (arg.CustomerOrganizationId != 0)
+                    query = query.Where(w => w.CustomerOrganizationId == arg.CustomerOrganizationId);
+
+                if (arg.PostId != 0)
+                    query = query.Where(w => w.PostId == arg.PostId);
+
+                if (arg.IsEmployee != null)
+                    query = query.Where(w => w.IsEmployee == arg.IsEmployee);
+
+                var users = await query.ToListAsync();
+
+                return mapper.Map<List<GetUserDTO>>(users ??= new List<User>());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<GuidIdDTO> Create(PostUserDTO arg)
+        {
+            var user = mapper.Map<User>(arg);
+            try
+            {
+                var result = await userManager.CreateAsync(user, arg.Password);
+
+                if (result.Succeeded)
+                {
+                    //as this method is only available for admins so below options are applied.
+                    if (arg.CreateAsAdmin)
+                        await userManager.AddToRoleAsync(user, Roles.Admin);
+                    else
+                        await userManager.AddToRoleAsync(user, Roles.Employee);
+
+                    user.PhoneNumberConfirmed = true;
+                    user.EmailConfirmed = true;
+
+                    return new GuidIdDTO()
+                    { Id = user.Id };
+                }
+                else
+                {
+                    throw new ValidationException(result.Errors);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task Update(string userId, PutUserDTO arg)
+        {
+            try
+            {
+                var user = await userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                    throw new EntityDoesNotExistException();
+
+                mapper.Map(arg, user);
+
+                db.Update(user);
+                await db.SaveChangesAsync();
+
             }
             catch (Exception ex)
             {
 
                 throw;
             }
+        }
 
-            return new GetUserDTO();
+        public async Task Delete(string id)
+        {
+            try
+            {
+                var user = await userManager.FindByIdAsync(id);
+
+                if (user != null)
+                    throw new EntityDoesNotExistException();
+
+                user.IsDeleted = true;
+
+                db.Update(user);
+                await db.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                //this method is fired and forgot, it is assumed that no exception has accoured;
+            }
         }
         #endregion
 

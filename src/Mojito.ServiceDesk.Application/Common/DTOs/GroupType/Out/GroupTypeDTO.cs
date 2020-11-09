@@ -17,7 +17,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.GroupType.Out
         }
     }
 
-    public class GroupTypeDTO_Cross : BaseDTOOut, IMapFrom<Core.Entities.Identity.GroupType>
+    public class GroupTypeDTO_Cross : BaseDTOOut_Cross, IMapFrom<Core.Entities.Identity.GroupType>
     {
         public string Title { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Role.In
 {
-    public class RoleDTO
+    public class GetRoleDTO
     {
         [Required]
         [StringLength(255)]

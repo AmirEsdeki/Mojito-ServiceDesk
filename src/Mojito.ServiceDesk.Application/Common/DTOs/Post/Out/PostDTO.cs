@@ -17,7 +17,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Post.Out
         }
     }
 
-    public class PostDTO_Cross : BaseDTOOut, IMapFrom<Core.Entities.Identity.Post>
+    public class PostDTO_Cross : BaseDTOOut_Cross, IMapFrom<Core.Entities.Identity.Post>
     {
         public string Title { get; set; }
 

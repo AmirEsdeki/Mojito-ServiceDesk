@@ -7,6 +7,7 @@ using Mojito.ServiceDesk.Application.Common.DTOs.ProfileImage.Out;
 using Mojito.ServiceDesk.Application.Common.Mappings;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
 {
@@ -16,11 +17,11 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
 
         public string LastName { get; set; }
 
-        public virtual string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
-        public virtual string UserName { get; set; }
+        public string UserName { get; set; }
 
-        public virtual string Email { get; set; }
+        public string Email { get; set; }
 
         public bool IsEmployee { get; set; }
 
@@ -30,11 +31,11 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
 
 
         #region relations
-        public PostDTO Post { get; set; }
+        public PostDTO_Cross Post { get; set; }
 
         public GetCustomerOrganizationDTO_Cross CustomerOrganization { get; set; }
 
-        public ProfileImageDTO ProfileImage { get; set; }
+        public ProfileImageDTO_Cross ProfileImage { get; set; }
 
         public ICollection<GroupDTO_Cross> Groups { get; set; }
 
@@ -48,7 +49,9 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Core.Entities.Identity.User, GetUserDTO>();
+            profile.CreateMap<Core.Entities.Identity.User, GetUserDTO>()
+                .ForMember(dto => dto.Groups, opt => opt.MapFrom(x => x.Groups.Select(y => y.Group).ToList()))
+                .ForMember(dto => dto.IssueUrls, opt => opt.MapFrom(x => x.IssueUrls.Select(y => y.IssueUrl).ToList()));
         }
     }
 }

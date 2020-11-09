@@ -26,7 +26,6 @@
     <Folder Include="Common\DTOs\Role\Out\" />
     <Folder Include="Common\DTOs\UserGroup\In\" />
     <Folder Include="Common\DTOs\UserGroup\Out\" />
-    <Folder Include="Common\DTOs\User\In\" />
   </ItemGroup>
 
 </Project>
