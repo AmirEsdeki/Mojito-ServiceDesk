@@ -66,6 +66,10 @@
     <ProjectReference Include="..\Mojito.ServiceDesk.Application\Mojito.ServiceDesk.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\Image\SampleProfileImage\" />
+  </ItemGroup>
+
  
 
 </Project>

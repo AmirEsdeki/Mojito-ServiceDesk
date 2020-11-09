@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Mojito.ServiceDesk.Core.Common.Interfaces;
 using Mojito.ServiceDesk.Core.Entities.Ticketing;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Mojito.ServiceDesk.Core.Entities.Identity
 {
-    public class User : IdentityUser
+    public class User : IdentityUser , ICoreBaseEntity
     {
         public string FirstName { get; set; }
 

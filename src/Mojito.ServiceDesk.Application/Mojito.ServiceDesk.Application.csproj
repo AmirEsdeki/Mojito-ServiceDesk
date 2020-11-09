@@ -20,7 +20,6 @@
     <Folder Include="Common\DTOs\IssueUrl\In\" />
     <Folder Include="Common\DTOs\IssueUrl\Out\" />
     <Folder Include="Common\DTOs\Post\In\" />
-    <Folder Include="Common\DTOs\Post\Out\" />
     <Folder Include="Common\DTOs\ProfileImage\In\" />
     <Folder Include="Common\DTOs\ProfileImage\Out\" />
     <Folder Include="Common\DTOs\Role\Out\" />

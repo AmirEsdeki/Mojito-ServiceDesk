@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Common;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
+using Mojito.ServiceDesk.Core.Common.Interfaces;
 using Mojito.ServiceDesk.Core.Entities.BaseEntities;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Core.Entities.Proprietary;
@@ -38,33 +39,19 @@ namespace Mojito.ServiceDesk.Infrastructure.Data.EF
             if (appUser.Id != null)
                 userId = Guid.Parse(appUser.Id);
 
-            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<BaseEntity> entry in ChangeTracker.Entries<BaseEntity>())
+            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<ICoreBaseEntity> entry in ChangeTracker.Entries<ICoreBaseEntity>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedById = userId;
+                        if (appUser.Id != null)
+                            entry.Entity.CreatedById = Guid.Parse(appUser.Id);
                         entry.Entity.Created = dateTime.Now;
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedById = userId;
-                        entry.Entity.LastModified = dateTime.Now;
-                        break;
-                }
-            }
-
-            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<User> entry in ChangeTracker.Entries<User>())
-            {
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        entry.Entity.CreatedById = userId;
-                        entry.Entity.Created = dateTime.Now;
-                        break;
-
-                    case EntityState.Modified:
-                        entry.Entity.LastModifiedById = userId;
+                        if (appUser.Id != null)
+                            entry.Entity.LastModifiedById = Guid.Parse(appUser.Id);
                         entry.Entity.LastModified = dateTime.Now;
                         break;
                 }

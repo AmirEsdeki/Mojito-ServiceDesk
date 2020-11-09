@@ -11,7 +11,6 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Core.Constant;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
-//using Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -215,7 +214,21 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         #endregion
 
         #region crud
+        public async Task<GetUserDTO> Get(string id)
+        {
+            try
+            {
+                var user = db.Users.FirstOrDefault(f => f.NormalizedUserName == "TEST");
+                var mpd = mapper.Map<GetUserDTO>(user);
+            }
+            catch (Exception ex)
+            {
 
+                throw;
+            }
+
+            return new GetUserDTO();
+        }
         #endregion
 
         #region private
@@ -251,23 +264,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                     CreatedByIp = ipAddress
                 };
             }
-        }
-
-        public async Task<GetUserDTO> Get(string id)
-        {
-            try
-            {
-                //await ApplicationDBContextSeedData.SeedUserAsync(userManager);
-               // await ApplicationDBContextSeedData.SeedSampleDataAsync(db);
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-            return new GetUserDTO();
         }
         #endregion
     }

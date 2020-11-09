@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Mojito.ServiceDesk.Application.Common.DTOs.Post.Out;
 using Mojito.ServiceDesk.Application.Common.Mappings;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,15 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
 
 
         #region relations
-        public Post Post { get; set; }
+        public PostDTO_Cross Post { get; set; }
 
-        public CustomerOrganization CustomerOrganization { get; set; }
+        //public CustomerOrganization CustomerOrganization { get; set; }
 
-        public ProfileImage ProfileImage { get; set; }
+        //public ProfileImage ProfileImage { get; set; }
 
-        public ICollection<Group> Groups { get; set; }
+        //public ICollection<Group> Groups { get; set; }
 
-        public ICollection<IssueUrl> IssueUrls { get; set; }
+        //public ICollection<IssueUrl> IssueUrls { get; set; }
 
         public Guid? LastModifiedById { get; set; }
 
@@ -55,12 +56,6 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
                 //.ForMember(dest => dest.ProfileImage.Image,
                 //    opt => opt.MapFrom(src => src.ProfileImage != null ? src.ProfileImage.Image : null));
         }
-    }
-
-    public class Post
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
     }
 
     public class CustomerOrganization

@@ -28,6 +28,11 @@ namespace Mojito.ServiceDesk.Web
 
                     var userManager = services.GetRequiredService<UserManager<User>>();
 
+                    if (context.Database.IsSqlServer())
+                    {
+                        context.Database.Migrate();
+                    }
+
                     await ApplicationDBContextSeedData.SeedUserAsync(userManager);
                     await ApplicationDBContextSeedData.SeedSampleDataAsync(context);
                 }
