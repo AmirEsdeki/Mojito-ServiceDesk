@@ -12,8 +12,10 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Application.Common.Mappings;
+using Mojito.ServiceDesk.Core.Common.Interfaces;
 using Mojito.ServiceDesk.Core.Constant;
 using Mojito.ServiceDesk.Core.Entities.Identity;
+using Mojito.ServiceDesk.Core.Entities.Ticketing;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 using System;
 using System.Collections.Generic;
@@ -311,12 +313,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 var IsEnteredDataAvailable = true;
 
                 if (arg.Username != null)
-                    IsEnteredDataAvailable = 
-                        !(await db.Users.AnyAsync(a => a.NormalizedUserName == arg.Username.ToUpper() 
+                    IsEnteredDataAvailable =
+                        !(await db.Users.AnyAsync(a => a.NormalizedUserName == arg.Username.ToUpper()
                             && a.Id != userId));
 
                 if (arg.Email != null && IsEnteredDataAvailable)
-                    IsEnteredDataAvailable = 
+                    IsEnteredDataAvailable =
                         !(await db.Users.AnyAsync(a => a.NormalizedEmail == arg.Email.ToUpper()
                             && a.Id != userId));
 
@@ -361,7 +363,164 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
             catch (Exception ex)
             {
-                //this method is fired and forgot, it is assumed that no exception has accoured;
+                //this method fires and then forgets, it is assumed that no exception has accoured;
+            }
+        }
+        #endregion
+
+        #region OtherActions
+
+        public async Task AddGroup(string userId, int groupId)
+        {
+            try
+            {
+                var user = await ReturnUserIfBothExistsElseThrow<IssueUrl>(userId, groupId);
+
+                (user.Groups ??= new List<UserGroup>()).Add(
+                    new UserGroup
+                    {
+                        UserId = userId,
+                        GroupId = groupId
+                    });
+
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task RemoveGroup(string userId, int groupId)
+        {
+            try
+            {
+                var user = await ReturnUserIfBothExists<UserIssueUrl>(userId, groupId);
+
+                if (user == null)
+                    return;
+
+                var group = user.Groups.FirstOrDefault(w => w.GroupId == groupId);
+
+                if (group != null)
+                {
+                    user.Groups.Remove(group);
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                //this method fires and then forgets, it is assumed that no exception has accoured;
+            }
+        }
+
+        public async Task AddPost(string userId, int postId)
+        {
+            try
+            {
+                var user = await ReturnUserIfBothExistsElseThrow<Post>(userId, postId);
+
+                user.PostId = postId;
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task RemovePost(string userId, int postId)
+        {
+            try
+            {
+                var user = await ReturnUserIfBothExists<UserIssueUrl>(userId, postId);
+
+                if (user == null)
+                    return;
+
+                user.Post = null;
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                //this method fires and then forgets, it is assumed that no exception has accoured;
+            }
+        }
+
+        public async Task AddCustomerOrganization(string userId, int customerOrganizationId)
+        {
+            try
+            {
+                var user = await ReturnUserIfBothExistsElseThrow<CustomerOrganization>(userId, customerOrganizationId);
+
+                user.CustomerOrganizationId = customerOrganizationId;
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task RemoveCustomerOrganization(string userId, int customerOrganizationId)
+        {
+            try
+            {
+                var user = await ReturnUserIfBothExists<CustomerOrganization>(userId, customerOrganizationId);
+
+                if (user == null)
+                    return;
+
+                user.CustomerOrganization = null;
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                //this method fires and then forgets, it is assumed that no exception has accoured;
+            }
+        }
+
+        public async Task AddIssueUrl(string userId, int issueUrlId)
+        {
+            try
+            {
+                var user = await ReturnUserIfBothExistsElseThrow<IssueUrl>(userId, issueUrlId);
+
+                (user.IssueUrls ??= new List<UserIssueUrl>()).Add(
+                    new UserIssueUrl
+                    {
+                        UserId = userId,
+                        IssueUrlId = issueUrlId
+                    });
+
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task RemoveIssueUrl(string userId, int issueUrlId)
+        {
+            try
+            {
+                var user = await ReturnUserIfBothExists<UserIssueUrl>(userId, issueUrlId);
+
+                if (user == null)
+                    return;
+
+                var issueUrl = user.IssueUrls.FirstOrDefault(w => w.IssueUrlId == issueUrlId);
+
+                if (issueUrl != null)
+                {
+                    user.IssueUrls.Remove(issueUrl);
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                //this method fires and then forgets, it is assumed that no exception has accoured;
             }
         }
         #endregion
@@ -399,6 +558,34 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                     CreatedByIp = ipAddress
                 };
             }
+        }
+
+        private async Task<User> ReturnUserIfBothExistsElseThrow<T>(string userId, int entityId)
+            where T : class, IBaseEntity
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new EntityDoesNotExistException();
+
+            if (!await db.Set<T>().AnyAsync(a => a.Id == entityId))
+                throw new EntityDoesNotExistException();
+
+            return user;
+        }
+
+        private async Task<User> ReturnUserIfBothExists<T>(string userId, int entityId)
+            where T : class, IBaseEntity
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return null;
+
+            if (!await db.Set<T>().AnyAsync(a => a.Id == entityId))
+                return null;
+
+            return user;
         }
         #endregion
     }

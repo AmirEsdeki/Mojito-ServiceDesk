@@ -20,13 +20,20 @@
 
         public static string UserCreatedByAdmin => "کاربر با موفقیت ایجاد شد";
 
-        public static string GroupAdded { get; set; }
-        public static string GroupRemoved { get; set; }
-        public static string PostAdded { get; set; }
-        public static string PostRemoved { get; set; }
-        public static string CustomerOrganizationAdded { get; set; }
-        public static string CustomerOrganizationRemoved { get; set; }
-        public static string IssueUrlAdded { get; set; }
-        public static string IssueUrlRemoved { get; set; }
+        public static string GroupAdded => "گروه با موفقیت اضافه شد.";
+
+        public static string GroupRemoved => "گروه با موفقیت حذف شد.";
+
+        public static string PostAdded => "سمت با موفقیت اضافه شد.";
+
+        public static string PostRemoved => "سمت با موفقیت حذف شد.";
+
+        public static string CustomerOrganizationAdded => "شرکت مشتری با موفقیت اضافه شد.";
+
+        public static string CustomerOrganizationRemoved => "شرکت مشتری با موفقیت حذف شد.";
+
+        public static string IssueUrlAdded => "آدرس سامانه با موفقیت اضافه شد.";
+
+        public static string IssueUrlRemoved => "آدرس سامانه با موفقیت حذف شد.";
     }
 }
