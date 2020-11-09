@@ -438,7 +438,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 if (user == null)
                     return;
 
-                user.Post = null;
+                user.PostId = null;
                 await db.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -471,7 +471,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 if (user == null)
                     return;
 
-                user.CustomerOrganization = null;
+                user.CustomerOrganizationId = null;
                 await db.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -568,8 +568,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             if (user == null)
                 throw new EntityDoesNotExistException();
 
-            var isEnityExist = await db.Set<T>().AnyAsync(a => a.Id == entityId);
-            if (!isEnityExist)
+            if (!await db.Set<T>().AnyAsync(a => a.Id == entityId))
                 throw new EntityDoesNotExistException();
 
             return user;
