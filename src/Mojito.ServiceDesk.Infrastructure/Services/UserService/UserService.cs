@@ -374,7 +374,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         {
             try
             {
-                var user = await ReturnUserIfBothExistsElseThrow<UserGroup>(userId, groupId);
+                var user = await ReturnUserIfBothExistsElseThrow<Group>(userId, groupId);
 
                 (user.Groups ??= new List<UserGroup>()).Add(
                     new UserGroup
@@ -395,7 +395,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         {
             try
             {
-                var user = await ReturnUserIfBothExists<UserGroup>(userId, groupId);
+                var user = await ReturnUserIfBothExists<Group>(userId, groupId);
 
                 if (user == null)
                     return;
@@ -505,7 +505,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         {
             try
             {
-                var user = await ReturnUserIfBothExists<UserIssueUrl>(userId, issueUrlId);
+                var user = await ReturnUserIfBothExists<IssueUrl>(userId, issueUrlId);
 
                 if (user == null)
                     return;
@@ -568,7 +568,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             if (user == null)
                 throw new EntityDoesNotExistException();
 
-            if (!await db.Set<T>().AnyAsync(a => a.Id == entityId))
+            var isEnityExist = await db.Set<T>().AnyAsync(a => a.Id == entityId);
+            if (!isEnityExist)
                 throw new EntityDoesNotExistException();
 
             return user;
