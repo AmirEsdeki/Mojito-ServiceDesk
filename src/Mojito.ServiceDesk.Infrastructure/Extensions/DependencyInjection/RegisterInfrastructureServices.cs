@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Mojito.ServiceDesk.Application.Common.Interfaces;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Common;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.Common;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
@@ -15,7 +14,6 @@ using Mojito.ServiceDesk.Infrastructure.Data.EF;
 using Mojito.ServiceDesk.Infrastructure.Entities;
 using Mojito.ServiceDesk.Infrastructure.Interfaces;
 using Mojito.ServiceDesk.Infrastructure.Modules;
-using Mojito.ServiceDesk.Infrastructure.RemoteServices;
 using Mojito.ServiceDesk.Infrastructure.Services.Common;
 using Mojito.ServiceDesk.Infrastructure.Services.JWTService;
 using Mojito.ServiceDesk.Infrastructure.Services.RoleService;
@@ -29,10 +27,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            #region security
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
-            #endregion
-
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
             {
                 services.AddDbContext<ApplicationDBContext>(options =>
@@ -76,7 +70,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IHttpService, HttpService>();
             services.AddScoped<IAppUser, AppUser>();
-            
+
             services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IEndPointAddresses, ExternalServiceEndPoints>();
             services.AddTransient<IUserService, UserService>();

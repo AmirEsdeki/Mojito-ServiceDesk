@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
+using Mojito.ServiceDesk.Application.Common.DTOs.CustomerOrganization.Out;
+using Mojito.ServiceDesk.Application.Common.DTOs.Group.Out;
+using Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.Out;
 using Mojito.ServiceDesk.Application.Common.DTOs.Post.Out;
+using Mojito.ServiceDesk.Application.Common.DTOs.ProfileImage.Out;
 using Mojito.ServiceDesk.Application.Common.Mappings;
 using System;
 using System.Collections.Generic;
@@ -26,15 +30,15 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
 
 
         #region relations
-        public PostDTO_Cross Post { get; set; }
+        public PostDTO Post { get; set; }
 
-        //public CustomerOrganization CustomerOrganization { get; set; }
+        public GetCustomerOrganizationDTO_Cross CustomerOrganization { get; set; }
 
-        //public ProfileImage ProfileImage { get; set; }
+        public ProfileImageDTO ProfileImage { get; set; }
 
-        //public ICollection<Group> Groups { get; set; }
+        public ICollection<GroupDTO_Cross> Groups { get; set; }
 
-        //public ICollection<IssueUrl> IssueUrls { get; set; }
+        public ICollection<IssueUrlDTO_Cross> IssueUrls { get; set; }
 
         public Guid? LastModifiedById { get; set; }
 
@@ -45,40 +49,6 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Core.Entities.Identity.User, GetUserDTO>();
-                //.ForMember(dest => dest.Post.PostId, opt => opt.MapFrom(src => src.PostId != null ? src.PostId : 0))
-                //.ForMember(dest => dest.Post.PostTitle, opt => opt.MapFrom(src => src.Post != null ? src.Post.Title : ""))
-                //.ForMember(dest => dest.CustomerOrganization.CustomerOrganizationId,
-                //    opt => opt.MapFrom(src => src.CustomerOrganizationId != null ? src.CustomerOrganizationId : 0))
-                //.ForMember(dest => dest.CustomerOrganization.CustomerOrganizationTitle,
-                //    opt => opt.MapFrom(src => src.CustomerOrganization != null ? src.CustomerOrganization.Name : ""))
-                //.ForMember(dest => dest.ProfileImage.ProfileImageId,
-                //    opt => opt.MapFrom(src => src.ProfileImageId != null ? src.ProfileImageId : 0))
-                //.ForMember(dest => dest.ProfileImage.Image,
-                //    opt => opt.MapFrom(src => src.ProfileImage != null ? src.ProfileImage.Image : null));
         }
-    }
-
-    public class CustomerOrganization
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class ProfileImage
-    {
-        public int Id { get; set; }
-        public byte[] Image { get; set; }
-    }
-
-    public class Group
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class IssueUrl
-    {
-        public int Id { get; set; }
-        public string Url { get; set; }
     }
 }
