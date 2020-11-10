@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Mojito.ServiceDesk.Core.Entities.Identity
 {
-    public class User : IdentityUser , ICoreBaseEntity
+    public class User : IdentityUser , ICoreBaseEntity, IBaseEntityWithGuid
     {
         public string FirstName { get; set; }
 

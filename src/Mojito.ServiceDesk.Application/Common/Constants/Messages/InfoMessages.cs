@@ -16,7 +16,7 @@
 
         public static string UserUpdated => "کاربر با موفقیت ویرایش شد.";
 
-        public static string UserDeleted => "کاربر با موفقیت حذف شد.";
+        public static string UserRemoved => "کاربر با موفقیت حذف شد.";
 
         public static string UserCreatedByAdmin => "کاربر با موفقیت ایجاد شد";
 

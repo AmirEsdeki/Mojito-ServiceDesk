@@ -1,17 +1,21 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Mojito.ServiceDesk.Application.Common.DTOs.Common;
 using Mojito.ServiceDesk.Application.Common.DTOs.Post.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.Post.Out;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.PostService;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 using Mojito.ServiceDesk.Infrastructure.Services.BaseService;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Infrastructure.Services.PostService
 {
     public class PostService
-        : BaseService<Post, PostPostDTO, PutPostDTO, GetPostDTO, PostsFilterParams>
+        : BaseService<Post, PostPostDTO, PutPostDTO, GetPostDTO, PostsFilterParams>, IPostService
     {
         #region ctor
         public PostService(ApplicationDBContext db, IMapper mapper)
@@ -24,6 +28,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.PostService
         {
             try
             {
+                arg.Title ??= string.Empty;
+
                 var query = GetAllAsync(post => post.Title.StartsWith(arg.Title));
 
                 var list = await new PaginatedListBuilder<Post, GetPostDTO>(mapper)
@@ -35,6 +41,15 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.PostService
             {
                 throw;
             }
+        }
+        #endregion
+
+        #region OtherActions
+
+        public async Task<ICollection<KeyValueDTO>> FilterAsync(string phrase)
+        {
+            var filteredData = await GetAllAsync(data => data.Title.StartsWith(phrase)).ToListAsync();
+            return filteredData.Select(s => new KeyValueDTO(s.Id, s.Title)).ToList();
         }
         #endregion
     }

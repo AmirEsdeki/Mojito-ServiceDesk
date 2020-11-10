@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mojito.ServiceDesk.Application.Common.DTOs.Common;
@@ -11,7 +10,6 @@ using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
-using Mojito.ServiceDesk.Application.Common.Mappings;
 using Mojito.ServiceDesk.Core.Common.Interfaces;
 using Mojito.ServiceDesk.Core.Constant;
 using Mojito.ServiceDesk.Core.Entities.Identity;
@@ -369,7 +367,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         }
         #endregion
 
-        #region OtherActions
+        #region RelationActions
 
         public async Task AddGroupAsync(string userId, int groupId)
         {

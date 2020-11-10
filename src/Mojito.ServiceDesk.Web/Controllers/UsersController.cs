@@ -1,5 +1,4 @@
 ﻿using AutoWrapper.Wrappers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -292,7 +291,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 await userService.DeleteAsync(id);
-                return new ApiResponse(InfoMessages.UserDeleted, null, HttpStatusCode.OK.ToInt());
+                return new ApiResponse(InfoMessages.UserRemoved, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
             {
@@ -305,17 +304,16 @@ namespace Mojito.ServiceDesk.Web.Controllers
         }
         #endregion
 
-
-        #region OtherActions
+        #region RelationAndOtherActions
 
         [HttpPost]
         [Route("{phrase}/filter")]
-        [ProducesResponseType(typeof(AutoWrapperResponseSchema<FilteredUsersDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<List<FilteredUsersDTO>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Filter(string phrase)
         {
-                var users = await userService.GeneralFilterAsync(phrase);
-                return new ApiResponse(users, HttpStatusCode.OK.ToInt());
+            var users = await userService.GeneralFilterAsync(phrase);
+            return new ApiResponse(users, HttpStatusCode.OK.ToInt());
         }
 
         [HttpPut]

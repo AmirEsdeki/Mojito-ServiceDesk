@@ -10,6 +10,7 @@ using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.PostService;
 using Mojito.ServiceDesk.Web.Modules.AutoWrapper;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -84,7 +85,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 var data = await postService.CreateAsync(arg);
-                return new ApiResponse(InfoMessages.UserCreatedByAdmin, data, HttpStatusCode.OK.ToInt());
+                return new ApiResponse(InfoMessages.PostAdded, data, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
             {
@@ -137,7 +138,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 await postService.DeleteAsync(id);
-                return new ApiResponse(InfoMessages.UserDeleted, null, HttpStatusCode.OK.ToInt());
+                return new ApiResponse(InfoMessages.PostRemoved, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
             {
@@ -150,6 +151,16 @@ namespace Mojito.ServiceDesk.Web.Controllers
         }
         #endregion
 
-
+        #region OtherActions
+        [HttpPost]
+        [Route("{phrase}/filter")]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<List<KeyValueDTO>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> Filter(string phrase)
+        {
+            ICollection< KeyValueDTO> users = await postService.FilterAsync(phrase);
+            return new ApiResponse(users, HttpStatusCode.OK.ToInt());
+        }
+        #endregion
     }
 }

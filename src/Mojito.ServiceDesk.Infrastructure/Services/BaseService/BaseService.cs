@@ -5,6 +5,7 @@ using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.BaseService;
 using Mojito.ServiceDesk.Core.Common.Interfaces;
+using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 using System;
 using System.Linq;
@@ -34,12 +35,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
         }
         #endregion
 
-        protected virtual IQueryable<Entity> GetAllAsync(Expression<Func<Entity, bool>> predicate = null)
-        {
-            var entities = db.Set<Entity>().Where(predicate);
-            return entities;
-        }
 
+        #region PublicMembers
         public virtual async Task<PaginatedList<TDTOGet>> GetAllAsync(TDTOFilter arg)
         {
             try
@@ -62,13 +59,16 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             try
             {
                 var entity = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == id);
+                if(entity == null)
+                    throw new EntityDoesNotExistException();
+
                 var dto = mapper.Map<TDTOGet>(entity);
 
                 return dto;
             }
             catch (Exception ex)
             {
-                throw new EntityDoesNotExistException(ex);
+                throw;
             }
         }
 
@@ -102,6 +102,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             }
         }
 
+        protected virtual IQueryable<Entity> GetAllAsync(Expression<Func<Entity, bool>> predicate = null)
+        {
+            var entities = db.Set<Entity>().Where(predicate);
+            return entities;
+        }
+
         public virtual async Task UpdateAsync(int id, TDTOPut entity)
         {
             try
@@ -110,7 +116,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
                 if (entityInDb == null)
                     throw new EntityDoesNotExistException();
 
-                var mappedEntity = mapper.Map(entityInDb, entity);
+                var mappedEntity = mapper.Map(entity, entityInDb);
 
                 db.Update(entityInDb);
                 await db.SaveChangesAsync();
@@ -120,8 +126,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
                 throw;
             }
         }
+        #endregion
 
-        protected async Task<Entity> ReturnParentEntityIfBothExistsElseThrow(int parentId, int childId)
+
+        #region ProtectedMembers
+        protected async Task<Entity> ReturnParentEntityIfBothExistsElseThrow<TChild>(int parentId, int childId)
+            where TChild : class, IBaseEntity
         {
             var parent = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == parentId);
 
@@ -134,17 +144,47 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             return parent;
         }
 
-        protected async Task<Entity> ReturnParentEntityIfBothExists(int parentId, int childId)
+        protected async Task<Entity> ReturnParentEntityIfBothExistsElseThrow<TChild>(int parentId, string childId)
+            where TChild : class, IBaseEntityWithGuid
+        {
+            var parent = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == parentId);
+
+            if (parent == null)
+                throw new EntityDoesNotExistException();
+
+            if (!await db.Set<TChild>().AnyAsync(a => a.Id == childId))
+                throw new EntityDoesNotExistException();
+
+            return parent;
+        }
+
+        protected async Task<Entity> ReturnParentEntityIfBothExistsElseNull<TChild>(int parentId, int childId)
+            where TChild : class, IBaseEntity
         {
             var parent = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == parentId);
 
             if (parent == null)
                 return null;
 
-            if (!await db.Set<Entity>().AnyAsync(a => a.Id == childId))
+            if (!await db.Set<TChild>().AnyAsync(a => a.Id == childId))
                 return null;
 
             return parent;
         }
+
+        protected async Task<Entity> ReturnParentEntityIfBothExistsElseNull<TChild>(int parentId, string childId)
+           where TChild : class, IBaseEntityWithGuid
+        {
+            var parent = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == parentId);
+
+            if (parent == null)
+                return null;
+
+            if (!await db.Set<TChild>().AnyAsync(a => a.Id == childId))
+                return null;
+
+            return parent;
+        }
+        #endregion
     }
 }
