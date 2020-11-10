@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Infrastructure.Services.RoleService
 {
+    //because userService uses Identity provided service it does not implement IBaseService
     public class RoleService : IRoleService
     {
         #region Ctor

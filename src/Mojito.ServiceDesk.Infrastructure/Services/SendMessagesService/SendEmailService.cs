@@ -24,6 +24,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.SendMessagesService
             {
                 using (var client = new SmtpClient())
                 {
+                    //todo: use IOptions
                     var username = configuration
                         .GetSection("EmailConfig")
                         .GetSection("UserName").Value;

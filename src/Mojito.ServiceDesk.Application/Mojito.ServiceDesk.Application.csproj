@@ -20,7 +20,6 @@
     <Folder Include="Common\DTOs\GroupType\In\" />
     <Folder Include="Common\DTOs\Group\In\" />
     <Folder Include="Common\DTOs\IssueUrl\In\" />
-    <Folder Include="Common\DTOs\Post\In\" />
     <Folder Include="Common\DTOs\Product\In\" />
     <Folder Include="Common\DTOs\ProfileImage\In\" />
     <Folder Include="Common\DTOs\Role\Out\" />

@@ -4,7 +4,7 @@ using Mojito.ServiceDesk.Application.Common.Mappings;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.CustomerOrganization.Out
 {
-    public class GetCustomerOrganizationDTO : BaseDTOOut, IMapFrom<Core.Entities.Identity.CustomerOrganization>
+    public class GetCustomerOrganizationDTO : BaseDTOGet, IMapFrom<Core.Entities.Identity.CustomerOrganization>
     {
         public string Name { get; set; }
 

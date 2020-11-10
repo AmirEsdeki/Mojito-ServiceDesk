@@ -5,7 +5,7 @@ using Mojito.ServiceDesk.Application.Common.Mappings;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.Out
 {
-    public class IssueUrlDTO : BaseDTOOut, IMapFrom<Core.Entities.Ticketing.IssueUrl>
+    public class IssueUrlDTO : BaseDTOGet, IMapFrom<Core.Entities.Ticketing.IssueUrl>
     {
         public string Url { get; set; }
 

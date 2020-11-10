@@ -161,7 +161,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             if (string.IsNullOrEmpty(token))
                 throw new ApiException(ErrorMessages.TokenIsEmpty, HttpStatusCode.BadRequest.ToInt());
 
-            var response = await userService.RevokeToken(token, httpService.IpAddress(Request, HttpContext));
+            var response = await userService.RevokeTokenAsync(token, httpService.IpAddress(Request, HttpContext));
 
             if (!response)
                 throw new ApiException(ErrorMessages.TokenNotFound, HttpStatusCode.NotFound.ToInt());
@@ -176,7 +176,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         public async Task<ApiResponse> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            var token = await userService.RefreshToken(refreshToken, httpService.IpAddress(Request, HttpContext));
+            var token = await userService.RefreshTokenAsync(refreshToken, httpService.IpAddress(Request, HttpContext));
 
             if (token == null)
                 throw new ApiException(ErrorMessages.InvalidToken, HttpStatusCode.Unauthorized.ToInt());
@@ -197,7 +197,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                var user = await userService.Get(id);
+                var user = await userService.GetAsync(id);
                 return new ApiResponse(user, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -213,11 +213,11 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(AutoWrapperResponseSchema<PaginatedList<GetUserDTO>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> Get([FromQuery] GetAllUserParams arg)
+        public async Task<ApiResponse> Get([FromQuery] UsersFilterParams arg)
         {
             try
             {
-                var users = await userService.GetAll(arg);
+                var users = await userService.GetAllAsync(arg);
                 return new ApiResponse(users, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -238,7 +238,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                var userId = await userService.Create(arg);
+                var userId = await userService.CreateAsync(arg);
                 return new ApiResponse(InfoMessages.UserCreatedByAdmin, userId, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
@@ -258,13 +258,14 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [HttpPut]
         [Route("{id}")]
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Put(string id, [FromBody] PutUserDTO arg)
         {
             try
             {
-                await userService.Update(id, arg);
+                await userService.UpdateAsync(id, arg);
                 return new ApiResponse(InfoMessages.UserUpdated, null, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
@@ -286,11 +287,11 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> Put(string id)
+        public async Task<ApiResponse> Delete(string id)
         {
             try
             {
-                await userService.Delete(id);
+                await userService.DeleteAsync(id);
                 return new ApiResponse(InfoMessages.UserDeleted, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -313,7 +314,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Filter(string phrase)
         {
-                var users = await userService.GeneralFilter(phrase);
+                var users = await userService.GeneralFilterAsync(phrase);
                 return new ApiResponse(users, HttpStatusCode.OK.ToInt());
         }
 
@@ -326,7 +327,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                await userService.AddGroup(userId, groupId);
+                await userService.AddGroupAsync(userId, groupId);
                 return new ApiResponse(InfoMessages.GroupAdded, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -348,7 +349,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                await userService.RemoveGroup(userId, groupId);
+                await userService.RemoveGroupAsync(userId, groupId);
                 return new ApiResponse(InfoMessages.GroupRemoved, null, HttpStatusCode.OK.ToInt());
             }
             catch (Exception ex)
@@ -366,7 +367,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                await userService.AddPost(userId, postId);
+                await userService.AddPostAsync(userId, postId);
                 return new ApiResponse(InfoMessages.PostAdded, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -388,7 +389,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                await userService.RemovePost(userId, postId);
+                await userService.RemovePostAsync(userId, postId);
                 return new ApiResponse(InfoMessages.PostRemoved, null, HttpStatusCode.OK.ToInt());
             }
             catch (Exception ex)
@@ -406,7 +407,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                await userService.AddCustomerOrganization(userId, customerOrganizationId);
+                await userService.AddCustomerOrganizationAsync(userId, customerOrganizationId);
                 return new ApiResponse(InfoMessages.CustomerOrganizationAdded, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -428,7 +429,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                await userService.RemoveCustomerOrganization(userId, customerOrganizationId);
+                await userService.RemoveCustomerOrganizationAsync(userId, customerOrganizationId);
                 return new ApiResponse(InfoMessages.CustomerOrganizationRemoved, null, HttpStatusCode.OK.ToInt());
             }
             catch (Exception ex)
@@ -446,7 +447,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                await userService.AddIssueUrl(userId, issueUrlId);
+                await userService.AddIssueUrlAsync(userId, issueUrlId);
                 return new ApiResponse(InfoMessages.IssueUrlAdded, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -468,7 +469,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                await userService.RemoveIssueUrl(userId, issueUrlId);
+                await userService.RemoveIssueUrlAsync(userId, issueUrlId);
                 return new ApiResponse(InfoMessages.IssueUrlRemoved, null, HttpStatusCode.OK.ToInt());
             }
             catch (Exception ex)

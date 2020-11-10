@@ -1,8 +1,9 @@
-﻿using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
+﻿using Mojito.ServiceDesk.Application.Common.DTOs.Base.In;
+using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.User.In
 {
-    public class GetAllUserParams : IBaseDTOIn
+    public class UsersFilterParams : PaginationParamsDTO, IBaseDTOFilter
     {
         public string GeneralName { get; set; }
 
@@ -15,10 +16,5 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.In
         public int PostId { get; set; }
 
         public bool? IsEmployee { get; set; }
-
-        public int PageNumber { get; set; }
-
-        public int PageSize { get; set; }
-
     }
 }

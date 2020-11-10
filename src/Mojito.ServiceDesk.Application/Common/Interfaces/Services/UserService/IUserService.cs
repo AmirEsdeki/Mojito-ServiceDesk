@@ -18,36 +18,36 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
 
         Task<UserTokenDTO> SignInAsync(SignInDTO arg, string ip);
 
-        Task<UserTokenDTO> RefreshToken(string token, string ipAddress);
+        Task<UserTokenDTO> RefreshTokenAsync(string token, string ipAddress);
 
-        Task<bool> RevokeToken(string token, string ipAddress);
+        Task<bool> RevokeTokenAsync(string token, string ipAddress);
 
-        Task<PaginatedList<GetUserDTO>> GetAll(GetAllUserParams arg);
+        Task<PaginatedList<GetUserDTO>> GetAllAsync(UsersFilterParams arg);
 
-        Task<GetUserDTO> Get(string id);
+        Task<GetUserDTO> GetAsync(string id);
 
-        Task<GuidIdDTO> Create(PostUserDTO arg);
+        Task<GuidIdDTO> CreateAsync(PostUserDTO arg);
 
-        Task Update(string id, PutUserDTO arg);
+        Task UpdateAsync(string id, PutUserDTO arg);
 
-        Task Delete(string id);
+        Task DeleteAsync(string id);
 
-        Task AddGroup(string userId, int groupId);
+        Task AddGroupAsync(string userId, int groupId);
 
-        Task RemoveGroup(string userId, int groupId);
+        Task RemoveGroupAsync(string userId, int groupId);
 
-        Task AddPost(string userId, int postId);
+        Task AddPostAsync(string userId, int postId);
 
-        Task RemovePost(string userId, int postId);
+        Task RemovePostAsync(string userId, int postId);
 
-        Task AddCustomerOrganization(string userId, int customerOrganizationId);
+        Task AddCustomerOrganizationAsync(string userId, int customerOrganizationId);
 
-        Task RemoveCustomerOrganization(string userId, int customerOrganizationId);
+        Task RemoveCustomerOrganizationAsync(string userId, int customerOrganizationId);
 
-        Task AddIssueUrl(string userId, int issueUrlId);
+        Task AddIssueUrlAsync(string userId, int issueUrlId);
 
-        Task RemoveIssueUrl(string userId, int issueUrlId);
+        Task RemoveIssueUrlAsync(string userId, int issueUrlId);
 
-        Task<ICollection<FilteredUsersDTO>> GeneralFilter(string phrase);
+        Task<ICollection<FilteredUsersDTO>> GeneralFilterAsync(string phrase);
     }
 }

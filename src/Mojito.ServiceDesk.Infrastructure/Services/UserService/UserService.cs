@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 {
+    //because userService uses Identity provided service it does not implement IBaseService
     public class UserService : IUserService
     {
         #region ctor
@@ -173,7 +174,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task<bool> RevokeToken(string token, string ipAddress)
+        public async Task<bool> RevokeTokenAsync(string token, string ipAddress)
         {
             var user = db.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
 
@@ -192,7 +193,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             return true;
         }
 
-        public async Task<UserTokenDTO> RefreshToken(string token, string ipAddress)
+        public async Task<UserTokenDTO> RefreshTokenAsync(string token, string ipAddress)
         {
             var user = db.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
 
@@ -220,7 +221,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         #endregion
 
         #region CRUD
-        public async Task<GetUserDTO> Get(string id)
+        public async Task<GetUserDTO> GetAsync(string id)
         {
             var user = await db.Users.FirstOrDefaultAsync(f => f.Id == id);
 
@@ -230,7 +231,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             throw new EntityDoesNotExistException();
         }
 
-        public async Task<PaginatedList<GetUserDTO>> GetAll(GetAllUserParams arg)
+        public async Task<PaginatedList<GetUserDTO>> GetAllAsync(UsersFilterParams arg)
         {
             try
             {
@@ -268,7 +269,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task<GuidIdDTO> Create(PostUserDTO arg)
+        public async Task<GuidIdDTO> CreateAsync(PostUserDTO arg)
         {
             var user = mapper.Map<User>(arg);
             try
@@ -301,7 +302,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task Update(string userId, PutUserDTO arg)
+        public async Task UpdateAsync(string userId, PutUserDTO arg)
         {
             try
             {
@@ -346,7 +347,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
             try
             {
@@ -370,7 +371,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
         #region OtherActions
 
-        public async Task AddGroup(string userId, int groupId)
+        public async Task AddGroupAsync(string userId, int groupId)
         {
             try
             {
@@ -391,7 +392,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task RemoveGroup(string userId, int groupId)
+        public async Task RemoveGroupAsync(string userId, int groupId)
         {
             try
             {
@@ -414,7 +415,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task AddPost(string userId, int postId)
+        public async Task AddPostAsync(string userId, int postId)
         {
             try
             {
@@ -429,7 +430,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task RemovePost(string userId, int postId)
+        public async Task RemovePostAsync(string userId, int postId)
         {
             try
             {
@@ -447,7 +448,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task AddCustomerOrganization(string userId, int customerOrganizationId)
+        public async Task AddCustomerOrganizationAsync(string userId, int customerOrganizationId)
         {
             try
             {
@@ -462,7 +463,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task RemoveCustomerOrganization(string userId, int customerOrganizationId)
+        public async Task RemoveCustomerOrganizationAsync(string userId, int customerOrganizationId)
         {
             try
             {
@@ -480,7 +481,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task AddIssueUrl(string userId, int issueUrlId)
+        public async Task AddIssueUrlAsync(string userId, int issueUrlId)
         {
             try
             {
@@ -501,7 +502,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task RemoveIssueUrl(string userId, int issueUrlId)
+        public async Task RemoveIssueUrlAsync(string userId, int issueUrlId)
         {
             try
             {
@@ -524,7 +525,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task<ICollection<FilteredUsersDTO>> GeneralFilter(string phrase)
+        public async Task<ICollection<FilteredUsersDTO>> GeneralFilterAsync(string phrase)
         {
             try
             {

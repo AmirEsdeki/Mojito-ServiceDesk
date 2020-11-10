@@ -1,25 +1,26 @@
-﻿using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
+﻿using Mojito.ServiceDesk.Application.Common.DTOs.Common;
+using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
 using Mojito.ServiceDesk.Core.Common.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.BaseService
 {
-    public interface IBaseService<Entity, TDTOIn, TDTOOut>
+    public interface IBaseService<Entity, TDTOPost, TDTOPut, TDTOGet , TDTOFilter>
         where Entity : class, IBaseEntity
-        where TDTOIn : class, IBaseDTOIn
-        where TDTOOut : class, IBaseDTOOut
+        where TDTOPost : class, IBaseDTOPost
+        where TDTOPut : class, IBaseDTOPut
+        where TDTOGet : class, IBaseDTOGet
+        where TDTOFilter : class, IBaseDTOFilter
     {
-        Task<TDTOOut> GetAsync(int id);
+        Task<TDTOGet> GetAsync(int id);
 
-        Task<IEnumerable<TDTOOut>> GetAllAsync(Expression<Func<Entity, bool>> predicate);
+        Task<PaginatedList<TDTOGet>> GetAllAsync(TDTOFilter arg);
 
-        Task<TDTOOut> CreateAsync(TDTOIn entity);
+        Task<TDTOGet> CreateAsync(TDTOPost entity);
 
-        Task UpdateAsync(int id, TDTOIn entity);
+        Task UpdateAsync(int id, TDTOPut entity);
 
-        Task DeleteAsync(int Id, bool isHard);
+        Task DeleteAsync(int Id, bool isHard = false);
     }
 }

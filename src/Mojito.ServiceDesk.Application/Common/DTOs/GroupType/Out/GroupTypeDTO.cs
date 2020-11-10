@@ -4,7 +4,7 @@ using Mojito.ServiceDesk.Application.Common.Mappings;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.GroupType.Out
 {
-    public class GroupTypeDTO : BaseDTOOut, IMapFrom<Core.Entities.Identity.GroupType>
+    public class GroupTypeDTO : BaseDTOGet, IMapFrom<Core.Entities.Identity.GroupType>
     {
         public string Title { get; set; }
 

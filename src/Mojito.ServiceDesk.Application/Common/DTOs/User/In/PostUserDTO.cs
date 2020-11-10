@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.User.In
 {
-    public class PostUserDTO : BaseDTOIn, IMapFrom<Core.Entities.Identity.User>
+    public class PostUserDTO : BaseDTOPost, IMapFrom<Core.Entities.Identity.User>
     {
         [Required]
         [StringLength(255)]

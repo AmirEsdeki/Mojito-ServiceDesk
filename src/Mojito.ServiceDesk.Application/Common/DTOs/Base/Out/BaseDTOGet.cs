@@ -3,7 +3,7 @@ using System;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Base.Out
 {
-    public abstract class BaseDTOOut : IBaseDTOOut
+    public abstract class BaseDTOGet : IBaseDTOGet
     {
         //taking the Id long for all output classes because we have both int and long Id 
         //and for mapping it is consumed to be ok in terms of perfomance.

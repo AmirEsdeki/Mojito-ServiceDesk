@@ -1,8 +1,9 @@
-﻿using System;
+﻿
+using System;
 
 namespace Mojito.ServiceDesk.Application.Common.Interfaces.DTOs
 {
-    public interface IBaseDTOOut
+    public interface IBaseDTOGet
     {
         public long Id { get; set; }
 
