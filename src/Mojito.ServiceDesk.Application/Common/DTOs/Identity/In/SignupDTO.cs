@@ -36,6 +36,9 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
         [StringLength(255)]
         public string LastName { get; set; }
 
+        [Required]
+        [Range(0,300)]
+        public int CustomerOrganizationId { get; set; }
 
         public void Mapping(Profile profile)
         {

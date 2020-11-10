@@ -55,7 +55,6 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Common
             }
             catch (Exception ex)
             {
-
                 throw;
             }
             

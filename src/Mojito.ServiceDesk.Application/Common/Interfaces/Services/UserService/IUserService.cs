@@ -3,6 +3,7 @@ using Mojito.ServiceDesk.Application.Common.DTOs.Identity.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.Identity.Out;
 using Mojito.ServiceDesk.Application.Common.DTOs.User.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.User.Out;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
@@ -46,5 +47,7 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
         Task AddIssueUrl(string userId, int issueUrlId);
 
         Task RemoveIssueUrl(string userId, int issueUrlId);
+
+        Task<ICollection<FilteredUsersDTO>> GeneralFilter(string phrase);
     }
 }

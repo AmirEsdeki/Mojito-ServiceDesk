@@ -231,7 +231,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GuidIdDTO>), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GuidIdDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Post([FromBody] PostUserDTO arg)
@@ -239,7 +239,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 var userId = await userService.Create(arg);
-                return new ApiResponse(InfoMessages.UserCreatedByAdmin, userId, HttpStatusCode.Created.ToInt());
+                return new ApiResponse(InfoMessages.UserCreatedByAdmin, userId, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
             {
@@ -306,6 +306,16 @@ namespace Mojito.ServiceDesk.Web.Controllers
 
 
         #region OtherActions
+
+        [HttpPost]
+        [Route("{phrase}/filter")]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<FilteredUsersDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> Filter(string phrase)
+        {
+                var users = await userService.GeneralFilter(phrase);
+                return new ApiResponse(users, HttpStatusCode.OK.ToInt());
+        }
 
         [HttpPut]
         [Route("{userId}/add-group/{groupId}")]

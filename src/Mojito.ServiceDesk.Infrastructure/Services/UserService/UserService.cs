@@ -523,6 +523,27 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 //this method fires and then forgets, it is assumed that no exception has accoured;
             }
         }
+
+        public async Task<ICollection<FilteredUsersDTO>> GeneralFilter(string phrase)
+        {
+            try
+            {
+                var user = await db.Users
+                    .Where(w => w.UserName.StartsWith(phrase)
+                        || w.FirstName.StartsWith(phrase)
+                        || w.LastName.StartsWith(phrase)
+                        || w.PhoneNumber.StartsWith(phrase)
+                        || w.Email.StartsWith(phrase)
+                        || (new StringBuilder().Append(w.FirstName).Append(" ").Append(w.LastName).ToString()).StartsWith(phrase))
+                    .ToListAsync();
+
+                return mapper.Map<ICollection<FilteredUsersDTO>>(user);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #endregion
 
         #region private
