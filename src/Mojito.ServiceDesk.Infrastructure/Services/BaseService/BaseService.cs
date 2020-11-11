@@ -5,7 +5,6 @@ using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.BaseService;
 using Mojito.ServiceDesk.Core.Common.Interfaces;
-using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 using System;
 using System.Linq;
@@ -59,7 +58,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             try
             {
                 var entity = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == id);
-                if(entity == null)
+                if (entity == null)
                     throw new EntityDoesNotExistException();
 
                 var dto = mapper.Map<TDTOGet>(entity);

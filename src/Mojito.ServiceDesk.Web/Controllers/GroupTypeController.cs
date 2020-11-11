@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Mojito.ServiceDesk.Application.Common.Constants.Messages;
 using Mojito.ServiceDesk.Application.Common.DTOs.Common;
-using Mojito.ServiceDesk.Application.Common.DTOs.Group.In;
-using Mojito.ServiceDesk.Application.Common.DTOs.Group.Out;
+using Mojito.ServiceDesk.Application.Common.DTOs.GroupType.In;
+using Mojito.ServiceDesk.Application.Common.DTOs.GroupType.Out;
 using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Extensions;
-using Mojito.ServiceDesk.Application.Common.Interfaces.Services.GroupService;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.GroupTypeService;
 using Mojito.ServiceDesk.Web.Modules.AutoWrapper;
 using System;
 using System.Collections.Generic;
@@ -19,31 +19,31 @@ namespace Mojito.ServiceDesk.Web.Controllers
     //[Authorize(Roles ="user")]
     [ApiController]
     [Route("[controller]")]
-    public class GroupsController : ControllerBase
+    public class GroupTypeController : ControllerBase
     {
         #region ctor
-        private readonly ILogger<GroupsController> logger;
-        private readonly IGroupService groupService;
+        private readonly ILogger<GroupTypeController> logger;
+        private readonly IGroupTypeService groupTypeService;
 
-        public GroupsController(ILogger<GroupsController> logger,
-            IGroupService groupService)
+        public GroupTypeController(ILogger<GroupTypeController> logger,
+            IGroupTypeService groupTypeService)
         {
             this.logger = logger;
-            this.groupService = groupService;
+            this.groupTypeService = groupTypeService;
         }
         #endregion
 
         #region CRUD
         [HttpGet]
         [Route("{id}")]
-        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GetGroupDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GetGroupTypeDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Get(int id)
         {
             try
             {
-                var data = await groupService.GetAsync(id);
+                var data = await groupTypeService.GetAsync(id);
                 return new ApiResponse(data, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -57,13 +57,13 @@ namespace Mojito.ServiceDesk.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(AutoWrapperResponseSchema<PaginatedList<GetGroupDTO>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<PaginatedList<GetGroupTypeDTO>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> Get([FromQuery] GroupsFilterParams arg)
+        public async Task<ApiResponse> Get([FromQuery] GroupTypesFilterParams arg)
         {
             try
             {
-                var data = await groupService.GetAllAsync(arg);
+                var data = await groupTypeService.GetAllAsync(arg);
                 return new ApiResponse(data, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
@@ -77,15 +77,15 @@ namespace Mojito.ServiceDesk.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GetGroupDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GetGroupTypeDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> Post([FromBody] PostGroupDTO arg)
+        public async Task<ApiResponse> Post([FromBody] PostGroupTypeDTO arg)
         {
             try
             {
-                var data = await groupService.CreateAsync(arg);
-                return new ApiResponse(InfoMessages.GroupAdded, data, HttpStatusCode.OK.ToInt());
+                var data = await groupTypeService.CreateAsync(arg);
+                return new ApiResponse(InfoMessages.GroupTypeAdded, data, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
             {
@@ -107,12 +107,12 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> Put(int id, [FromBody] PutGroupDTO arg)
+        public async Task<ApiResponse> Put(int id, [FromBody] PutGroupTypeDTO arg)
         {
             try
             {
-                await groupService.UpdateAsync(id, arg);
-                return new ApiResponse(InfoMessages.GroupUpdated, null, HttpStatusCode.OK.ToInt());
+                await groupTypeService.UpdateAsync(id, arg);
+                return new ApiResponse(InfoMessages.GroupTypeUpdated, null, HttpStatusCode.OK.ToInt());
             }
             catch (ValidationException ex)
             {
@@ -137,8 +137,8 @@ namespace Mojito.ServiceDesk.Web.Controllers
         {
             try
             {
-                await groupService.DeleteAsync(id);
-                return new ApiResponse(InfoMessages.GroupRemoved, null, HttpStatusCode.OK.ToInt());
+                await groupTypeService.DeleteAsync(id);
+                return new ApiResponse(InfoMessages.GroupTypeRemoved, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
             {
@@ -158,7 +158,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Filter(string phrase)
         {
-            ICollection< KeyValueDTO> users = await groupService.FilterAsync(phrase);
+            ICollection<KeyValueDTO> users = await groupTypeService.FilterAsync(phrase);
             return new ApiResponse(users, HttpStatusCode.OK.ToInt());
         }
         #endregion

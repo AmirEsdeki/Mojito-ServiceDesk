@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mojito.ServiceDesk.Applicat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mojito.ServiceDesk.Web", "src\Mojito.ServiceDesk.Web\Mojito.ServiceDesk.Web.csproj", "{6C38A988-8E1F-4CE7-82B9-6F5B5BC83FC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mojito.ServiceDesk.Infrastructure.Test", "test\Mojito.ServiceDesk.Infrastructure.Test\Mojito.ServiceDesk.Infrastructure.Test.csproj", "{0542B99A-F26E-4616-9608-92039E58A5EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mojito.ServiceDesk.Infrastructure.Test", "test\Mojito.ServiceDesk.Infrastructure.Test\Mojito.ServiceDesk.Infrastructure.Test.csproj", "{0542B99A-F26E-4616-9608-92039E58A5EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

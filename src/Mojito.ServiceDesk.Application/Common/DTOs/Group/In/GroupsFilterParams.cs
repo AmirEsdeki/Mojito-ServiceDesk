@@ -5,10 +5,9 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Group.In
 {
     public class GroupsFilterParams : PaginationParamsDTO, IBaseDTOFilter
     {
-
         public string Name { get; set; }
 
-        public int GroupTypeId { get; set; }
+        public int? GroupTypeId { get; set; }
     }
 
 }

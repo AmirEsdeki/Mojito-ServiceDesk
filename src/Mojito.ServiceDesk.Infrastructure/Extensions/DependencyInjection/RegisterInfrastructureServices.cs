@@ -7,8 +7,10 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.BaseService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.Common;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.CustomerOrganizationService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.GroupService;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.GroupTypeService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.PostService;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.ProductService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.RoleService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
@@ -22,8 +24,10 @@ using Mojito.ServiceDesk.Infrastructure.Services.BaseService;
 using Mojito.ServiceDesk.Infrastructure.Services.Common;
 using Mojito.ServiceDesk.Infrastructure.Services.CustomerOrganizationService;
 using Mojito.ServiceDesk.Infrastructure.Services.GroupService;
+using Mojito.ServiceDesk.Infrastructure.Services.GroupTypeService;
 using Mojito.ServiceDesk.Infrastructure.Services.JWTService;
 using Mojito.ServiceDesk.Infrastructure.Services.PostService;
+using Mojito.ServiceDesk.Infrastructure.Services.ProductService;
 using Mojito.ServiceDesk.Infrastructure.Services.RoleService;
 using Mojito.ServiceDesk.Infrastructure.Services.SendMessagesService;
 using Mojito.ServiceDesk.Infrastructure.Services.UserService;
@@ -86,6 +90,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             services.AddTransient<IPostService, PostService>();
             services.AddTransient<ICustomerOrganizationService, CustomerOrganizationService>();
             services.AddTransient<IGroupService, GroupService>();
+            services.AddTransient<IGroupTypeService, GroupTypeService>();
+            services.AddTransient<IProductService, ProductService>();
 
 
             return services;

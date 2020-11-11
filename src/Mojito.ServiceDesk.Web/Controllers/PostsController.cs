@@ -26,10 +26,10 @@ namespace Mojito.ServiceDesk.Web.Controllers
         private readonly IPostService postService;
 
         public PostsController(ILogger<PostsController> logger,
-            IPostService userService)
+            IPostService postService)
         {
             this.logger = logger;
-            this.postService = userService;
+            this.postService = postService;
         }
         #endregion
 

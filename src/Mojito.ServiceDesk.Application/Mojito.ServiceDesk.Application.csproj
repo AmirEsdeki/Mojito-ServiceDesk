@@ -16,13 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\DTOs\GroupType\In\" />
-    <Folder Include="Common\DTOs\IssueUrl\In\" />
-    <Folder Include="Common\DTOs\Product\In\" />
     <Folder Include="Common\DTOs\ProfileImage\In\" />
     <Folder Include="Common\DTOs\Role\Out\" />
-    <Folder Include="Common\DTOs\UserGroup\In\" />
-    <Folder Include="Common\DTOs\UserGroup\Out\" />
   </ItemGroup>
 
 </Project>

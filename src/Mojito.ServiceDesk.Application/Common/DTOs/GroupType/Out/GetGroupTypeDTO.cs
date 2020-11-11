@@ -4,7 +4,7 @@ using Mojito.ServiceDesk.Application.Common.Mappings;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.GroupType.Out
 {
-    public class GroupTypeDTO : BaseDTOGet, IMapFrom<Core.Entities.Identity.GroupType>
+    public class GetGroupTypeDTO : BaseDTOGet, IMapFrom<Core.Entities.Identity.GroupType>
     {
         public string Title { get; set; }
 
@@ -12,7 +12,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.GroupType.Out
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Core.Entities.Identity.GroupType, GroupTypeDTO>()
+            profile.CreateMap<Core.Entities.Identity.GroupType, GetGroupTypeDTO>()
                 .ForMember(dest => dest.GroupsCount, opt => opt.MapFrom(src => src.Groups != null ? src.Groups.Count : 0));
         }
     }

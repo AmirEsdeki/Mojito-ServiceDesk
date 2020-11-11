@@ -46,6 +46,16 @@
 
         public static string EntityDeleted => "مورد با موفقیت حذف شد.";
 
-        
+        public static string ProductAdded => "محصول با موفقیت اضافه شد.";
+
+        public static string ProductUpdated => "محصول با موفقیت ویرایش شد.";
+
+        public static string ProductRemoved => "محصول با موفقیت حذف شد.";
+
+        public static string GroupTypeAdded => "نوع گروه با موفقیت اضافه شد.";
+
+        public static string GroupTypeUpdated => "نوع گروه با موفقیت ویرایش شد.";
+
+        public static string GroupTypeRemoved => "نوع گروه با موفقیت حذف شد.";
     }
 }
