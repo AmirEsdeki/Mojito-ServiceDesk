@@ -104,7 +104,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
 
         protected virtual IQueryable<Entity> GetAllAsync(Expression<Func<Entity, bool>> predicate = null)
         {
-            var entities = db.Set<Entity>().Where(predicate);
+            var entities = predicate is null ? db.Set<Entity>() : db.Set<Entity>().Where(predicate);
             return entities;
         }
 

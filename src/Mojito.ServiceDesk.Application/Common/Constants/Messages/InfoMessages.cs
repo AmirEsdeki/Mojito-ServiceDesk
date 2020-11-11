@@ -22,6 +22,8 @@
 
         public static string GroupAdded => "گروه با موفقیت اضافه شد.";
 
+        public static string GroupUpdated => "گروه با موفقیت ویرایش شد.";
+
         public static string GroupRemoved => "گروه با موفقیت حذف شد.";
 
         public static string PostAdded => "سمت با موفقیت اضافه شد.";
@@ -32,6 +34,8 @@
 
         public static string CustomerOrganizationAdded => "شرکت مشتری با موفقیت اضافه شد.";
 
+        public static string CustomerOrganizationUpdated => "شرکت مشتری با موفقیت ویرایش شد.";
+
         public static string CustomerOrganizationRemoved => "شرکت مشتری با موفقیت حذف شد.";
 
         public static string IssueUrlAdded => "آدرس سامانه با موفقیت اضافه شد.";
@@ -41,5 +45,7 @@
         public static string EntityUpdated => "مورد با موفقیت ویرایش شد.";
 
         public static string EntityDeleted => "مورد با موفقیت حذف شد.";
+
+        
     }
 }

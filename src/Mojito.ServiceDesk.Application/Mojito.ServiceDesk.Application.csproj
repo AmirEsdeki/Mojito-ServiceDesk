@@ -16,9 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\DTOs\CustomerOrganization\In\" />
     <Folder Include="Common\DTOs\GroupType\In\" />
-    <Folder Include="Common\DTOs\Group\In\" />
     <Folder Include="Common\DTOs\IssueUrl\In\" />
     <Folder Include="Common\DTOs\Product\In\" />
     <Folder Include="Common\DTOs\ProfileImage\In\" />

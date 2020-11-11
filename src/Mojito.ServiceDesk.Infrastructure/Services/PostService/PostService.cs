@@ -30,7 +30,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.PostService
             {
                 arg.Title ??= string.Empty;
 
-                var query = GetAllAsync(post => post.Title.StartsWith(arg.Title));
+                var query = GetAllAsync(data => data.Title.StartsWith(arg.Title) 
+                    || data.Title.Contains(arg.Title));
 
                 var list = await new PaginatedListBuilder<Post, GetPostDTO>(mapper)
                     .CreateAsync(query, arg.PageNumber, arg.PageSize);
@@ -48,7 +49,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.PostService
 
         public async Task<ICollection<KeyValueDTO>> FilterAsync(string phrase)
         {
-            var filteredData = await GetAllAsync(data => data.Title.StartsWith(phrase)).ToListAsync();
+            var filteredData = await GetAllAsync(data => data.Title.StartsWith(phrase)
+                || data.Title.Contains(phrase))
+                .ToListAsync();
             return filteredData.Select(s => new KeyValueDTO(s.Id, s.Title)).ToList();
         }
         #endregion

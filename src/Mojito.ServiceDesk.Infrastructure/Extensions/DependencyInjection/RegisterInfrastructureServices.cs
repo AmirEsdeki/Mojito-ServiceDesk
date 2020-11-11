@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Common;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.BaseService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.Common;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.CustomerOrganizationService;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.GroupService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.PostService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.RoleService;
@@ -18,6 +20,8 @@ using Mojito.ServiceDesk.Infrastructure.Interfaces;
 using Mojito.ServiceDesk.Infrastructure.Modules;
 using Mojito.ServiceDesk.Infrastructure.Services.BaseService;
 using Mojito.ServiceDesk.Infrastructure.Services.Common;
+using Mojito.ServiceDesk.Infrastructure.Services.CustomerOrganizationService;
+using Mojito.ServiceDesk.Infrastructure.Services.GroupService;
 using Mojito.ServiceDesk.Infrastructure.Services.JWTService;
 using Mojito.ServiceDesk.Infrastructure.Services.PostService;
 using Mojito.ServiceDesk.Infrastructure.Services.RoleService;
@@ -62,7 +66,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
 
                 // User settings.
                 options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+!";
                 options.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<ApplicationDBContext>()
@@ -75,12 +79,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             services.AddScoped<IHttpService, HttpService>();
             services.AddScoped<IAppUser, AppUser>();
 
-            //services.AddTransient(typeof(IBaseService<,,,,>), typeof(BaseService<,,,,>));
             services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IEndPointAddresses, ExternalServiceEndPoints>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IPostService, PostService>();
+            services.AddTransient<ICustomerOrganizationService, CustomerOrganizationService>();
+            services.AddTransient<IGroupService, GroupService>();
 
 
             return services;
