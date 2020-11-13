@@ -24,13 +24,9 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.Out
         {
             profile.CreateMap<Core.Entities.Ticketing.IssueUrl, GetIssueUrlDTO>()
                 .ForMember(dest => dest.UsersCount, opt => opt.MapFrom(src => src.Users != null ? src.Users.Count : 0))
-                .ForMember(dest => dest.FirstUser, opt => 
-                    opt.MapFrom(src => src.Users != null ? 
-                    new StringBuilder()
-                    .Append(src.Users.FirstOrDefault().User.FirstName)
-                    .Append(" ")
-                    .Append(src.Users.FirstOrDefault().User.FirstName)
-                    .ToString()
+                .ForMember(dest => dest.FirstUser, opt =>
+                    opt.MapFrom(src => src.Users != null ?
+                        src.Users.FirstOrDefault().User.FullName
                     : string.Empty));
         }
     }

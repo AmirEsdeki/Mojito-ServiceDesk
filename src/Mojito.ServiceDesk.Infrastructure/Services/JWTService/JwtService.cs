@@ -39,11 +39,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, rolesObj[0]),
-                    new Claim("FullName",
-                        new StringBuilder().Append(user.FirstName)
-                            .Append(" ")
-                            .Append(user.LastName)
-                            .ToString()),
+                    new Claim("FullName", user.FullName),
                     new Claim("IsVerified", user.PhoneNumberConfirmed.ToString())
                 }),
                 Expires = DateTime.Now.AddMinutes(30),

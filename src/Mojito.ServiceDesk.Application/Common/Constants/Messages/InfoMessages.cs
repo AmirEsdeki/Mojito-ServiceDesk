@@ -40,6 +40,8 @@
 
         public static string IssueUrlAdded => "آدرس سامانه با موفقیت اضافه شد.";
 
+        public static string IssueUrlUpdated => "آدرس سامانه با موفقیت ویرایش شد.";
+
         public static string IssueUrlRemoved => "آدرس سامانه با موفقیت حذف شد.";
 
         public static string EntityUpdated => "مورد با موفقیت ویرایش شد.";
@@ -57,5 +59,21 @@
         public static string GroupTypeUpdated => "نوع گروه با موفقیت ویرایش شد.";
 
         public static string GroupTypeRemoved => "نوع گروه با موفقیت حذف شد.";
+
+        public static string PriorityAdded => "اولویت با موفقیت اضافه شد.";
+
+        public static string PriorityUpdated => "اولویت با موفقیت ویرایش شد.";
+
+        public static string PriorityRemoved => "اولویت با موفقیت حذف شد.";
+
+        public static string TicketIssueAdded => "موضوع با موفقیت اضافه شد.";
+
+        public static string TicketIssueUpdated => "موضوع با موفقیت ویرایش شد.";
+
+        public static string TicketIssueRemoved => "موضوع با موفقیت حذف شد.";
+
+        public static string TicketLabelAdded { get; set; }
+        public static string TicketLabelUpdated { get; set; }
+        public static string TicketLabelRemoved { get; set; }
     }
 }

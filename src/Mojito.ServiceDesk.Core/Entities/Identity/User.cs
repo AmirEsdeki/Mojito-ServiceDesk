@@ -3,7 +3,7 @@ using Mojito.ServiceDesk.Core.Common.Interfaces;
 using Mojito.ServiceDesk.Core.Entities.Ticketing;
 using System;
 using System.Collections.Generic;
-
+using System.Text;
 
 namespace Mojito.ServiceDesk.Core.Entities.Identity
 {
@@ -12,6 +12,12 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
+        public string FullName => new StringBuilder()
+            .Append(this.FirstName)
+            .Append(" ")
+            .Append(this.LastName)
+            .ToString();
 
         public bool IsEmployee { get; set; }
 

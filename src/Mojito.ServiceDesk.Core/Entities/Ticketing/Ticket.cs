@@ -12,6 +12,8 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 
         public string Title { get; set; }
 
+        public bool IsClosed { get; set; }
+
         #region relations
         public string OpenedById { get; set; }
         public virtual User OpenedBy { get; set; }

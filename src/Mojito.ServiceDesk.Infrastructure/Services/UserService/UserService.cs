@@ -239,7 +239,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                     query = query.Where(w => w.UserName.StartsWith(arg.GeneralName)
                         || w.Email.StartsWith(arg.GeneralName)
                         || w.PhoneNumber.StartsWith(arg.GeneralName)
-                        || (w.FirstName + "" + w.LastName).StartsWith(arg.GeneralName));
+                        || w.FullName.Contains(arg.GeneralName));
 
                 if (arg.GroupId != 0)
                     query = query.Where(w => w.Groups.Any(a => a.GroupId == arg.GroupId));
@@ -533,7 +533,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                         || w.LastName.StartsWith(phrase)
                         || w.PhoneNumber.StartsWith(phrase)
                         || w.Email.StartsWith(phrase)
-                        || (new StringBuilder().Append(w.FirstName).Append(" ").Append(w.LastName).ToString()).StartsWith(phrase))
+                        || w.FullName.Contains(phrase))
                     .ToListAsync();
 
                 return mapper.Map<ICollection<FilteredUsersDTO>>(user);

@@ -12,6 +12,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.EntityConfigurations
 
             entity.HasKey(k => k.Id);
 
+            entity.Ignore(i => i.FullName);
+
             entity.HasQueryFilter(p => !p.IsDeleted);
 
         }
