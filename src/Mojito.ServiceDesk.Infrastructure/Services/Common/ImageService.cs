@@ -18,7 +18,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.Common
 
                     using (var ms = new MemoryStream())
                     {
-                        scaledImage.Save(ms, scaledImage.RawFormat);
+                        scaledImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                         return ms.ToArray();
                     }
 

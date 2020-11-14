@@ -12,6 +12,7 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.PostService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.PriorityService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.ProductService;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.ProfileImageService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.RoleService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketIssueService;
@@ -33,6 +34,7 @@ using Mojito.ServiceDesk.Infrastructure.Services.JWTService;
 using Mojito.ServiceDesk.Infrastructure.Services.PostService;
 using Mojito.ServiceDesk.Infrastructure.Services.PriorityService;
 using Mojito.ServiceDesk.Infrastructure.Services.ProductService;
+using Mojito.ServiceDesk.Infrastructure.Services.ProfileImageService;
 using Mojito.ServiceDesk.Infrastructure.Services.RoleService;
 using Mojito.ServiceDesk.Infrastructure.Services.SendMessagesService;
 using Mojito.ServiceDesk.Infrastructure.Services.TicketIssueService;
@@ -92,6 +94,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IHttpService, HttpService>();
             services.AddScoped<IAppUser, AppUser>();
+            services.AddScoped<IImageService, ImageService>();
 
             services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IEndPointAddresses, ExternalServiceEndPoints>();
@@ -107,6 +110,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             services.AddTransient<ITicketIssueService, TicketIssueService>();
             services.AddTransient<ITicketLabelService, TicketLabelService>();
             services.AddTransient<ITicketStatusService, TicketStatusService>();
+            services.AddTransient<IProfileImageService, ProfileImageService>();
+
 
             return services;
         }
