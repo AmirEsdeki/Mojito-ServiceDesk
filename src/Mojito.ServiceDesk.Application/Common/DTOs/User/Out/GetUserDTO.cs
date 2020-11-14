@@ -35,7 +35,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
         #region relations
         public PostDTO_Cross Post { get; set; }
 
-        public GetCustomerOrganizationDTO_Cross CustomerOrganization { get; set; }
+        public CustomerOrganizationDTO_Cross CustomerOrganization { get; set; }
 
         public ProfileImageDTO_Cross ProfileImage { get; set; }
 

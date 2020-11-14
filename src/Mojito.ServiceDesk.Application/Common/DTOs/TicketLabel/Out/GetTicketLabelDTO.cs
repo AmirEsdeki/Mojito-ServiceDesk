@@ -10,9 +10,11 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.TicketLabel.Out
     {
         public string Title { get; set; }
 
+        public string Color { get; set; }
+
         public int TicketsCount { get; set; }
 
-        public GetCustomerOrganizationDTO_Cross CustomerOrganization { get; set; }
+        public CustomerOrganizationDTO_Cross CustomerOrganization { get; set; }
 
 
         public void Mapping(Profile profile)
@@ -26,6 +28,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.TicketLabel.Out
     public class TicketLabelDTO_Cross : BaseDTOOut_Cross, IMapFrom<Core.Entities.Ticketing.TicketLabel>
     {
         public string Title { get; set; }
+
+        public string Color { get; set; }
 
         public void Mapping(Profile profile)
         {

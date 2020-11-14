@@ -11,6 +11,9 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.TicketLabel.In
         [StringLength(255)]
         public string Title { get; set; }
 
+        [StringLength(255)]
+        public string Color { get; set; }
+
         [Required]
         public int CustomerOrganizationId { get; set; }
 

@@ -83,5 +83,9 @@
         public static string TicketStatusUpdated => "وضعیت تیکت با موفقیت ویرایش شد.";
 
         public static string TicketStatusRemoved => "وضعیت تیکت با موفقیت حذف شد.";
+
+        public static string ProfileImageAdded => "آواتار با موفقیت اضافه شد.";
+
+        public static string ProfileImageRemoved => "آواتار با موفقیت حذف شد.";
     }
 }

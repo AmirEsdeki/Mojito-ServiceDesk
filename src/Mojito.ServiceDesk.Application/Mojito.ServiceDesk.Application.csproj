@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\DTOs\ProfileImage\In\" />
     <Folder Include="Common\DTOs\Role\Out\" />
   </ItemGroup>
 

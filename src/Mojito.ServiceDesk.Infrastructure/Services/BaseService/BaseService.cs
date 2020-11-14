@@ -58,6 +58,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             try
             {
                 var entity = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == id);
+
                 if (entity == null)
                     throw new EntityDoesNotExistException();
 
@@ -83,9 +84,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             return dto;
         }
 
-        public virtual async Task DeleteAsync(int Id, bool isHard = false)
+        public virtual async Task DeleteAsync(int id, bool isHard = false)
         {
-            var entity = db.Set<Entity>().Where(x => x.Id == Id).FirstOrDefault();
+            var entity = await db.Set<Entity>().FirstOrDefaultAsync(x => x.Id == id);
             if (entity != null)
             {
                 if (isHard)
@@ -112,6 +113,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             try
             {
                 var entityInDb = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == id);
+
                 if (entityInDb == null)
                     throw new EntityDoesNotExistException();
 

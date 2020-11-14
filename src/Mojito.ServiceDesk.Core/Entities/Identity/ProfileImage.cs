@@ -6,7 +6,12 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
     {
         public byte[] Image { get; set; }
 
+        public byte[] ImageThumbnail { get; set; }
+
+        public string ContentType { get; set; }
+
         #region relation
+        public string UserId { get; set; }
         public virtual User User { get; set; }
         #endregion
     }

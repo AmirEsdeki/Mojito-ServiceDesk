@@ -10,7 +10,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Product.Out
         public string Name { get; set; }
 
         #region relations
-        public virtual GetCustomerOrganizationDTO_Cross Customer { get; set; }
+        public virtual CustomerOrganizationDTO_Cross Customer { get; set; }
         #endregion
 
         public void Mapping(Profile profile)
@@ -24,7 +24,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Product.Out
         public string Name { get; set; }
 
         #region relations
-        public virtual GetCustomerOrganizationDTO_Cross Customer { get; set; }
+        public virtual CustomerOrganizationDTO_Cross Customer { get; set; }
         #endregion
 
         public void Mapping(Profile profile)

@@ -20,13 +20,13 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.CustomerOrganization.Out
         }
     }
 
-    public class GetCustomerOrganizationDTO_Cross : BaseDTOOut_Cross, IMapFrom<Core.Entities.Identity.CustomerOrganization>
+    public class CustomerOrganizationDTO_Cross : BaseDTOOut_Cross, IMapFrom<Core.Entities.Identity.CustomerOrganization>
     {
         public string Name { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Core.Entities.Identity.CustomerOrganization, GetCustomerOrganizationDTO_Cross>();
+            profile.CreateMap<Core.Entities.Identity.CustomerOrganization, CustomerOrganizationDTO_Cross>();
         }
     }
 }

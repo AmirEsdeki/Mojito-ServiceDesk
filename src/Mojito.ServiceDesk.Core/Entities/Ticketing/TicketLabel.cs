@@ -8,6 +8,8 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
     {
         public string Title { get; set; }
 
+        public string Color { get; set; }
+
         #region relations
         public int? CustomerOrganizationId { get; set; }
         public virtual CustomerOrganization CustomerOrganization { get; set; }

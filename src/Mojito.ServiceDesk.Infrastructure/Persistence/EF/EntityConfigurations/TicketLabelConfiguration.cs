@@ -14,6 +14,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.EntityConfigurations
 
             entity.Property(b => b.Title).HasMaxLength(255);
 
+            entity.Property(b => b.Color).HasMaxLength(255);
+
             entity.HasQueryFilter(p => !p.IsDeleted);
         }
     }

@@ -35,7 +35,6 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
         public int? CustomerOrganizationId { get; set; }
         public virtual CustomerOrganization CustomerOrganization { get; set; }
 
-        public int? ProfileImageId { get; set; }
         public virtual ProfileImage ProfileImage { get; set; }
 
         public virtual ICollection<UserGroup> Groups { get; set; }

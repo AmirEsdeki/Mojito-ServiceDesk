@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 
 namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201114145230_deleteBehaviourofprofileimage")]
+    partial class deleteBehaviourofprofileimage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -323,14 +325,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     b.Property<Guid?>("LastModifiedById")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("ProfileImage","identity");
                 });
@@ -445,6 +440,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     b.Property<int?>("PostId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ProfileImageId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -468,6 +466,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex("PostId");
+
+                    b.HasIndex("ProfileImageId")
+                        .IsUnique()
+                        .HasFilter("[ProfileImageId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers","identity");
                 });
@@ -807,10 +809,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -1002,13 +1000,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Identity.ProfileImage", b =>
-                {
-                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.User", "User")
-                        .WithOne("ProfileImage")
-                        .HasForeignKey("Mojito.ServiceDesk.Core.Entities.Identity.ProfileImage", "UserId");
-                });
-
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Identity.RefreshToken", b =>
                 {
                     b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.User", "User")
@@ -1025,6 +1016,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.Post", "Post")
                         .WithMany("Users")
                         .HasForeignKey("PostId");
+
+                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.ProfileImage", "ProfileImage")
+                        .WithOne("User")
+                        .HasForeignKey("Mojito.ServiceDesk.Core.Entities.Identity.User", "ProfileImageId");
                 });
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Identity.UserGroup", b =>
