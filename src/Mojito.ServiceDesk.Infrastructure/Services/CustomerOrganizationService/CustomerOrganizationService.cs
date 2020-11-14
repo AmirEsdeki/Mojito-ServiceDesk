@@ -29,10 +29,11 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.CustomerOrganizationService
         {
             try
             {
-                arg.Name ??= string.Empty;
+                var query = GetAllAsync();
 
-                var query = GetAllAsync(data => data.Name.StartsWith(arg.Name) 
-                || data.Name.Contains(arg.Name));
+                if (arg.Name != null)
+                    query = query.Where(data => data.Name.StartsWith(arg.Name)
+                        || data.Name.Contains(arg.Name));
 
                 var list = await new PaginatedListBuilder<CustomerOrganization, GetCustomerOrganizationDTO>(mapper)
                     .CreateAsync(query, arg.PageNumber, arg.PageSize);

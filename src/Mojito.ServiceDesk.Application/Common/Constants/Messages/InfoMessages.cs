@@ -87,5 +87,9 @@
         public static string ProfileImageAdded => "آواتار با موفقیت اضافه شد.";
 
         public static string ProfileImageRemoved => "آواتار با موفقیت حذف شد.";
+
+        public static string ConversationAdded => "پیام شما با موفقیت ثبت شد.";
+
+        public static string ConversationRemoved => "پیام با موفقیت حذف شد.";
     }
 }

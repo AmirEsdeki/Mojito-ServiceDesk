@@ -2,8 +2,12 @@
 {
     public interface IAppUser
     {
-        public string Roles { get; set; }
+        public string[] Roles { get; set; }
+
         public string Id { get; set; }
+
         public string IsVerified { get; set; }
+
+        public bool IsEmployee { get; set; }
     }
 }

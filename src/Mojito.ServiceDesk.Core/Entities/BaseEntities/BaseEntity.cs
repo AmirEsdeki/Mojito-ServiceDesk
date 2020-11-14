@@ -9,9 +9,7 @@ namespace Mojito.ServiceDesk.Core.Entities.BaseEntities
 
         public DateTime Created { get; set; }
 
-
         public DateTime? LastModified { get; set; }
-
 
         public bool IsDeleted { get; set; }
 

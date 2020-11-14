@@ -5,6 +5,8 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 {
     public class Conversation : BaseEntity
     {
+        new public long Id { get; set; }
+
         public string Message { get; set; }
 
         public bool IsPublic { get; set; }

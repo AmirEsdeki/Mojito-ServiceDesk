@@ -102,12 +102,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             }
         }
 
-        protected virtual IQueryable<Entity> GetAllAsync(Expression<Func<Entity, bool>> predicate = null)
-        {
-            var entities = predicate is null ? db.Set<Entity>() : db.Set<Entity>().Where(predicate);
-            return entities;
-        }
-
         public virtual async Task UpdateAsync(int id, TDTOPut entity)
         {
             try
@@ -131,6 +125,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
 
 
         #region ProtectedMembers
+
+        protected virtual IQueryable<Entity> GetAllAsync(Expression<Func<Entity, bool>> predicate = null)
+        {
+            var entities = predicate is null ? db.Set<Entity>() : db.Set<Entity>().Where(predicate);
+            return entities;
+        }
+
         protected async Task<Entity> ReturnParentEntityIfBothExistsElseThrow<TChild>(int parentId, int childId)
             where TChild : class, IBaseEntity
         {

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿#region usings
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Common;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.Common;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.ConversationService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.CustomerOrganizationService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.GroupService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.GroupTypeService;
@@ -22,10 +24,10 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Infrastructure.Constant;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
-using Mojito.ServiceDesk.Infrastructure.Entities;
 using Mojito.ServiceDesk.Infrastructure.Interfaces;
 using Mojito.ServiceDesk.Infrastructure.Modules;
 using Mojito.ServiceDesk.Infrastructure.Services.Common;
+using Mojito.ServiceDesk.Infrastructure.Services.ConversationService;
 using Mojito.ServiceDesk.Infrastructure.Services.CustomerOrganizationService;
 using Mojito.ServiceDesk.Infrastructure.Services.GroupService;
 using Mojito.ServiceDesk.Infrastructure.Services.GroupTypeService;
@@ -42,6 +44,7 @@ using Mojito.ServiceDesk.Infrastructure.Services.TicketLabelService;
 using Mojito.ServiceDesk.Infrastructure.Services.TicketStatusService;
 using Mojito.ServiceDesk.Infrastructure.Services.UserService;
 using System;
+#endregion
 
 namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
 {
@@ -111,7 +114,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             services.AddTransient<ITicketLabelService, TicketLabelService>();
             services.AddTransient<ITicketStatusService, TicketStatusService>();
             services.AddTransient<IProfileImageService, ProfileImageService>();
-
+            services.AddTransient<IConversationService, ConversationService>();
 
             return services;
         }
