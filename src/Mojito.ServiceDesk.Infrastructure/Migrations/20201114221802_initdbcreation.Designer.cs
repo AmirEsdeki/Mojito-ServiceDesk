@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 
-namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
+namespace Mojito.ServiceDesk.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20201113212216_addIsClosedToTicket")]
-    partial class addIsClosedToTicket
+    [Migration("20201114221802_initdbcreation")]
+    partial class initdbcreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -304,6 +304,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ContentType")
+                        .HasColumnType("nvarchar(2000)")
+                        .HasMaxLength(2000);
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -311,6 +315,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("ImageThumbnail")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -322,7 +329,14 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     b.Property<Guid?>("LastModifiedById")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("ProfileImage","identity");
                 });
@@ -437,9 +451,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     b.Property<int?>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProfileImageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -463,10 +474,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex("PostId");
-
-                    b.HasIndex("ProfileImageId")
-                        .IsUnique()
-                        .HasFilter("[ProfileImageId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers","identity");
                 });
@@ -547,10 +554,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Ticketing.Conversation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -573,8 +579,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("TicketId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("TicketId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -657,10 +663,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Ticketing.Ticket", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AssigneeId")
                         .HasColumnType("nvarchar(450)");
@@ -673,6 +678,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 
                     b.Property<Guid?>("CreatedById")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("CustomerOrganizationId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("GroupId")
                         .HasColumnType("int");
@@ -739,8 +747,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ConversationId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ConversationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -805,6 +813,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -873,8 +885,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Ticketing.TicketTicketLabel", b =>
                 {
-                    b.Property<long>("TicketId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TicketLabelId")
                         .HasColumnType("int");
@@ -997,6 +1009,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Identity.ProfileImage", b =>
+                {
+                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.User", "User")
+                        .WithOne("ProfileImage")
+                        .HasForeignKey("Mojito.ServiceDesk.Core.Entities.Identity.ProfileImage", "UserId");
+                });
+
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Identity.RefreshToken", b =>
                 {
                     b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.User", "User")
@@ -1013,10 +1032,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.Post", "Post")
                         .WithMany("Users")
                         .HasForeignKey("PostId");
-
-                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.ProfileImage", "ProfileImage")
-                        .WithOne("User")
-                        .HasForeignKey("Mojito.ServiceDesk.Core.Entities.Identity.User", "ProfileImageId");
                 });
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Identity.UserGroup", b =>

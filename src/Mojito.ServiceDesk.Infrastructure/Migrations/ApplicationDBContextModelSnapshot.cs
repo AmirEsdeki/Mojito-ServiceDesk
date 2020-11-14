@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 
-namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
+namespace Mojito.ServiceDesk.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
     partial class ApplicationDBContextModelSnapshot : ModelSnapshot
@@ -577,8 +577,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("TicketId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("TicketId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -661,10 +661,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Ticketing.Ticket", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AssigneeId")
                         .HasColumnType("nvarchar(450)");
@@ -884,8 +883,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Ticketing.TicketTicketLabel", b =>
                 {
-                    b.Property<long>("TicketId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TicketLabelId")
                         .HasColumnType("int");

@@ -1,14 +1,17 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
+namespace Mojito.ServiceDesk.Infrastructure.Migrations
 {
-    public partial class init : Migration
+    public partial class initdbcreation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "identity");
+
+            migrationBuilder.EnsureSchema(
+                name: "proprietary");
 
             migrationBuilder.EnsureSchema(
                 name: "ticketing");
@@ -29,6 +32,25 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomerOrganizations",
+                schema: "identity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Created = table.Column<DateTime>(nullable: false),
+                    LastModified = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
+                    Name = table.Column<string>(maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerOrganizations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GroupTypes",
                 schema: "identity",
                 columns: table => new
@@ -38,8 +60,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
                     Title = table.Column<string>(maxLength: 255, nullable: true)
                 },
                 constraints: table =>
@@ -57,32 +79,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
                     Title = table.Column<string>(maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProfileImage",
-                schema: "identity",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Created = table.Column<DateTime>(nullable: false),
-                    LastModified = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
-                    Image = table.Column<byte[]>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProfileImage", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,8 +98,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
                     Title = table.Column<string>(maxLength: 255, nullable: true)
                 },
                 constraints: table =>
@@ -114,8 +117,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
                     Title = table.Column<string>(maxLength: 500, nullable: true)
                 },
                 constraints: table =>
@@ -133,8 +136,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
                     Title = table.Column<string>(maxLength: 255, nullable: true)
                 },
                 constraints: table =>
@@ -166,6 +169,61 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Products",
+                schema: "proprietary",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Created = table.Column<DateTime>(nullable: false),
+                    LastModified = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
+                    Name = table.Column<string>(maxLength: 255, nullable: true),
+                    CustomerId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_CustomerOrganizations_CustomerId",
+                        column: x => x.CustomerId,
+                        principalSchema: "identity",
+                        principalTable: "CustomerOrganizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TicketLabels",
+                schema: "ticketing",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Created = table.Column<DateTime>(nullable: false),
+                    LastModified = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
+                    Title = table.Column<string>(maxLength: 255, nullable: true),
+                    Color = table.Column<string>(maxLength: 255, nullable: true),
+                    CustomerOrganizationId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketLabels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TicketLabels_CustomerOrganizations_CustomerOrganizationId",
+                        column: x => x.CustomerOrganizationId,
+                        principalSchema: "identity",
+                        principalTable: "CustomerOrganizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Groups",
                 schema: "identity",
                 columns: table => new
@@ -175,8 +233,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
                     Name = table.Column<string>(maxLength: 255, nullable: true),
                     GroupTypeId = table.Column<int>(nullable: false)
                 },
@@ -212,14 +270,14 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    Password = table.Column<string>(nullable: true),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
+                    IsEmployee = table.Column<bool>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     PostId = table.Column<int>(nullable: true),
-                    ProfileImageId = table.Column<int>(nullable: false),
+                    CustomerOrganizationId = table.Column<int>(nullable: true),
                     LastModifiedById = table.Column<Guid>(nullable: true),
                     CreatedById = table.Column<Guid>(nullable: true)
                 },
@@ -227,19 +285,19 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_AspNetUsers_CustomerOrganizations_CustomerOrganizationId",
+                        column: x => x.CustomerOrganizationId,
+                        principalSchema: "identity",
+                        principalTable: "CustomerOrganizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_AspNetUsers_Posts_PostId",
                         column: x => x.PostId,
                         principalSchema: "identity",
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_ProfileImage_ProfileImageId",
-                        column: x => x.ProfileImageId,
-                        principalSchema: "identity",
-                        principalTable: "ProfileImage",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -252,10 +310,11 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
                     Url = table.Column<string>(maxLength: 800, nullable: true),
-                    GroupId = table.Column<int>(nullable: false)
+                    GroupId = table.Column<int>(nullable: false),
+                    ProductId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -265,6 +324,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                         column: x => x.GroupId,
                         principalSchema: "identity",
                         principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_IssueUrls_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalSchema: "proprietary",
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -364,6 +430,63 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProfileImage",
+                schema: "identity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Created = table.Column<DateTime>(nullable: false),
+                    LastModified = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
+                    Image = table.Column<byte[]>(nullable: true),
+                    ImageThumbnail = table.Column<byte[]>(nullable: true),
+                    ContentType = table.Column<string>(maxLength: 2000, nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProfileImage", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProfileImage_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "identity",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshToken",
+                schema: "identity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Token = table.Column<string>(nullable: true),
+                    Expires = table.Column<DateTime>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false),
+                    CreatedByIp = table.Column<string>(nullable: true),
+                    Revoked = table.Column<DateTime>(nullable: true),
+                    RevokedByIp = table.Column<string>(nullable: true),
+                    ReplacedByToken = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshToken_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "identity",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserGroup",
                 schema: "identity",
                 columns: table => new
@@ -374,8 +497,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true)
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -401,14 +524,16 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 schema: "ticketing",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
+                    Identifier = table.Column<string>(nullable: true),
                     Title = table.Column<string>(maxLength: 255, nullable: true),
+                    IsClosed = table.Column<bool>(nullable: false),
+                    CustomerOrganizationId = table.Column<int>(nullable: true),
                     OpenedById = table.Column<string>(nullable: true),
                     AssigneeId = table.Column<string>(nullable: true),
                     GroupId = table.Column<int>(nullable: true),
@@ -485,7 +610,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
-                    IssueUrlId = table.Column<int>(nullable: false)
+                    IssueUrlId = table.Column<int>(nullable: false),
+                    Id = table.Column<int>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false),
+                    LastModified = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -511,15 +642,15 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 schema: "ticketing",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
                     Message = table.Column<string>(nullable: true),
-                    TicketId = table.Column<long>(nullable: true)
+                    IsPublic = table.Column<bool>(nullable: false),
+                    TicketId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -534,6 +665,39 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TicketTicketLabel",
+                schema: "ticketing",
+                columns: table => new
+                {
+                    TicketLabelId = table.Column<int>(nullable: false),
+                    TicketId = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false),
+                    LastModified = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketTicketLabel", x => new { x.TicketId, x.TicketLabelId });
+                    table.ForeignKey(
+                        name: "FK_TicketTicketLabel_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalSchema: "ticketing",
+                        principalTable: "Tickets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TicketTicketLabel_TicketLabels_TicketLabelId",
+                        column: x => x.TicketLabelId,
+                        principalSchema: "ticketing",
+                        principalTable: "TicketLabels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TicketAttachments",
                 schema: "ticketing",
                 columns: table => new
@@ -543,10 +707,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
                     Location = table.Column<string>(maxLength: 1500, nullable: true),
-                    ConversationId = table.Column<int>(nullable: false)
+                    ConversationId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -593,6 +757,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CustomerOrganizationId",
+                schema: "identity",
+                table: "AspNetUsers",
+                column: "CustomerOrganizationId");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 schema: "identity",
                 table: "AspNetUsers",
@@ -611,13 +781,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 schema: "identity",
                 table: "AspNetUsers",
                 column: "PostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_ProfileImageId",
-                schema: "identity",
-                table: "AspNetUsers",
-                column: "ProfileImageId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_GroupTypeId",
@@ -653,10 +816,39 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProfileImage_UserId",
+                schema: "identity",
+                table: "ProfileImage",
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshToken_UserId",
+                schema: "identity",
+                table: "RefreshToken",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserGroup_GroupId",
                 schema: "identity",
                 table: "UserGroup",
                 column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CustomerId",
+                schema: "proprietary",
+                table: "Products",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_Name",
+                schema: "proprietary",
+                table: "Products",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL")
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Conversations_TicketId",
@@ -671,10 +863,22 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_IssueUrls_ProductId",
+                schema: "ticketing",
+                table: "IssueUrls",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TicketAttachments_ConversationId",
                 schema: "ticketing",
                 table: "TicketAttachments",
                 column: "ConversationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TicketLabels_CustomerOrganizationId",
+                schema: "ticketing",
+                table: "TicketLabels",
+                column: "CustomerOrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_AssigneeId",
@@ -734,6 +938,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
+                name: "IX_TicketTicketLabel_TicketLabelId",
+                schema: "ticketing",
+                table: "TicketTicketLabel",
+                column: "TicketLabelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserIssueUrl_IssueUrlId",
                 schema: "ticketing",
                 table: "UserIssueUrl",
@@ -763,11 +973,23 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 schema: "identity");
 
             migrationBuilder.DropTable(
+                name: "ProfileImage",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "RefreshToken",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
                 name: "UserGroup",
                 schema: "identity");
 
             migrationBuilder.DropTable(
                 name: "TicketAttachments",
+                schema: "ticketing");
+
+            migrationBuilder.DropTable(
+                name: "TicketTicketLabel",
                 schema: "ticketing");
 
             migrationBuilder.DropTable(
@@ -780,6 +1002,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
 
             migrationBuilder.DropTable(
                 name: "Conversations",
+                schema: "ticketing");
+
+            migrationBuilder.DropTable(
+                name: "TicketLabels",
                 schema: "ticketing");
 
             migrationBuilder.DropTable(
@@ -811,15 +1037,19 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.Migrations
                 schema: "identity");
 
             migrationBuilder.DropTable(
-                name: "ProfileImage",
-                schema: "identity");
-
-            migrationBuilder.DropTable(
                 name: "Groups",
                 schema: "identity");
 
             migrationBuilder.DropTable(
+                name: "Products",
+                schema: "proprietary");
+
+            migrationBuilder.DropTable(
                 name: "GroupTypes",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "CustomerOrganizations",
                 schema: "identity");
         }
     }

@@ -13,23 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Persistence\EF\Migrations\20201103113508_initialCreate.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103113508_initialCreate.Designer.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103115125_changeticketstatusSchema.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103115125_changeticketstatusSchema.Designer.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103130957_checkIfAnyThingChangedAfterReadingConfigFromAssembely.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103130957_checkIfAnyThingChangedAfterReadingConfigFromAssembely.Designer.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103202721_init.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103202721_init.Designer.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103203028_init.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103203028_init.Designer.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103203212_init.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201103203212_init.Designer.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201108231056_addDbsets.cs" />
-    <Compile Remove="Persistence\EF\Migrations\20201108231056_addDbsets.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="LazZiya.ImageResize" Version="3.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="3.1.9" />
