@@ -36,6 +36,19 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
             {
                 var query = db.Conversations.AsQueryable();
 
+                //to restrict the query access to just admins or those 
+                //who are some how assigned to this conversation or they are the owner of the ticket
+                if (!appUser.Roles.Any(a => a.ToLower() == "owner" 
+                || a.ToLower() == "admin"
+                || a.ToLower() == "observer"))
+                {
+                    query = query.Where(w => w.Ticket.AssigneeId == appUser.Id
+                        || appUser.Groups.Any(a => a == w.Ticket.GroupId)
+                        || w.Ticket.OpenedById == appUser.Id
+                        || w.Ticket.ClosedById == appUser.Id
+                        || w.CreatedById.ToString() == appUser.Id);
+                }
+
                 //if user is not an employee of the company only can see the public posts
                 if (!appUser.IsEmployee)
                     query = query.Where(w => w.IsPublic);
@@ -80,9 +93,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
             return dto;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
-            var entity = await db.Conversations.FirstOrDefaultAsync(x => x.Id == id);
+            var entity = await db.Conversations.FirstOrDefaultAsync(x => x.Id == Guid.Parse(id));
 
             if (entity != null)
             {

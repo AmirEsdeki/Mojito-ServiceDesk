@@ -83,7 +83,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> Delete(int id)
+        public async Task<ApiResponse> Delete(string id)
         {
             try
             {

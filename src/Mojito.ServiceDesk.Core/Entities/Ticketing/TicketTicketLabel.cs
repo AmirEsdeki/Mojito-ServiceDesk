@@ -1,4 +1,5 @@
 ﻿using Mojito.ServiceDesk.Core.Entities.BaseEntities;
+using System;
 
 namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 {
@@ -8,7 +9,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 
         public virtual TicketLabel TicketLabel { get; set; }
 
-        public long TicketId { get; set; }
+        public Guid TicketId { get; set; }
 
         public virtual Ticket Ticket { get; set; }
     }

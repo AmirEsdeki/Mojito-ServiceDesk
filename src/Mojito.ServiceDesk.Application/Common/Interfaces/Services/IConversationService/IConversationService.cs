@@ -11,6 +11,6 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.Conversation
 
         Task<GetConversationDTO> CreateAsync(PostConversationDTO entity);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(string id);
     }
 }

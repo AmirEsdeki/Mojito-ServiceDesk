@@ -4,6 +4,7 @@ using Mojito.ServiceDesk.Application.Common.DTOs.Common;
 using Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.Out;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.IssueUrlService;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Core.Entities.Ticketing;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 using Mojito.ServiceDesk.Infrastructure.Services.BaseService;
@@ -18,10 +19,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.IssueUrlService
          : BaseService<IssueUrl, PostIssueUrlDTO, PutIssueUrlDTO, GetIssueUrlDTO, IssueUrlsFilterParams>
         , IIssueUrlService
     {
+        private readonly IAppUser appUser;
         #region ctor
-        public IssueUrlService(ApplicationDBContext db, IMapper mapper)
+        public IssueUrlService(ApplicationDBContext db, IAppUser appUser, IMapper mapper)
             : base(db, mapper)
-        { }
+        {
+            this.appUser = appUser;
+        }
         #endregion
 
         #region CRUD
@@ -30,6 +34,11 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.IssueUrlService
             try
             {
                 var query = GetAllAsync();
+
+                //if the user is not an employee of the company 
+                //he/she can only see the urls of his organization and not the other organizations urls
+                if (!appUser.IsEmployee)
+                    query = query.Where(w => w.Product.CustomerId == appUser.CustomerOrganizationId);
 
                 if (arg.Url != null)
                     query = query.Where(data => data.Url.StartsWith(arg.Url)

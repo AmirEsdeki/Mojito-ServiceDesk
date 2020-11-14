@@ -1,18 +1,21 @@
 ﻿using Mojito.ServiceDesk.Core.Entities.BaseEntities;
 using Mojito.ServiceDesk.Core.Entities.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 {
     public class Ticket : BaseEntity
     {
-        new public long Id { get; set; }
+        new public Guid Id { get; set; }
 
         public string Identifier { get; set; }
 
         public string Title { get; set; }
 
         public bool IsClosed { get; set; }
+
+        public int? CustomerOrganizationId { get; set; }
 
         #region relations
         public string OpenedById { get; set; }

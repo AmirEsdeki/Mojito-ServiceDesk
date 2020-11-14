@@ -2,12 +2,15 @@
 using Mojito.ServiceDesk.Application.Common.DTOs.Base.Out;
 using Mojito.ServiceDesk.Application.Common.DTOs.TicketAttachment.Out;
 using Mojito.ServiceDesk.Application.Common.Mappings;
+using System;
 using System.Linq;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Conversation.Out
 {
     public class GetConversationDTO : BaseDTOGet, IMapFrom<Core.Entities.Ticketing.Conversation>
     {
+        new public Guid Id { get; set; }
+
         public string Message { get; set; }
 
         public string FullName { get; set; }

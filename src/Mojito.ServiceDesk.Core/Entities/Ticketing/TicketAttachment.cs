@@ -1,4 +1,5 @@
 ﻿using Mojito.ServiceDesk.Core.Entities.BaseEntities;
+using System;
 
 namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 {
@@ -8,7 +9,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
         public string Location { get; set; }
 
         #region relation
-        public int ConversationId { get; set; }
+        public Guid ConversationId { get; set; }
         public virtual Conversation Conversation  { get; set; }
         #endregion
     }
