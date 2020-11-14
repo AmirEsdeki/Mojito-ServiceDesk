@@ -72,8 +72,16 @@
 
         public static string TicketIssueRemoved => "موضوع با موفقیت حذف شد.";
 
-        public static string TicketLabelAdded { get; set; }
-        public static string TicketLabelUpdated { get; set; }
-        public static string TicketLabelRemoved { get; set; }
+        public static string TicketLabelAdded => "برچسب با موفقیت اضافه شد.";
+
+        public static string TicketLabelUpdated => "برچسب با موفقیت ویرایش شد.";
+
+        public static string TicketLabelRemoved => "برچسب با موفقیت حذف شد.";
+
+        public static string TicketStatusAdded => "وضعیت تیکت با موفقیت اضافه شد.";
+
+        public static string TicketStatusUpdated => "وضعیت تیکت با موفقیت ویرایش شد.";
+
+        public static string TicketStatusRemoved => "وضعیت تیکت با موفقیت حذف شد.";
     }
 }
