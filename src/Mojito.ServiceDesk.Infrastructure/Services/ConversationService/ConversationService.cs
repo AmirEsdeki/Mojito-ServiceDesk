@@ -6,6 +6,7 @@ using Mojito.ServiceDesk.Application.Common.DTOs.Conversation.Out;
 using Mojito.ServiceDesk.Application.Common.Exceptions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.ConversationService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
+using Mojito.ServiceDesk.Core.Constant;
 using Mojito.ServiceDesk.Core.Entities.Ticketing;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 using System;
@@ -38,20 +39,20 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
                 var query = db.Conversations.Where(w => w.TicketId == arg.TicketId);
 
 
-                //todo: should be an option and be configurable to allow any employee see all conversations.
                 //to restrict the query access to just admins or those 
                 //who are some how assigned to this conversation or are the owner of the ticket
-                if (!appUser.Roles.Any(a => a.ToLower() == "owner" 
-                || a.ToLower() == "admin"
-                || a.ToLower() == "observer"))
+                if (!appUser.Roles.Any(a => a == Roles. Admin || a == Roles.Observer))
                 {
-                    query = query.Where(w =>
-                        w.CreatedById.ToString() == appUser.Id
-                        || appUser.Groups.Any(a => a == w.Ticket.GroupId)
-                        || w.Ticket.AssigneeId == appUser.Id
-                        || w.Ticket.OpenedById == appUser.Id
-                        || w.Ticket.ClosedById == appUser.Id
-                        );
+                    if(appUser.Roles.Any(a => a == Roles.Employee))
+                        query = query.Where(w =>
+                            w.CreatedById.ToString() == appUser.Id
+                            || appUser.Groups.Any(a => a == w.Ticket.GroupId)
+                            || w.Ticket.AssigneeId == appUser.Id
+                            || w.Ticket.OpenedById == appUser.Id
+                            || w.Ticket.ClosedById == appUser.Id);
+
+                    else if (appUser.Roles.Any(a => a == Roles.User))
+                        query = query.Where(w => w.Ticket.OpenedById == appUser.Id);
                 }
 
                 //if user is not an employee of the company only can see the public posts
@@ -107,7 +108,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
                 // if the person trying to delete the conversation is not admin we check if 
                 // he/she is the creator of the entity if not he/she has not the permission to delete 
                 //anotherone's conversation
-                if (!appUser.Roles.Any(a => a.ToLower() == "admin"))
+                if (!appUser.Roles.Any(a => a == "admin"))
                 {
                     if (entity.CreatedById.ToString() != appUser.Id)
                         throw new UnauthorizedException();

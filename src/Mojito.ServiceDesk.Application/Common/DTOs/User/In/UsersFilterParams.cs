@@ -15,6 +15,6 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.In
 
         public int PostId { get; set; }
 
-        public bool? IsEmployee { get; set; }
+        public bool? IsCompanyMember { get; set; }
     }
 }

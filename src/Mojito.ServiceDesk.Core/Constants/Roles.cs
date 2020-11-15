@@ -2,9 +2,13 @@
 {
     public static class Roles
     {
-        public static string Admin => "admin";
-        public static string User => "user";
-        public static string Employee => "employee";
+        public const string Admin = "admin";
+
+        public const string Observer = "observer";
+
+        public const string Employee = "employee";
+
+        public const string User = "user";
 
     }
 }

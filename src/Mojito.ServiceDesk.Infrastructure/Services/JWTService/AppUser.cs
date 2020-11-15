@@ -1,10 +1,23 @@
-﻿using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
+﻿using Mojito.ServiceDesk.Application.Common.Extensions;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 
 namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
 {
     public class AppUser : IAppUser
     {
-        public string[] Roles { get; set; }
+        private string[] roles;
+        public string[] Roles
+        {
+            get
+            {
+                roles.ForEach(f => f.ToLower());
+                return roles;
+            }
+            set
+            {
+                roles = value;
+            }
+        }
 
         public string Id { get; set; }
 

@@ -13,6 +13,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Conversation.In
 
         public string Message { get; set; }
 
+        public bool IsPublic { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<PostConversationDTO, Core.Entities.Ticketing.Conversation>();

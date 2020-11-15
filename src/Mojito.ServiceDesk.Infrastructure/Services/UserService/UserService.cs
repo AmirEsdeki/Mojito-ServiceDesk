@@ -253,8 +253,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 if (arg.PostId != 0)
                     query = query.Where(w => w.PostId == arg.PostId);
 
-                if (arg.IsEmployee != null)
-                    query = query.Where(w => w.IsCompanyMember == arg.IsEmployee);
+                if (arg.IsCompanyMember != null)
+                    query = query.Where(w => w.IsCompanyMember == arg.IsCompanyMember);
 
                 var list = await new PaginatedListBuilder<User, GetUserDTO>(mapper)
                     .CreateAsync(query, arg.PageNumber, arg.PageSize);
