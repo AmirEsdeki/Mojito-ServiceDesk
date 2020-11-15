@@ -7,10 +7,11 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Conversation.In
 {
     public class PostConversationDTO : BaseDTOPost, IMapFrom<Core.Entities.Ticketing.Conversation>
     {
-        public string Message { get; set; }
-
+        //todo: get the attachment with post data
         [Required]
         public long? TicketId { get; set; }
+
+        public string Message { get; set; }
 
         public void Mapping(Profile profile)
         {

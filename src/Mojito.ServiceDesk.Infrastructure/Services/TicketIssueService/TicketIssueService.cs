@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Mojito.ServiceDesk.Application.Common.DTOs.Common;
 using Mojito.ServiceDesk.Application.Common.DTOs.TicketIssue.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.TicketIssue.Out;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketIssueService;
 using Mojito.ServiceDesk.Core.Entities.Ticketing;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
@@ -17,10 +18,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketIssueService
     public class TicketIssueService
         : BaseService<TicketIssue, PostTicketIssueDTO, PutTicketIssueDTO, GetTicketIssueDTO, TicketIssuesFilterParams>, ITicketIssueService
     {
+        private readonly IAppUser appUser;
         #region ctor
-        public TicketIssueService(ApplicationDBContext db, IMapper mapper)
+        public TicketIssueService(ApplicationDBContext db, IAppUser appUser, IMapper mapper)
             : base(db, mapper)
-        { }
+        {
+            this.appUser = appUser;
+        }
         #endregion
 
         #region CRUD
@@ -30,9 +34,22 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketIssueService
             {
                 var query = GetAllAsync();
 
+                //if the user is not an employee of the company 
+                //he/she should not see intraOrganizational issues.
+                //also he/she could only see the issues that are global or issues of his organization
+                if (!appUser.IsCompanyMember)
+                {
+                    query = query.Where(w => !w.IsIntraOrganizational);
+                    query = query.Where(w => w.CustomerOrganizationId == null
+                        || w.CustomerOrganizationId == appUser.CustomerOrganizationId);
+                }
+
+
                 if (arg.Title != null)
                     query = query.Where(data => data.Title.StartsWith(arg.Title)
                         || data.Title.Contains(arg.Title));
+
+
 
                 var list = await new PaginatedListBuilder<TicketIssue, GetTicketIssueDTO>(mapper)
                     .CreateAsync(query, arg.PageNumber, arg.PageSize);

@@ -19,7 +19,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
             .Append(this.LastName)
             .ToString();
 
-        public bool IsEmployee { get; set; }
+        public bool IsCompanyMember { get; set; }
 
         public DateTime Created { get; set; }
 

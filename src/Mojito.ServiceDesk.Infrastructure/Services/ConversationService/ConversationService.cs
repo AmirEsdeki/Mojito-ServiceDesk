@@ -16,10 +16,11 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
 {
     public class ConversationService : IConversationService
     {
+        #region ctor
         private readonly ApplicationDBContext db;
         private readonly IAppUser appUser;
         private readonly IMapper mapper;
-        #region ctor
+
         public ConversationService(ApplicationDBContext db,
             IAppUser appUser, IMapper mapper)
         {
@@ -34,23 +35,27 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
         {
             try
             {
-                var query = db.Conversations.AsQueryable();
+                var query = db.Conversations.Where(w => w.TicketId == arg.TicketId);
 
+
+                //todo: should be an option and be configurable to allow any employee see all conversations.
                 //to restrict the query access to just admins or those 
-                //who are some how assigned to this conversation or they are the owner of the ticket
+                //who are some how assigned to this conversation or are the owner of the ticket
                 if (!appUser.Roles.Any(a => a.ToLower() == "owner" 
                 || a.ToLower() == "admin"
                 || a.ToLower() == "observer"))
                 {
-                    query = query.Where(w => w.Ticket.AssigneeId == appUser.Id
+                    query = query.Where(w =>
+                        w.CreatedById.ToString() == appUser.Id
                         || appUser.Groups.Any(a => a == w.Ticket.GroupId)
+                        || w.Ticket.AssigneeId == appUser.Id
                         || w.Ticket.OpenedById == appUser.Id
                         || w.Ticket.ClosedById == appUser.Id
-                        || w.CreatedById.ToString() == appUser.Id);
+                        );
                 }
 
                 //if user is not an employee of the company only can see the public posts
-                if (!appUser.IsEmployee)
+                if (!appUser.IsCompanyMember)
                     query = query.Where(w => w.IsPublic);
 
                 if (arg.Title != null)
@@ -108,8 +113,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
                         throw new UnauthorizedException();
                 }
 
-                //if admin it is ok 
-                //if is not admin but is creator of the entity it is ok
+                //if user is admin it is ok 
+                //if is not admin but is creator of the entity again it is ok
                 entity.IsDeleted = true;
 
                 await db.SaveChangesAsync();

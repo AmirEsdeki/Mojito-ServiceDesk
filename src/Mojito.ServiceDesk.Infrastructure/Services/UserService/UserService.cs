@@ -254,7 +254,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                     query = query.Where(w => w.PostId == arg.PostId);
 
                 if (arg.IsEmployee != null)
-                    query = query.Where(w => w.IsEmployee == arg.IsEmployee);
+                    query = query.Where(w => w.IsCompanyMember == arg.IsEmployee);
 
                 var list = await new PaginatedListBuilder<User, GetUserDTO>(mapper)
                     .CreateAsync(query, arg.PageNumber, arg.PageSize);
@@ -284,7 +284,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
                     user.PhoneNumberConfirmed = true;
                     user.EmailConfirmed = true;
-                    user.IsEmployee = true;
+                    user.IsCompanyMember = true;
 
                     return new GuidIdDTO()
                     { Id = user.Id };

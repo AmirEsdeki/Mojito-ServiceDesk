@@ -10,7 +10,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
 
         public string IsVerified { get; set; }
 
-        public bool IsEmployee { get; set; }
+        public bool IsCompanyMember { get; set; }
 
         public int[] Groups { get; set; }
 

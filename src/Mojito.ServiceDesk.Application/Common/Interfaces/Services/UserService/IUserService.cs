@@ -10,6 +10,7 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
 {
     public interface IUserService
     {
+        #region Authentication
         Task<GuidIdDTO> SignUpAsync(SignUpDTO arg);
 
         Task<UserTokenDTO> VerifyUserAsync(VerifyUserDTO arg, string ip);
@@ -21,7 +22,9 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
         Task<UserTokenDTO> RefreshTokenAsync(string token, string ipAddress);
 
         Task<bool> RevokeTokenAsync(string token, string ipAddress);
+        #endregion
 
+        #region CRUD
         Task<PaginatedList<GetUserDTO>> GetAllAsync(UsersFilterParams arg);
 
         Task<GetUserDTO> GetAsync(string id);
@@ -32,6 +35,10 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
 
         Task DeleteAsync(string id);
 
+        Task<ICollection<FilteredUsersDTO>> GeneralFilterAsync(string phrase);
+        #endregion
+
+        #region RelationActions
         Task AddGroupAsync(string userId, int groupId);
 
         Task RemoveGroupAsync(string userId, int groupId);
@@ -47,7 +54,12 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
         Task AddIssueUrlAsync(string userId, int issueUrlId);
 
         Task RemoveIssueUrlAsync(string userId, int issueUrlId);
+        #endregion
 
-        Task<ICollection<FilteredUsersDTO>> GeneralFilterAsync(string phrase);
+
+
+
+
+
     }
 }

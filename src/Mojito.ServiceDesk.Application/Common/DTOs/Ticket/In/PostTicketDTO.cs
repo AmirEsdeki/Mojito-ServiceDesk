@@ -15,6 +15,10 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 
         public int? PriorityId { get; set; }
 
+        public string Message { get; set; }
+
+        public bool IsMessagePublic { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<PostTicketDTO, Core.Entities.Ticketing.Ticket>();

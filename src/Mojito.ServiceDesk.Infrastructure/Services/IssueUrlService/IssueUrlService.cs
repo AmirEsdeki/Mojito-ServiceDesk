@@ -37,7 +37,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.IssueUrlService
 
                 //if the user is not an employee of the company 
                 //he/she can only see the urls of his organization and not the other organizations urls
-                if (!appUser.IsEmployee)
+                if (!appUser.IsCompanyMember)
                     query = query.Where(w => w.Product.CustomerId == appUser.CustomerOrganizationId);
 
                 if (arg.Url != null)

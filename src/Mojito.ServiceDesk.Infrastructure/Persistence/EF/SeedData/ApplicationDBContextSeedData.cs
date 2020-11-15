@@ -18,9 +18,11 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData
             {
                 context.GroupTypes.AddRange(new List<GroupType>()
                 {
-                    new GroupType{Title = "فنی" },
-                    new GroupType{Title = "حسابداری"},
+                    new GroupType{Title = "دپارتمان" },
+                    new GroupType{Title = "پشتیبانی" },
+                    new GroupType{Title = "مالی"},
                     new GroupType{Title = "اداری"},
+                    new GroupType{Title = "عملیات"},
                 });
 
                 await context.SaveChangesAsync();
@@ -30,11 +32,14 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData
             {
                 context.Groups.AddRange(new List<Group>()
                 {
-                    new Group{Name = "کارشناسان" , groupType = context.GroupTypes.FirstOrDefault() },
-                    new Group{Name = "پشتیبانی لایه اول" , groupType = context.GroupTypes.FirstOrDefault()},
-                    new Group{Name = "پشتیبانی لایه دوم" , groupType = context.GroupTypes.FirstOrDefault()},
-                    new Group{Name = "پشتیبانی لایه سوم" , groupType = context.GroupTypes.FirstOrDefault()},
-                    new Group{Name = "پشتیبانی شیفت" , groupType = context.GroupTypes.FirstOrDefault()},
+                    new Group{Name = "ریسک" , groupType = context.GroupTypes.FirstOrDefault(f => f.Title=="دپارتمان") },
+                    new Group{Name = "پشتیبانی ریسک" , groupType = context.GroupTypes.FirstOrDefault(f => f.Title=="پشتیبانی") },
+                    new Group{Name = "پرداخت" , groupType = context.GroupTypes.FirstOrDefault(f => f.Title=="دپارتمان") },
+                    new Group{Name = "پشتیبانی پرداخت" , groupType = context.GroupTypes.FirstOrDefault(f => f.Title=="پشتیبانی") },
+                    new Group{Name = "بیمه رازی" , groupType = context.GroupTypes.FirstOrDefault(f => f.Title=="دپارتمان")},
+                    new Group{Name = "پشتیبانی بیمه رازی" , groupType = context.GroupTypes.FirstOrDefault(f => f.Title=="پشتیبانی")},
+                    new Group{Name = "پشتیبانی لایه اول" , groupType = context.GroupTypes.FirstOrDefault(f => f.Title=="پشتیبانی")},
+                    new Group{Name = "پشتیبانی شیفت" , groupType = context.GroupTypes.FirstOrDefault(f => f.Title=="پشتیبانی")},
                 });
 
                 await context.SaveChangesAsync();
@@ -46,6 +51,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData
                 {
                     new CustomerOrganization {Name = "بانک آینده" },
                     new CustomerOrganization {Name = "بانک ملت" },
+                    new CustomerOrganization {Name = "بانک صنعت و معدن" },
+                    new CustomerOrganization {Name = "بیمه رازی" },
 
                 });
 
@@ -58,6 +65,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData
                 {
                     new Product {Name = "سامانه جامع بانک آینده", Customer = context.CustomerOrganizations.FirstOrDefault(f => f.Name == "بانک آینده") },
                     new Product {Name = "سامانه جامع بانک ملت", Customer = context.CustomerOrganizations.FirstOrDefault(f => f.Name == "بانک ملت"  ) },
+                    new Product {Name = "سامانه مدیریت فرآیندها", Customer = context.CustomerOrganizations.FirstOrDefault(f => f.Name == "بانک صنعت و معدن" ) },
+                    new Product {Name = "سامانه همراز", Customer = context.CustomerOrganizations.FirstOrDefault(f => f.Name == "بیمه رازی"  ) },
 
                 });
 
@@ -72,7 +81,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData
                         Product = context.Products.FirstOrDefault(f => f.Name == "سامانه جامع بانک آینده") },
                     new IssueUrl {Url = "samat.ir" , Group = context.Groups.FirstOrDefault(),
                         Product = context.Products.FirstOrDefault(f => f.Name == "سامانه جامع بانک ملت") },
-
+                    new IssueUrl {Url = "bpms.ir" , Group = context.Groups.FirstOrDefault(),
+                        Product = context.Products.FirstOrDefault(f => f.Name == "سامانه مدیریت فرآیندها") },
+                    new IssueUrl {Url = "hamraz.ir" , Group = context.Groups.FirstOrDefault(),
+                        Product = context.Products.FirstOrDefault(f => f.Name == "سامانه همراز") },
                 });
 
                 await context.SaveChangesAsync();
@@ -85,7 +97,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData
                 {
                     new Post {Title = "برنامه نویس لایه اول"},
                     new Post {Title = "برنامه نویس لایه دوم"},
-                    new Post {Title = "مدیر فنی" },
+                    new Post {Title = "سرپرست فنی" },
                     new Post {Title = "مدیر محصول" },
                     new Post {Title = "حسابدار" },
 
@@ -113,7 +125,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData
                 if (!user.PhoneNumberConfirmed)
                 {
                     user.PhoneNumberConfirmed = true;
-                    user.IsEmployee = true;
+                    user.IsCompanyMember = true;
 
                     user.Post = context.Posts.FirstOrDefault();
 
@@ -129,6 +141,27 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.SeedData
 
                     await context.SaveChangesAsync();
                 }
+            }
+
+            if (!context.TicketIssues.Any())
+            {
+                context.TicketIssues.AddRange(new List<TicketIssue>()
+                {
+                    new TicketIssue {Title = "خطا در سامانه"},
+                    new TicketIssue {Title = "قطعی سامانه"},
+                    new TicketIssue {Title = "درخواست اهدای دسترسی" },
+                    new TicketIssue {Title = "درخواست توسعه" },
+                    new TicketIssue {Title = "درخواست راهنمایی" },
+                    new TicketIssue {Title = "درخواست ارائه پروپوزال" },
+                    new TicketIssue {Title = "درخواست ارائه مستندات" },
+                    new TicketIssue {Title = "درخواست مرخصی" , IsIntraOrganizational= true},
+                    new TicketIssue {Title = "درخواست فیش حقوقی"  , IsIntraOrganizational= true},
+                    new TicketIssue {Title = "درخواست گواهی اشتغال به کار"  , IsIntraOrganizational= true},
+                    new TicketIssue {Title = "درخواست مساعده"  , IsIntraOrganizational= true},
+
+                });
+
+                await context.SaveChangesAsync();
             }
         }
 

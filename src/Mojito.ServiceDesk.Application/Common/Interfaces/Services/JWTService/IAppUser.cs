@@ -10,7 +10,7 @@
 
         public string IsVerified { get; set; }
 
-        public bool IsEmployee { get; set; }
+        public bool IsCompanyMember { get; set; }
 
         public int CustomerOrganizationId { get; set; }
     }
