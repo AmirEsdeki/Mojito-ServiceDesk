@@ -3,9 +3,9 @@ using System;
 
 namespace Mojito.ServiceDesk.Application.Common.Exceptions
 {
-    public class EntityDoesNotExistException : CustomException
+    public class EntityNotFoundException : CustomException
     {
-        public EntityDoesNotExistException(Exception ex = null)
+        public EntityNotFoundException(Exception ex = null)
             : base(ErrorMessages.EntityNotFound, 400, ex)
         {
         }

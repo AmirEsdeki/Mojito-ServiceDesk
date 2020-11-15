@@ -77,7 +77,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Data.EF
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketAttachment> TicketAttachment { get; set; }
         public DbSet<TicketIssue> TicketIssues { get; set; }
-        //public DbSet<TicketManagingPipeline> TicketManagingPipelines { get; set; }
+        public DbSet<TicketManagingPipeline> TicketManagingPipelines { get; set; }
         public DbSet<TicketStatus> TicketStatus { get; set; }
         public DbSet<UserIssueUrl> UserIssueUrl { get; set; }
         #endregion

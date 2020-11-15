@@ -1,5 +1,6 @@
 ﻿using Mojito.ServiceDesk.Application.Common.DTOs.Base.In;
 using Mojito.ServiceDesk.Application.Common.Interfaces.DTOs;
+using System;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 {
@@ -25,6 +26,10 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 
         public int TicketStatusId { get; set; }
 
+        public DateTime FromDate { get; set; }
+
+        public DateTime ToDate { get; set; }
+
         public string OrderByProperty { get; set; }
 
         public string HowToOrder { get; set; }
@@ -32,9 +37,11 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
         #region OnlyForAdminOrObserver
         public int CustomerOrganizationId { get; set; }
 
-        public int GroupId { get; set; }
+        public int NomineeGroupId { get; set; }
 
         public string AssigneeId { get; set; }
+        
+        public bool? HasAssignee { get; set; }
         #endregion
     }
 }

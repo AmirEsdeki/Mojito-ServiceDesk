@@ -10,6 +10,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.EntityConfigurations
         {
             entity.ToTable("Tickets", schema: "ticketing");
 
+            entity.Ignore(i => i.HasNextStep);
+
             entity.HasKey(k => k.Id);
 
             entity.Property(b => b.Title).HasMaxLength(255);

@@ -84,7 +84,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 var user = await userManager.FindByIdAsync(arg.UserId);
 
                 if (user == null)
-                    throw new EntityDoesNotExistException();
+                    throw new EntityNotFoundException();
 
                 var result = await userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, arg.Code);
 
@@ -125,7 +125,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 var user = await userManager.FindByIdAsync(userId);
 
                 if (user == null)
-                    throw new EntityDoesNotExistException();
+                    throw new EntityNotFoundException();
                 if (!user.PhoneNumberConfirmed)
                     SendVerificationCodeAsync(user);
             }
@@ -226,7 +226,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             if (user != null)
                 return mapper.Map<GetUserDTO>(user);
 
-            throw new EntityDoesNotExistException();
+            throw new EntityNotFoundException();
         }
 
         public async Task<PaginatedList<GetUserDTO>> GetAllAsync(UsersFilterParams arg)
@@ -307,7 +307,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 var user = await userManager.FindByIdAsync(userId);
 
                 if (user == null)
-                    throw new EntityDoesNotExistException();
+                    throw new EntityNotFoundException();
 
                 var IsEnteredDataAvailable = true;
 
@@ -352,7 +352,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 var user = await userManager.FindByIdAsync(id);
 
                 if (user != null)
-                    throw new EntityDoesNotExistException();
+                    throw new EntityNotFoundException();
 
                 user.IsDeleted = true;
 
@@ -586,10 +586,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             var user = await userManager.FindByIdAsync(userId);
 
             if (user == null)
-                throw new EntityDoesNotExistException();
+                throw new EntityNotFoundException();
 
             if (!await db.Set<T>().AnyAsync(a => a.Id == entityId))
-                throw new EntityDoesNotExistException();
+                throw new EntityNotFoundException();
 
             return user;
         }

@@ -38,5 +38,9 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketServic
 
         Task RemoveLabelAsync(string ticketId, int labelId);
         #endregion
+
+        #region TicketPiplineActions
+        Task PassToNextNominee(string ticketId);
+        #endregion
     }
 }

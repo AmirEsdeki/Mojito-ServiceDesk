@@ -15,6 +15,9 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 
         public int? PriorityId { get; set; }
 
+        [Required]
+        public int TicketIssueId { get; set; }
+
         public string Message { get; set; }
 
         public bool IsMessagePublic { get; set; }

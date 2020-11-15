@@ -70,7 +70,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ProfileImageService
                 var entity = await db.ProfileImages.FirstOrDefaultAsync(f => f.Id == id);
 
                 if (entity == null)
-                    throw new EntityDoesNotExistException();
+                    throw new EntityNotFoundException();
 
                 var dto = mapper.Map<GetProfileImageDTO>(entity);
 

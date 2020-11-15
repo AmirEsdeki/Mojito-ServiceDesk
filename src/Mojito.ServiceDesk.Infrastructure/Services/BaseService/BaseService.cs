@@ -60,7 +60,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
                 var entity = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == id);
 
                 if (entity == null)
-                    throw new EntityDoesNotExistException();
+                    throw new EntityNotFoundException();
 
                 var dto = mapper.Map<TDTOGet>(entity);
 
@@ -109,7 +109,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
                 var entityInDb = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == id);
 
                 if (entityInDb == null)
-                    throw new EntityDoesNotExistException();
+                    throw new EntityNotFoundException();
 
                 var mappedEntity = mapper.Map(entity, entityInDb);
 
@@ -138,10 +138,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             var parent = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == parentId);
 
             if (parent == null)
-                throw new EntityDoesNotExistException();
+                throw new EntityNotFoundException();
 
             if (!await db.Set<Entity>().AnyAsync(a => a.Id == childId))
-                throw new EntityDoesNotExistException();
+                throw new EntityNotFoundException();
 
             return parent;
         }
@@ -152,10 +152,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.BaseService
             var parent = await db.Set<Entity>().FirstOrDefaultAsync(f => f.Id == parentId);
 
             if (parent == null)
-                throw new EntityDoesNotExistException();
+                throw new EntityNotFoundException();
 
             if (!await db.Set<TChild>().AnyAsync(a => a.Id == childId))
-                throw new EntityDoesNotExistException();
+                throw new EntityNotFoundException();
 
             return parent;
         }

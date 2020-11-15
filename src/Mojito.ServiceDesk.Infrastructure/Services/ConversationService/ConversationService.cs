@@ -46,7 +46,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
                     if(appUser.Roles.Any(a => a == Roles.Employee))
                         query = query.Where(w =>
                             w.CreatedById.ToString() == appUser.Id
-                            || appUser.Groups.Any(a => a == w.Ticket.GroupId)
+                            || appUser.Groups.Any(a => a == w.Ticket.NomineeGroupId)
                             || w.Ticket.AssigneeId == appUser.Id
                             || w.Ticket.OpenedById == appUser.Id
                             || w.Ticket.ClosedById == appUser.Id);
