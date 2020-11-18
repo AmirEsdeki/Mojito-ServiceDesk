@@ -1,5 +1,6 @@
 ﻿using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
+using System;
 
 namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
 {
@@ -19,7 +20,22 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
             }
         }
 
-        public string Id { get; set; }
+        public Guid? Id
+        {
+            get
+            {
+                if (IdToString != null)
+                {
+                    return Guid.Parse(IdToString);
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+        }
+
 
         public string IsVerified { get; set; }
 
@@ -28,5 +44,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
         public int[] Groups { get; set; }
 
         public int CustomerOrganizationId { get; set; }
+
+        public string IdToString { get; set; }
     }
 }

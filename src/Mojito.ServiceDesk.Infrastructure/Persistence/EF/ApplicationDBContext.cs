@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Common;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Core.Common.Interfaces;
@@ -37,7 +38,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Data.EF
         {
             Guid? userId = null;
             if (appUser.Id != null)
-                userId = Guid.Parse(appUser.Id);
+                userId = appUser.Id;
 
             foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<ICoreBaseEntity> entry in ChangeTracker.Entries<ICoreBaseEntity>())
             {

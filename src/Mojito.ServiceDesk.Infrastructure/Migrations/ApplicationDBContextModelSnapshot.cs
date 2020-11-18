@@ -581,12 +581,15 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TicketId")
+                    b.Property<string>("TicketId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TicketId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TicketId");
+                    b.HasIndex("TicketId1");
 
                     b.ToTable("Conversations","ticketing");
                 });
@@ -1123,7 +1126,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                 {
                     b.HasOne("Mojito.ServiceDesk.Core.Entities.Ticketing.Ticket", "Ticket")
                         .WithMany("Conversations")
-                        .HasForeignKey("TicketId");
+                        .HasForeignKey("TicketId1");
                 });
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Ticketing.IssueUrl", b =>

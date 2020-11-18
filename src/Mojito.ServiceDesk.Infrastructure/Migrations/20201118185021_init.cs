@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Mojito.ServiceDesk.Infrastructure.Migrations
 {
-    public partial class initdbcreation : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -89,6 +89,30 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TicketManagingPipelines",
+                schema: "identity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Created = table.Column<DateTime>(nullable: false),
+                    LastModified = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
+                    CustomerOrganizationId = table.Column<int>(nullable: false),
+                    TicketIssueId = table.Column<int>(nullable: false),
+                    NomineeGroupId = table.Column<int>(nullable: false),
+                    SetToNomineeGroupBasedOnIssueUrl = table.Column<bool>(nullable: false),
+                    SetToNomineePersonBasedOnIssueUrl = table.Column<bool>(nullable: false),
+                    Step = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketManagingPipelines", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Priorities",
                 schema: "ticketing",
                 columns: table => new
@@ -105,25 +129,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Priorities", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TicketIssues",
-                schema: "ticketing",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Created = table.Column<DateTime>(nullable: false),
-                    LastModified = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    LastModifiedById = table.Column<Guid>(nullable: true),
-                    CreatedById = table.Column<Guid>(nullable: true),
-                    Title = table.Column<string>(maxLength: 500, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TicketIssues", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -193,6 +198,34 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                         principalTable: "CustomerOrganizations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TicketIssues",
+                schema: "ticketing",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Created = table.Column<DateTime>(nullable: false),
+                    LastModified = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    LastModifiedById = table.Column<Guid>(nullable: true),
+                    CreatedById = table.Column<Guid>(nullable: true),
+                    Title = table.Column<string>(maxLength: 500, nullable: true),
+                    IsIntraOrganizational = table.Column<bool>(nullable: false),
+                    CustomerOrganizationId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketIssues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TicketIssues_CustomerOrganizations_CustomerOrganizationId",
+                        column: x => x.CustomerOrganizationId,
+                        principalSchema: "identity",
+                        principalTable: "CustomerOrganizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,7 +305,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
-                    IsEmployee = table.Column<bool>(nullable: false),
+                    IsCompanyMember = table.Column<bool>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -534,14 +567,16 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                     Title = table.Column<string>(maxLength: 255, nullable: true),
                     IsClosed = table.Column<bool>(nullable: false),
                     CustomerOrganizationId = table.Column<int>(nullable: true),
+                    CurrentStep = table.Column<int>(nullable: false),
+                    MaximumSteps = table.Column<int>(nullable: false),
                     OpenedById = table.Column<string>(nullable: true),
                     AssigneeId = table.Column<string>(nullable: true),
-                    GroupId = table.Column<int>(nullable: true),
+                    NomineeGroupId = table.Column<int>(nullable: true),
                     ClosedById = table.Column<string>(nullable: true),
                     IssueUrlId = table.Column<int>(nullable: true),
                     TicketStatusId = table.Column<int>(nullable: true),
-                    PriorityId = table.Column<int>(nullable: true),
-                    TicketIssueId = table.Column<int>(nullable: true)
+                    TicketIssueId = table.Column<int>(nullable: true),
+                    PriorityId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -561,17 +596,17 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Tickets_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalSchema: "identity",
-                        principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_Tickets_IssueUrls_IssueUrlId",
                         column: x => x.IssueUrlId,
                         principalSchema: "ticketing",
                         principalTable: "IssueUrls",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tickets_Groups_NomineeGroupId",
+                        column: x => x.NomineeGroupId,
+                        principalSchema: "identity",
+                        principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -650,14 +685,15 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                     CreatedById = table.Column<Guid>(nullable: true),
                     Message = table.Column<string>(nullable: true),
                     IsPublic = table.Column<bool>(nullable: false),
-                    TicketId = table.Column<Guid>(nullable: true)
+                    TicketId = table.Column<string>(nullable: true),
+                    TicketId1 = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Conversations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Conversations_Tickets_TicketId",
-                        column: x => x.TicketId,
+                        name: "FK_Conversations_Tickets_TicketId1",
+                        column: x => x.TicketId1,
                         principalSchema: "ticketing",
                         principalTable: "Tickets",
                         principalColumn: "Id",
@@ -777,6 +813,14 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_PhoneNumber",
+                schema: "identity",
+                table: "AspNetUsers",
+                column: "PhoneNumber",
+                unique: true,
+                filter: "[PhoneNumber] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_PostId",
                 schema: "identity",
                 table: "AspNetUsers",
@@ -851,10 +895,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Conversations_TicketId",
+                name: "IX_Conversations_TicketId1",
                 schema: "ticketing",
                 table: "Conversations",
-                column: "TicketId");
+                column: "TicketId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IssueUrls_GroupId",
@@ -875,6 +919,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                 column: "ConversationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TicketIssues_CustomerOrganizationId",
+                schema: "ticketing",
+                table: "TicketIssues",
+                column: "CustomerOrganizationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TicketLabels_CustomerOrganizationId",
                 schema: "ticketing",
                 table: "TicketLabels",
@@ -893,16 +943,16 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                 column: "ClosedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tickets_GroupId",
-                schema: "ticketing",
-                table: "Tickets",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tickets_IssueUrlId",
                 schema: "ticketing",
                 table: "Tickets",
                 column: "IssueUrlId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_NomineeGroupId",
+                schema: "ticketing",
+                table: "Tickets",
+                column: "NomineeGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_OpenedById",
@@ -978,6 +1028,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "RefreshToken",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "TicketManagingPipelines",
                 schema: "identity");
 
             migrationBuilder.DropTable(

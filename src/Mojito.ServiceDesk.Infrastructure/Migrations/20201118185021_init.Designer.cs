@@ -10,8 +10,8 @@ using Mojito.ServiceDesk.Infrastructure.Data.EF;
 namespace Mojito.ServiceDesk.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20201115160001_addCustomerorganizationtoTicketissue")]
-    partial class addCustomerorganizationtoTicketissue
+    [Migration("20201118185021_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -443,7 +443,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
@@ -472,6 +472,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique()
+                        .HasFilter("[PhoneNumber] IS NOT NULL");
 
                     b.HasIndex("PostId");
 
@@ -579,12 +583,15 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TicketId")
+                    b.Property<string>("TicketId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TicketId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TicketId");
+                    b.HasIndex("TicketId1");
 
                     b.ToTable("Conversations","ticketing");
                 });
@@ -679,10 +686,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                     b.Property<Guid?>("CreatedById")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("CustomerOrganizationId")
+                    b.Property<int>("CurrentStep")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GroupId")
+                    b.Property<int?>("CustomerOrganizationId")
                         .HasColumnType("int");
 
                     b.Property<string>("Identifier")
@@ -702,6 +709,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
 
                     b.Property<Guid?>("LastModifiedById")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("MaximumSteps")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NomineeGroupId")
+                        .HasColumnType("int");
 
                     b.Property<string>("OpenedById")
                         .HasColumnType("nvarchar(450)");
@@ -725,9 +738,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
 
                     b.HasIndex("ClosedById");
 
-                    b.HasIndex("GroupId");
-
                     b.HasIndex("IssueUrlId");
+
+                    b.HasIndex("NomineeGroupId");
 
                     b.HasIndex("OpenedById");
 
@@ -853,6 +866,51 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                     b.HasIndex("CustomerOrganizationId");
 
                     b.ToTable("TicketLabels","ticketing");
+                });
+
+            modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Ticketing.TicketManagingPipeline", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CustomerOrganizationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("LastModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("NomineeGroupId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("SetToNomineeGroupBasedOnIssueUrl")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SetToNomineePersonBasedOnIssueUrl")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Step")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketIssueId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TicketManagingPipelines");
                 });
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Ticketing.TicketStatus", b =>
@@ -1070,7 +1128,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                 {
                     b.HasOne("Mojito.ServiceDesk.Core.Entities.Ticketing.Ticket", "Ticket")
                         .WithMany("Conversations")
-                        .HasForeignKey("TicketId");
+                        .HasForeignKey("TicketId1");
                 });
 
             modelBuilder.Entity("Mojito.ServiceDesk.Core.Entities.Ticketing.IssueUrl", b =>
@@ -1098,13 +1156,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ClosedById");
 
-                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId");
-
                     b.HasOne("Mojito.ServiceDesk.Core.Entities.Ticketing.IssueUrl", "IssueUrl")
                         .WithMany()
                         .HasForeignKey("IssueUrlId");
+
+                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.Group", "NomineeGroup")
+                        .WithMany()
+                        .HasForeignKey("NomineeGroupId");
 
                     b.HasOne("Mojito.ServiceDesk.Core.Entities.Identity.User", "OpenedBy")
                         .WithMany()
@@ -1114,7 +1172,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Migrations
                         .WithMany("Tickets")
                         .HasForeignKey("PriorityId");
 
-                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Ticketing.TicketIssue", null)
+                    b.HasOne("Mojito.ServiceDesk.Core.Entities.Ticketing.TicketIssue", "TicketIssue")
                         .WithMany("Tickets")
                         .HasForeignKey("TicketIssueId");
 

@@ -74,5 +74,17 @@ namespace Mojito.ServiceDesk.Application.Common.Extensions
             return (IQueryable<T>)ret;
         }
 
+        public static Guid ToGuid(this string source)
+        {
+            try
+            {
+                return Guid.Parse(source);
+            }
+            catch (Exception)
+            {
+                throw new FormatException();
+            }
+        }
+
     }
 }

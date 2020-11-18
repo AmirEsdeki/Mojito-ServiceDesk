@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Mojito.ServiceDesk.Application.Common.Mappings;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.ProfileImage.In
@@ -8,7 +9,6 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.ProfileImage.In
     {
         public byte[] Image { get; set; }
 
-        [StringLength(255)]
         public string UserId { get; set; }
 
         [StringLength(2000)]

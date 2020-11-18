@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace Mojito.ServiceDesk.Web.Middlewares
 
         public async Task Invoke(HttpContext httpContext, IAppUser appUser)
         {
-            appUser.Id = httpContext.User.Identity.Name;
+            appUser.IdToString = httpContext.User.Identity.Name;
             await next(httpContext);
         }
     }

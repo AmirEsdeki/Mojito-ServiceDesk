@@ -1,4 +1,5 @@
 ﻿using Mojito.ServiceDesk.Core.Entities.BaseEntities;
+using System;
 
 namespace Mojito.ServiceDesk.Core.Entities.Identity
 {

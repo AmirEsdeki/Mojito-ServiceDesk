@@ -1,6 +1,7 @@
 ﻿using Mojito.ServiceDesk.Application.Common.DTOs.Common;
 using Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.Ticket.Out;
+using System;
 using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketService
@@ -8,39 +9,39 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketServic
     public interface ITicketService
     {
         #region CRUD
-        Task<GetTicketDTO> GetAsync(string ticketId);
+        Task<GetTicketDTO> GetAsync(Guid ticketId);
 
         Task<PaginatedList<GetTicketDTO>> GetAllAsync(TicketsFilterParams arg);
 
         Task<GetTicketDTO> CreateAsync(PostTicketDTO entity);
 
-        Task UpdateAsync(string ticketId, PutTicketDTO entity);
+        Task UpdateAsync(Guid ticketId, PutTicketDTO entity);
 
-        Task DeleteAsync(string ticketId);
+        Task DeleteAsync(Guid ticketId);
         #endregion
 
         #region RelationActions
-        Task CloseTicketAsync(string ticketId);
+        Task CloseTicketAsync(Guid ticketId);
 
-        Task OpenTicketAsync(string ticketId);
+        Task OpenTicketAsync(Guid ticketId);
 
-        Task SetAsigneeAsync(string ticketId, string userId);
+        Task SetAsigneeAsync(Guid ticketId, string userId);
 
-        Task SetNominatedGroupAsync(string ticketId, int groupId);
+        Task SetNominatedGroupAsync(Guid ticketId, int groupId);
 
-        Task SetIssueUrlAsync(string ticketId, int issueUrlId);
+        Task SetIssueUrlAsync(Guid ticketId, int issueUrlId);
 
-        Task SetStatusAsync(string ticketId, int ticketStatusId);
+        Task SetStatusAsync(Guid ticketId, int ticketStatusId);
 
-        Task SetPriorityAsync(string ticketId, int priorityId);
+        Task SetPriorityAsync(Guid ticketId, int priorityId);
 
-        Task AddLabelAsync(string ticketId, int labelId);
+        Task AddLabelAsync(Guid ticketId, int labelId);
 
-        Task RemoveLabelAsync(string ticketId, int labelId);
+        Task RemoveLabelAsync(Guid ticketId, int labelId);
         #endregion
 
         #region TicketPiplineActions
-        Task PassToNextNominee(string ticketId);
+        Task PassToNextNominee(Guid ticketId);
         #endregion
     }
 }

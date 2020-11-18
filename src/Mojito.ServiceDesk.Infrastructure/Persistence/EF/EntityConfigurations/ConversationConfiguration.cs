@@ -9,7 +9,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Persistence.EF.EntityConfigurations
         public void Configure(EntityTypeBuilder<Conversation> entity)
         {
             entity.ToTable("Conversations", schema: "ticketing");
+
             entity.HasKey(k => k.Id);
+
             entity.HasQueryFilter(p => !p.IsDeleted);
         }
     }

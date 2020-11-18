@@ -1,4 +1,6 @@
-﻿namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService
+﻿using System;
+
+namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService
 {
     public interface IAppUser
     {
@@ -6,7 +8,9 @@
 
         public int[] Groups { get; set; }
 
-        public string Id { get; set; }
+        public Guid? Id { get; }
+
+        public string IdToString { get; set; }
 
         public string IsVerified { get; set; }
 

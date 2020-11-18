@@ -1,5 +1,6 @@
 ﻿using Mojito.ServiceDesk.Core.Entities.BaseEntities;
 using Mojito.ServiceDesk.Core.Entities.Identity;
+using System;
 
 namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 {

@@ -7,6 +7,7 @@ using Mojito.ServiceDesk.Application.Common.DTOs.Identity.Out;
 using Mojito.ServiceDesk.Application.Common.DTOs.User.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.User.Out;
 using Mojito.ServiceDesk.Application.Common.Exceptions;
+using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
@@ -81,7 +82,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         {
             try
             {
-                var user = await userManager.FindByIdAsync(arg.UserId);
+                var user = await userManager.FindByIdAsync(arg.UserId.ToString());
 
                 if (user == null)
                     throw new EntityNotFoundException();

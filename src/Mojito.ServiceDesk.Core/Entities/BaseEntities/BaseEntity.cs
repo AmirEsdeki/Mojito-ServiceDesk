@@ -14,9 +14,9 @@ namespace Mojito.ServiceDesk.Core.Entities.BaseEntities
         public bool IsDeleted { get; set; }
 
         #region relations
-        public string LastModifiedById { get; set; }
+        public Guid? LastModifiedById { get; set; }
 
-        public string CreatedById { get; set; }
+        public Guid? CreatedById { get; set; }
         #endregion
     }
 
@@ -31,15 +31,15 @@ namespace Mojito.ServiceDesk.Core.Entities.BaseEntities
         public bool IsDeleted { get; set; }
 
         #region relations
-        public string LastModifiedById { get; set; }
+        public Guid? LastModifiedById { get; set; }
 
-        public string CreatedById { get; set; }
+        public Guid? CreatedById { get; set; }
         #endregion
     }
 
     public abstract class BaseEntityWithGuidId : IBaseEntityWithGuidId
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         public DateTime Created { get; set; }
 
@@ -48,9 +48,9 @@ namespace Mojito.ServiceDesk.Core.Entities.BaseEntities
         public bool IsDeleted { get; set; }
 
         #region relations
-        public string LastModifiedById { get; set; }
+        public Guid? LastModifiedById { get; set; }
 
-        public string CreatedById { get; set; }
+        public Guid? CreatedById { get; set; }
         #endregion
     }
 }

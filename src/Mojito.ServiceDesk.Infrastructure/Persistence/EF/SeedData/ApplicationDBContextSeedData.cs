@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Core.Entities.Proprietary;
 using Mojito.ServiceDesk.Core.Entities.Ticketing;

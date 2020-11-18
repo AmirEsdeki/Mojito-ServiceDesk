@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace Mojito.ServiceDesk.Core.Common.Interfaces
 {
     //some of entities has different id types like IdentityUser that has its own Id,
@@ -15,6 +17,6 @@ namespace Mojito.ServiceDesk.Core.Common.Interfaces
 
     public interface IBaseEntityWithGuidId : ICoreBaseEntity
     {
-        string Id { get; set; }
+        Guid Id { get; set; }
     }
 }

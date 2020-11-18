@@ -8,10 +8,12 @@ using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketService;
 using Mojito.ServiceDesk.Core.Constant;
+using Mojito.ServiceDesk.Core.Entities.Identity;
 using Mojito.ServiceDesk.Core.Entities.Ticketing;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
 using Mojito.ServiceDesk.Infrastructure.Services.BaseService;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -48,13 +50,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                     query = db.Tickets.Where(w => appUser.Groups.Any(a => a == w.NomineeGroupId));
 
                 else if (arg.OnlyTicketsOfAssignee)
-                    query = db.Tickets.Where(w => w.AssigneeId == appUser.Id);
+                    query = db.Tickets.Where(w => w.AssigneeId == appUser.Id.ToString());
 
                 else if (arg.OnlyOpenedByUser)
-                    query = db.Tickets.Where(w => w.OpenedById == appUser.Id);
+                    query = db.Tickets.Where(w => w.OpenedById == appUser.Id.ToString());
 
                 else if (arg.OnlyClosedByUser)
-                    query = db.Tickets.Where(w => w.ClosedById == appUser.Id);
+                    query = db.Tickets.Where(w => w.ClosedById == appUser.Id.ToString());
 
                 else if (arg.OnlyIfUserHasParticipatedInConversation)
                     query = db.Tickets.Where(w => w.Conversations.Any(a => a.CreatedById == appUser.Id));
@@ -63,28 +65,24 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                 //based on the role of the user the result is different
                 else
                 {
+                    //admin or observer can see all of the tickets in the system
+                    query = db.Tickets.AsQueryable();
+
                     if (userRoles.Any(a => a == Roles.Admin || a == Roles.Observer))
                     {
-                        //admin or observer can see all of the tickets in the system
-                        query = db.Tickets.AsQueryable();
+                        //admin or observer can see all.
                     }
 
                     else if (userRoles.Any(a => a == Roles.Employee))
                     {
                         //employee can see all of the tickets that he has somehow participated in
-                        query = db.Tickets.Where(w =>
-                            appUser.Groups.Any(a => a == w.NomineeGroupId)
-                            || w.AssigneeId == appUser.Id
-                            || w.OpenedById == appUser.Id
-                            || w.ClosedById == appUser.Id
-                            || w.Conversations.Any(a => a.CreatedById == appUser.Id)
-                            );
+                        query = FilterQueryForUsersThatHaveParticipatedInTheTicket(appUser, query);
                     }
 
                     else
                     {
                         //users can only see the tickets that has opened by them
-                        query = db.Tickets.Where(w => w.OpenedById == appUser.Id);
+                        query = FilterQueryForUsersThatHaveCreatedTheTicket(appUser, query);
                     }
                 }
                 #endregion
@@ -165,41 +163,32 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
             }
         }
 
-        public async Task<GetTicketDTO> GetAsync(string ticketId)
+        public async Task<GetTicketDTO> GetAsync(Guid ticketId)
         {
             try
             {
                 var userRoles = appUser.Roles;
 
                 Ticket entity;
+                var query = db.Tickets.AsQueryable<Ticket>();
 
                 if (userRoles.Any(a => a == Roles.Admin || a == Roles.Observer))
                 {
                     //admin or observer can see all of the tickets in the system
-                    entity = await db.Tickets.FirstOrDefaultAsync(f => f.Id == ticketId);
+                    entity = await query.FirstOrDefaultAsync(f => f.Id == ticketId);
                 }
 
                 else if (userRoles.Any(a => a == Roles.Employee))
                 {
                     //employee can see all of the tickets that he has somehow participated in
-                    entity = await db.Tickets
-                        .Where(f => f.Id == ticketId)
-                        .Where(w =>
-                        appUser.Groups.Any(a => a == w.NomineeGroupId)
-                        || w.AssigneeId == appUser.Id
-                        || w.OpenedById == appUser.Id
-                        || w.ClosedById == appUser.Id
-                        || w.Conversations.Any(a => a.CreatedById == appUser.Id)
-                        )
-                        .FirstOrDefaultAsync();
+                    query = FilterQueryForUsersThatHaveParticipatedInTheTicket(appUser, query);
+                    entity = await query.FirstOrDefaultAsync(f => f.Id == ticketId);
                 }
                 else
                 {
-                    //users can only see the tickets that has opened by them
-                    entity = await db.Tickets
-                        .Where(f => f.Id == ticketId)
-                        .Where(w => w.OpenedById == appUser.Id)
-                        .FirstOrDefaultAsync();
+                    //users can only see the tickets that has opened by them.
+                    query = FilterQueryForUsersThatHaveCreatedTheTicket(appUser, query);
+                    entity = await query.FirstOrDefaultAsync(f => f.Id == ticketId);
                 }
 
                 if (entity == null)
@@ -225,7 +214,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
 
             ticket.CustomerOrganizationId = appUser.CustomerOrganizationId;
 
-            ticket.OpenedById = appUser.Id;
+            ticket.OpenedById = appUser.Id.ToString();
 
             //the ticket first status is open, so we selected the TicketStatus that its title is "open"
             ticket.TicketStatusId = (await db.TicketStatus.FirstOrDefaultAsync(f => f.Title == "باز")).Id;
@@ -283,7 +272,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                             var issueUrl = await db.IssueUrls.FirstOrDefaultAsync(f => f.Id == ticket.IssueUrlId);
                             //it will set the ticket to first user corrosponding to issueurl
                             if (issueUrl != null)
-                                ticket.AssigneeId = issueUrl.Users.FirstOrDefault().Id.ToString();
+                                ticket.AssigneeId = issueUrl.Users.FirstOrDefault().UserId;
                         }
                     }
                 }
@@ -310,7 +299,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                     {
                         Message = entity.Message,
                         IsPublic = isMessagePublic,
-                        TicketId = ticketId
+                        TicketId = ticketId.ToString()
                     });
 
                 //todo: handle attachment
@@ -329,42 +318,38 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
 
         }
 
-        public async Task DeleteAsync(string ticketId)
+        public async Task DeleteAsync(Guid ticketId)
         {
-            var entity = await db.Tickets.FirstOrDefaultAsync(x => x.Id == ticketId);
+            var ticket = await db.Tickets.FirstOrDefaultAsync(x => x.Id == ticketId);
 
             //admins can delete any ticket
             //others just can delete a ticket if the ticket is opened by them
-            if (!appUser.Roles.Any(a => a == "admin"))
-                if (entity.OpenedById != appUser.Id)
-                    throw new UnauthorizedException();
+            ThrowIfUserIsNotTheCreatorOfTheTicket(appUser, ticket);
 
-            if (entity != null)
+            if (ticket != null)
             {
-                entity.IsDeleted = true;
+                ticket.IsDeleted = true;
 
                 await db.SaveChangesAsync();
             }
         }
 
-        public async Task UpdateAsync(string ticketId, PutTicketDTO entity)
+        public async Task UpdateAsync(Guid ticketId, PutTicketDTO ticket)
         {
             try
             {
-                var entityInDb = await db.Tickets.FirstOrDefaultAsync(f => f.Id == ticketId);
+                var ticketInDb = await db.Tickets.FirstOrDefaultAsync(f => f.Id == ticketId);
 
-                if (entityInDb == null)
+                if (ticketInDb == null)
                     throw new EntityNotFoundException();
 
                 //admins can edit any ticket
                 //others just can edit a ticket if the ticket is opened by them
-                if(!appUser.Roles.Any(a => a == "admin"))
-                    if(entityInDb.OpenedById != appUser.Id)
-                        throw new UnauthorizedException();
+                ThrowIfUserIsNotTheCreatorOfTheTicket(appUser, ticketInDb);
 
-                var mappedEntity = mapper.Map(entity, entityInDb);
+                var mappedEntity = mapper.Map(ticket, ticketInDb);
 
-                db.Update(entityInDb);
+                db.Update(ticketInDb);
                 await db.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -373,71 +358,295 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
             }
         }
         #endregion
+
         #region RelationActions
-        public async Task AddLabelAsync(string ticketId, int labelId)
+        public async Task AddLabelAsync(Guid ticketId, int labelId)
         {
-            //try
-            //{
-            //    var ticket = await ReturnParentEntityIfBothExistsElseThrow<TicketLabel>(ticketId, labelId);
+            try
+            {
+                var ticket = await ReturnParentEntityIfBothExistsElseThrow<TicketLabel>(ticketId, labelId);
 
-            //    (user.Groups ??= new List<UserGroup>()).Add(
-            //        new UserGroup
-            //        {
-            //            UserId = userId,
-            //            GroupId = groupId
-            //        });
+                ThrowIfUserHasNotParticipatedInTicket(appUser, ticket);
 
-            //    await db.SaveChangesAsync();
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw;
-            //}
+                (ticket.TicketLabels ??= new List<TicketTicketLabel>()).Add(
+                    new TicketTicketLabel
+                    {
+                        TicketId = ticketId,
+                        TicketLabelId = labelId
+                    });
+
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task RemoveLabelAsync(string ticketId, int labelId)
+        public async Task RemoveLabelAsync(Guid ticketId, int labelId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var ticket = await ReturnParentEntityIfBothExistsElseNull<TicketLabel>(ticketId, labelId);
+
+                if (ticket == null)
+                    return;
+
+                ThrowIfUserHasNotParticipatedInTicket(appUser, ticket);
+
+                var label = ticket.TicketLabels.FirstOrDefault(w => w.TicketLabelId == labelId);
+
+                if (label != null)
+                {
+                    ticket.TicketLabels.Remove(label);
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task OpenTicketAsync(string ticketId)
+        public async Task OpenTicketAsync(Guid ticketId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var ticket = await db.Tickets.FirstOrDefaultAsync(w => w.Id == ticketId);
+
+                if (ticket == null)
+                    throw new EntityNotFoundException();
+
+                ThrowIfUserHasNotParticipatedInTicket(appUser, ticket);
+
+                ticket.IsClosed = false;
+
+                await db.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task CloseTicketAsync(string ticketId)
+        public async Task CloseTicketAsync(Guid ticketId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var ticket = await db.Tickets.FirstOrDefaultAsync(w => w.Id == ticketId);
+
+                if (ticket == null)
+                    throw new EntityNotFoundException();
+
+                ThrowIfUserHasNotParticipatedInTicket(appUser, ticket);
+
+                ticket.IsClosed = false;
+                ticket.ClosedById = appUser.IdToString;
+
+                await db.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task SetAsigneeAsync(string ticketId, string userId)
+        public async Task SetAsigneeAsync(Guid ticketId, string userId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var ticket = await ReturnParentEntityIfParentAndUserBothExistsElseThrow(ticketId, userId);
+
+                ThrowIfUserHasNotParticipatedInTicket(appUser, ticket);
+
+                ticket.AssigneeId = userId;
+
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task SetIssueUrlAsync(string ticketId, int issueUrlId)
+        public async Task SetIssueUrlAsync(Guid ticketId, int issueUrlId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var ticket = await ReturnParentEntityIfBothExistsElseThrow<IssueUrl>(ticketId, issueUrlId);
+
+                ThrowIfUserHasNotParticipatedInTicket(appUser, ticket);
+
+                ticket.IssueUrlId = issueUrlId;
+
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task SetNominatedGroupAsync(string ticketId, int groupId)
+        public async Task SetNominatedGroupAsync(Guid ticketId, int groupId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var ticket = await ReturnParentEntityIfBothExistsElseThrow<Group>(ticketId, groupId);
+
+                ThrowIfUserHasNotParticipatedInTicket(appUser, ticket);
+
+                ticket.NomineeGroupId = groupId;
+
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task SetPriorityAsync(string ticketId, int priorityId)
+        public async Task SetPriorityAsync(Guid ticketId, int priorityId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var ticket = await ReturnParentEntityIfBothExistsElseThrow<Priority>(ticketId, priorityId);
+
+                ThrowIfUserHasNotParticipatedInTicket(appUser, ticket);
+
+                ticket.PriorityId = priorityId;
+
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task SetStatusAsync(string ticketId, int ticketStatusId)
+        public async Task SetStatusAsync(Guid ticketId, int ticketStatusId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var ticket = await ReturnParentEntityIfBothExistsElseThrow<TicketStatus>(ticketId, ticketStatusId);
+
+                ThrowIfUserHasNotParticipatedInTicket(appUser, ticket);
+
+                ticket.TicketStatusId = ticketStatusId;
+
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task PassToNextNominee(string ticketId)
+        public async Task PassToNextNominee(Guid ticketId)
         {
-            throw new NotImplementedException();
+            var ticket = await db.Tickets.FirstOrDefaultAsync(x => x.Id == ticketId);
+
+            #region SettingTicketPipelineRules
+            var thisTicketIssuePipeline = await db.TicketManagingPipelines.
+                Where(w =>
+                (w.CustomerOrganizationId == ticket.CustomerOrganizationId
+                || w.CustomerOrganizationId == 0) //for example intraorganizational tickets has no CustomerOrganizationId because they are not related to a customer
+                && w.TicketIssueId == ticket.TicketIssueId)
+                .ToListAsync();
+
+            if (thisTicketIssuePipeline != null && thisTicketIssuePipeline.Count() != 0)
+            {
+                var stepCount = thisTicketIssuePipeline.Count();
+                var pipeline = thisTicketIssuePipeline.FirstOrDefault(f => f.Step == ticket.CurrentStep + 1);//Finding the next step action in pipeline.
+
+                ticket.CurrentStep = ticket.CurrentStep + 1;
+                ticket.MaximumSteps = stepCount;
+
+                if (pipeline != null)
+                {
+                    //if for this step the pipeline declared a groupid it will assign to the nominee group of ticket
+                    //and we skip through
+                    if (pipeline.NomineeGroupId != 0)
+                        ticket.NomineeGroupId = pipeline.NomineeGroupId;
+
+                    //if in pipeline it has mentioned that for this step it should set to the corrosponding groupId
+                    //based on IssueId this section will do that
+                    else if (pipeline.SetToNomineeGroupBasedOnIssueUrl)
+                    {
+                        //if the ticket has not issue id assigning a nominee will never perform.
+                        if (ticket.IssueUrlId != null)
+                        {
+                            //if the issueUrl is not a real one then assigning a nominee will never perform.
+                            var issueUrl = await db.IssueUrls.FirstOrDefaultAsync(f => f.Id == ticket.IssueUrlId);
+
+                            if (issueUrl != null)
+                                ticket.NomineeGroupId = issueUrl.GroupId;
+                        }
+                    }
+
+                    //if in pipeline it has mentioned that for this step it should set to the corrosponding userId
+                    //based on IssueId this section will do that
+                    else if (pipeline.SetToNomineePersonBasedOnIssueUrl)
+                    {
+                        //if the ticket has not issue id assigning a nominee will never perform.
+                        if (ticket.IssueUrlId != null)
+                        {
+                            //if the issueUrl is not a real one then assigning a nominee will never perform.
+                            var issueUrl = await db.IssueUrls.FirstOrDefaultAsync(f => f.Id == ticket.IssueUrlId);
+                            //it will set the ticket to first user corrosponding to issueurl
+                            if (issueUrl != null)
+                                ticket.AssigneeId = issueUrl.Users.FirstOrDefault().UserId;
+                        }
+                    }
+
+                    await db.SaveChangesAsync();
+                }
+            }
+
+            #endregion
+        }
+        #endregion
+
+        #region Private
+        private void ThrowIfUserHasNotParticipatedInTicket(IAppUser appUser, Ticket ticket)
+        {
+            if (!appUser.Roles.Any(a => a == Roles.Admin || a == Roles.Observer))
+                if (!(ticket.AssigneeId == appUser.IdToString
+                    || ticket.OpenedById == appUser.IdToString
+                    || ticket.ClosedById == appUser.IdToString
+                    || appUser.Groups.Any(a => a == ticket.NomineeGroupId)
+                    || ticket.Conversations.Any(a => a.CreatedById == appUser.Id)))
+                    throw new UnauthorizedException();
+        }
+
+        private void ThrowIfUserIsNotTheCreatorOfTheTicket(IAppUser appUser, Ticket ticket)
+        {
+            if (!appUser.Roles.Any(a => a == Roles.Admin || a == Roles.Observer))
+                if (!(ticket.OpenedById == appUser.IdToString))
+                    throw new UnauthorizedException();
+        }
+
+        private IQueryable<Ticket> FilterQueryForUsersThatHaveParticipatedInTheTicket(IAppUser appUser, IQueryable<Ticket> query)
+        {
+            var newQuery = query.Where(w =>
+                appUser.Groups.Any(a => a == w.NomineeGroupId)
+                || w.AssigneeId == appUser.Id.ToString()
+                || w.OpenedById == appUser.Id.ToString()
+                || w.ClosedById == appUser.Id.ToString()
+                || w.Conversations.Any(a => a.CreatedById == appUser.Id)
+                );
+
+            return newQuery;
+        }
+
+        private IQueryable<Ticket> FilterQueryForUsersThatHaveCreatedTheTicket(IAppUser appUser, IQueryable<Ticket> query)
+        {
+            var newQuery = query.Where(w => w.OpenedById == appUser.Id.ToString());
+
+            return newQuery;
         }
         #endregion
     }

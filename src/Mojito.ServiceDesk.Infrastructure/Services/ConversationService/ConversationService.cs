@@ -4,6 +4,7 @@ using Mojito.ServiceDesk.Application.Common.DTOs.Common;
 using Mojito.ServiceDesk.Application.Common.DTOs.Conversation.In;
 using Mojito.ServiceDesk.Application.Common.DTOs.Conversation.Out;
 using Mojito.ServiceDesk.Application.Common.Exceptions;
+using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.ConversationService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Core.Constant;
@@ -45,14 +46,14 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
                 {
                     if(appUser.Roles.Any(a => a == Roles.Employee))
                         query = query.Where(w =>
-                            w.CreatedById.ToString() == appUser.Id
+                            w.CreatedById == appUser.Id
                             || appUser.Groups.Any(a => a == w.Ticket.NomineeGroupId)
-                            || w.Ticket.AssigneeId == appUser.Id
-                            || w.Ticket.OpenedById == appUser.Id
-                            || w.Ticket.ClosedById == appUser.Id);
+                            || w.Ticket.AssigneeId == appUser.Id.ToString()
+                            || w.Ticket.OpenedById == appUser.Id.ToString()
+                            || w.Ticket.ClosedById == appUser.Id.ToString());
 
                     else if (appUser.Roles.Any(a => a == Roles.User))
-                        query = query.Where(w => w.Ticket.OpenedById == appUser.Id);
+                        query = query.Where(w => w.Ticket.OpenedById == appUser.Id.ToString());
                 }
 
                 //if user is not an employee of the company only can see the public posts
@@ -101,7 +102,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
 
         public async Task DeleteAsync(string id)
         {
-            var entity = await db.Conversations.FirstOrDefaultAsync(x => x.Id == id);
+            var entity = await db.Conversations.FirstOrDefaultAsync(x => x.Id == id.ToGuid());
 
             if (entity != null)
             {
@@ -110,7 +111,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
                 //anotherone's conversation
                 if (!appUser.Roles.Any(a => a == "admin"))
                 {
-                    if (entity.CreatedById.ToString() != appUser.Id)
+                    if (entity.CreatedById != appUser.Id)
                         throw new UnauthorizedException();
                 }
 
