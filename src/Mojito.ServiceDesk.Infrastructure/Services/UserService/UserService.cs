@@ -362,7 +362,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
             catch (Exception ex)
             {
-                //this method fires and then forgets, it is assumed that no exception has accoured;
+                throw;
             }
         }
         #endregion
@@ -409,7 +409,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
             catch (Exception ex)
             {
-                //this method fires and then forgets, it is assumed that no exception has accoured;
+                throw;
             }
         }
 
@@ -442,7 +442,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
             catch (Exception ex)
             {
-                //this method fires and then forgets, it is assumed that no exception has accoured;
+                throw;
             }
         }
 
@@ -475,7 +475,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
             catch (Exception ex)
             {
-                //this method fires and then forgets, it is assumed that no exception has accoured;
+                throw;
             }
         }
 
@@ -519,7 +519,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
             catch (Exception ex)
             {
-                //this method fires and then forgets, it is assumed that no exception has accoured;
+                throw;
             }
         }
 
@@ -570,6 +570,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             {
                 var randomBytes = new byte[64];
                 rngCryptoServiceProvider.GetBytes(randomBytes);
+
                 return new RefreshToken
                 {
                     Token = Convert.ToBase64String(randomBytes),

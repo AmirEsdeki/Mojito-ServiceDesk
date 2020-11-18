@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Mojito.ServiceDesk.Application.Common.DTOs.Base.Out;
 using Mojito.ServiceDesk.Application.Common.DTOs.CustomerOrganization.Out;
 using Mojito.ServiceDesk.Application.Common.DTOs.Group.Out;
 using Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.Out;
@@ -56,4 +57,16 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
                 .ForMember(dto => dto.IssueUrls, opt => opt.MapFrom(x => x.IssueUrls.Select(y => y.IssueUrl).ToList()));
         }
     }
+
+    public class UserDTO_Cross : BaseDTOOut_Cross, IMapFrom<Core.Entities.Ticketing.TicketStatus>
+    {
+        new public string Id { get; set; }
+        public string FullName { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Core.Entities.Ticketing.TicketStatus, UserDTO_Cross>();
+        }
+    }
+    
 }

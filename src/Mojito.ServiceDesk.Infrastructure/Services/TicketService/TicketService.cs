@@ -10,13 +10,14 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketService;
 using Mojito.ServiceDesk.Core.Constant;
 using Mojito.ServiceDesk.Core.Entities.Ticketing;
 using Mojito.ServiceDesk.Infrastructure.Data.EF;
+using Mojito.ServiceDesk.Infrastructure.Services.BaseService;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
 {
-    public class TicketService : ITicketService
+    public class TicketService : HasDependedEntityWithGuidIdBaseClass<Ticket>, ITicketService
     {
         #region ctor
         private readonly ApplicationDBContext db;
@@ -25,6 +26,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
 
         public TicketService(ApplicationDBContext db,
             IAppUser appUser, IMapper mapper)
+            : base(db)
         {
             this.db = db;
             this.appUser = appUser;
@@ -55,7 +57,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                     query = db.Tickets.Where(w => w.ClosedById == appUser.Id);
 
                 else if (arg.OnlyIfUserHasParticipatedInConversation)
-                    query = db.Tickets.Where(w => w.Conversations.Any(a => a.CreatedById == Guid.Parse(appUser.Id)));
+                    query = db.Tickets.Where(w => w.Conversations.Any(a => a.CreatedById == appUser.Id));
 
                 //if none of above is true it means that the user want to see all of the tickets
                 //based on the role of the user the result is different
@@ -75,7 +77,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                             || w.AssigneeId == appUser.Id
                             || w.OpenedById == appUser.Id
                             || w.ClosedById == appUser.Id
-                            || w.Conversations.Any(a => a.CreatedById == Guid.Parse(appUser.Id))
+                            || w.Conversations.Any(a => a.CreatedById == appUser.Id)
                             );
                     }
 
@@ -174,20 +176,20 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                 if (userRoles.Any(a => a == Roles.Admin || a == Roles.Observer))
                 {
                     //admin or observer can see all of the tickets in the system
-                    entity = await db.Tickets.FirstOrDefaultAsync(f => f.Id == Guid.Parse(ticketId));
+                    entity = await db.Tickets.FirstOrDefaultAsync(f => f.Id == ticketId);
                 }
 
                 else if (userRoles.Any(a => a == Roles.Employee))
                 {
                     //employee can see all of the tickets that he has somehow participated in
                     entity = await db.Tickets
-                        .Where(f => f.Id == Guid.Parse(ticketId))
+                        .Where(f => f.Id == ticketId)
                         .Where(w =>
                         appUser.Groups.Any(a => a == w.NomineeGroupId)
                         || w.AssigneeId == appUser.Id
                         || w.OpenedById == appUser.Id
                         || w.ClosedById == appUser.Id
-                        || w.Conversations.Any(a => a.CreatedById == Guid.Parse(appUser.Id))
+                        || w.Conversations.Any(a => a.CreatedById == appUser.Id)
                         )
                         .FirstOrDefaultAsync();
                 }
@@ -195,7 +197,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                 {
                     //users can only see the tickets that has opened by them
                     entity = await db.Tickets
-                        .Where(f => f.Id == Guid.Parse(ticketId))
+                        .Where(f => f.Id == ticketId)
                         .Where(w => w.OpenedById == appUser.Id)
                         .FirstOrDefaultAsync();
                 }
@@ -297,7 +299,8 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                 var ticketId = addedTicket.Entity.Id;
 
                 //a user just can send public messages 
-                // but other roles can choose either their massage be public or private (means just visible to employees not customers)
+                // but other roles can make their massage public or private 
+                //(private means it is just visible to employees and not customers)
                 var isMessagePublic = appUser.Roles.Any(a => a == Roles.User) ?
                     true :
                     entity.IsMessagePublic;
@@ -328,7 +331,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
 
         public async Task DeleteAsync(string ticketId)
         {
-            var entity = await db.Tickets.FirstOrDefaultAsync(x => x.Id == Guid.Parse(ticketId));
+            var entity = await db.Tickets.FirstOrDefaultAsync(x => x.Id == ticketId);
+
+            //admins can delete any ticket
+            //others just can delete a ticket if the ticket is opened by them
+            if (!appUser.Roles.Any(a => a == "admin"))
+                if (entity.OpenedById != appUser.Id)
+                    throw new UnauthorizedException();
 
             if (entity != null)
             {
@@ -338,15 +347,52 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
             }
         }
 
-        public Task UpdateAsync(string ticketId, PutTicketDTO entity)
+        public async Task UpdateAsync(string ticketId, PutTicketDTO entity)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var entityInDb = await db.Tickets.FirstOrDefaultAsync(f => f.Id == ticketId);
+
+                if (entityInDb == null)
+                    throw new EntityNotFoundException();
+
+                //admins can edit any ticket
+                //others just can edit a ticket if the ticket is opened by them
+                if(!appUser.Roles.Any(a => a == "admin"))
+                    if(entityInDb.OpenedById != appUser.Id)
+                        throw new UnauthorizedException();
+
+                var mappedEntity = mapper.Map(entity, entityInDb);
+
+                db.Update(entityInDb);
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
         #endregion
         #region RelationActions
-        public Task AddLabelAsync(string ticketId, int labelId)
+        public async Task AddLabelAsync(string ticketId, int labelId)
         {
-            throw new System.NotImplementedException();
+            //try
+            //{
+            //    var ticket = await ReturnParentEntityIfBothExistsElseThrow<TicketLabel>(ticketId, labelId);
+
+            //    (user.Groups ??= new List<UserGroup>()).Add(
+            //        new UserGroup
+            //        {
+            //            UserId = userId,
+            //            GroupId = groupId
+            //        });
+
+            //    await db.SaveChangesAsync();
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw;
+            //}
         }
 
         public Task RemoveLabelAsync(string ticketId, int labelId)

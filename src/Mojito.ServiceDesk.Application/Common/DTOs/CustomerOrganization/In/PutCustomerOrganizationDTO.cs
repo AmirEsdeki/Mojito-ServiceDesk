@@ -13,7 +13,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.CustomerOrganization.In
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<PostCustomerOrganizationDTO, Core.Entities.Identity.CustomerOrganization>();
+            profile.CreateMap<PostCustomerOrganizationDTO, Core.Entities.Identity.CustomerOrganization>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
         }
     }
 }

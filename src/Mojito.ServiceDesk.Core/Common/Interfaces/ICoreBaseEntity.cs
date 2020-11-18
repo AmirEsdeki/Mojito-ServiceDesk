@@ -10,11 +10,11 @@ namespace Mojito.ServiceDesk.Core.Common.Interfaces
     {
         public DateTime Created { get; set; }
 
-        public Guid? CreatedById { get; set; }
+        public string CreatedById { get; set; }
 
         public DateTime? LastModified { get; set; }
 
-        public Guid? LastModifiedById { get; set; }
+        public string LastModifiedById { get; set; }
 
         bool IsDeleted { get; set; }
     }

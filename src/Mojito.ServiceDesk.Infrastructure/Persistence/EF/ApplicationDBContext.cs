@@ -45,13 +45,13 @@ namespace Mojito.ServiceDesk.Infrastructure.Data.EF
                 {
                     case EntityState.Added:
                         if (appUser.Id != null)
-                            entry.Entity.CreatedById = Guid.Parse(appUser.Id);
+                            entry.Entity.CreatedById = appUser.Id;
                         entry.Entity.Created = dateTime.Now;
                         break;
 
                     case EntityState.Modified:
                         if (appUser.Id != null)
-                            entry.Entity.LastModifiedById = Guid.Parse(appUser.Id);
+                            entry.Entity.LastModifiedById = appUser.Id;
                         entry.Entity.LastModified = dateTime.Now;
                         break;
                 }

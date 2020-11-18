@@ -13,7 +13,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.TicketIssue.In
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<PutTicketIssueDTO, Core.Entities.Ticketing.TicketIssue>();
+            profile.CreateMap<PutTicketIssueDTO, Core.Entities.Ticketing.TicketIssue>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

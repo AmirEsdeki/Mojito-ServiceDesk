@@ -18,7 +18,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.TicketLabel.In
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<PutTicketLabelDTO, Core.Entities.Ticketing.TicketLabel>();
+            profile.CreateMap<PutTicketLabelDTO, Core.Entities.Ticketing.TicketLabel>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

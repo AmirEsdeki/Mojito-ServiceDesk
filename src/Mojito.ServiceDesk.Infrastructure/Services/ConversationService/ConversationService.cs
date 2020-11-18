@@ -101,7 +101,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
 
         public async Task DeleteAsync(string id)
         {
-            var entity = await db.Conversations.FirstOrDefaultAsync(x => x.Id == Guid.Parse(id));
+            var entity = await db.Conversations.FirstOrDefaultAsync(x => x.Id == id);
 
             if (entity != null)
             {

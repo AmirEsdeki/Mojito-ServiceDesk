@@ -12,10 +12,12 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 
         public int? PriorityId { get; set; }
 
+        public int? TicketIssueId { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<PutTicketDTO, Core.Entities.Ticketing.Ticket>();
+            profile.CreateMap<PutTicketDTO, Core.Entities.Ticketing.Ticket>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); 
         }
     }
 }

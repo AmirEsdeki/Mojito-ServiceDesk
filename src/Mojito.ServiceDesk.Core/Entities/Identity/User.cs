@@ -43,9 +43,9 @@ namespace Mojito.ServiceDesk.Core.Entities.Identity
 
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
 
-        public Guid? LastModifiedById { get; set; }
+        public string LastModifiedById { get; set; }
 
-        public Guid? CreatedById { get; set; }
+        public string CreatedById { get; set; }
 
         #endregion
     }

@@ -13,7 +13,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Priority.In
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<PutPriorityDTO, Core.Entities.Ticketing.Priority>();
+            profile.CreateMap<PutPriorityDTO, Core.Entities.Ticketing.Priority>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
         }
     }
 }

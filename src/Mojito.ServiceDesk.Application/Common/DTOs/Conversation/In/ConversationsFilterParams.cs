@@ -8,7 +8,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Conversation.In
     public class ConversationsFilterParams : PaginationParamsDTO, IBaseDTOFilter
     {
         [Required]
-        public Guid TicketId { get; set; }
+        public string TicketId { get; set; }
 
         public string Title { get; set; }
 

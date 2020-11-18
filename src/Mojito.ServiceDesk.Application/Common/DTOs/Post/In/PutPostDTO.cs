@@ -13,7 +13,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Post.In
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<PutPostDTO, Core.Entities.Identity.Post>();
+            profile.CreateMap<PutPostDTO, Core.Entities.Identity.Post>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
         }
     }
 }

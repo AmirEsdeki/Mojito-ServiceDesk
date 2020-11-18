@@ -5,10 +5,8 @@ using System.Collections.Generic;
 
 namespace Mojito.ServiceDesk.Core.Entities.Ticketing
 {
-    public class Ticket : BaseEntity
+    public class Ticket : BaseEntityWithGuidId
     {
-        new public Guid Id { get; set; }
-
         public string Identifier { get; set; }
 
         public string Title { get; set; }
