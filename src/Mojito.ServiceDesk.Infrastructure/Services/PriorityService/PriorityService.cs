@@ -28,10 +28,11 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.PriorityService
         {
             try
             {
-                arg.Title ??= string.Empty;
+                var query = GetAllAsync();
 
-                var query = GetAllAsync(data => data.Title.StartsWith(arg.Title) 
-                    || data.Title.Contains(arg.Title));
+                if (arg.Title != null)
+                    query = query.Where(data => data.Title.StartsWith(arg.Title)
+                        || data.Title.Contains(arg.Title));
 
                 var list = await new PaginatedListBuilder<Priority, GetPriorityDTO>(mapper)
                     .CreateAsync(query, arg.PageNumber, arg.PageSize);

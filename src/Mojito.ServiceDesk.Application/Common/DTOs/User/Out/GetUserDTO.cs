@@ -58,14 +58,14 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
         }
     }
 
-    public class UserDTO_Cross : BaseDTOOut_Cross, IMapFrom<Core.Entities.Ticketing.TicketStatus>
+    public class UserDTO_Cross : IMapFrom<Core.Entities.Identity.User>
     {
-        new public string Id { get; set; }
+        public string Id { get; set; }
         public string FullName { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Core.Entities.Ticketing.TicketStatus, UserDTO_Cross>();
+            profile.CreateMap<Core.Entities.Identity.User, UserDTO_Cross>();
         }
     }
     

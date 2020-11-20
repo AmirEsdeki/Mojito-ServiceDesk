@@ -299,18 +299,19 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                     {
                         Message = entity.Message,
                         IsPublic = isMessagePublic,
-                        TicketId = ticketId.ToString()
+                        TicketId = ticketId
                     });
 
                 //todo: handle attachment
 
                 await transaction.CommitAsync();
+                await db.SaveChangesAsync();
 
                 var dto = mapper.Map<GetTicketDTO>(addedTicket.Entity);
 
                 return dto;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;

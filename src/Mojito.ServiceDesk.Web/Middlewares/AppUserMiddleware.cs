@@ -16,7 +16,7 @@ namespace Mojito.ServiceDesk.Web.Middlewares
 
         public async Task Invoke(HttpContext httpContext, IAppUser appUser)
         {
-            appUser.IdToString = httpContext.User.Identity.Name;
+            //appUser.IdToString = httpContext.User.Identity.Name;
             await next(httpContext);
         }
     }

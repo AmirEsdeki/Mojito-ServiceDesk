@@ -17,4 +17,17 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Base.Out
 
         public Guid? CreatedById { get; set; }
     }
+
+    public abstract class BaseDTOGetWithGuidId : IBaseDTOGetWithGuidId
+    {
+        public Guid Id { get; set; }
+
+        public DateTime Created { get; set; }
+
+        public DateTime? LastModified { get; set; }
+
+        public Guid? LastModifiedById { get; set; }
+
+        public Guid? CreatedById { get; set; }
+    }
 }

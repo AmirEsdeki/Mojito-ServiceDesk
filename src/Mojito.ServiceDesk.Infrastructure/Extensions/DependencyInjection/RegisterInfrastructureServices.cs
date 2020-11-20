@@ -19,6 +19,7 @@ using Mojito.ServiceDesk.Application.Common.Interfaces.Services.RoleService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.SendMessagesService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketIssueService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketLabelService;
+using Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.TicketStatusService;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService;
 using Mojito.ServiceDesk.Core.Entities.Identity;
@@ -41,6 +42,7 @@ using Mojito.ServiceDesk.Infrastructure.Services.RoleService;
 using Mojito.ServiceDesk.Infrastructure.Services.SendMessagesService;
 using Mojito.ServiceDesk.Infrastructure.Services.TicketIssueService;
 using Mojito.ServiceDesk.Infrastructure.Services.TicketLabelService;
+using Mojito.ServiceDesk.Infrastructure.Services.TicketService;
 using Mojito.ServiceDesk.Infrastructure.Services.TicketStatusService;
 using Mojito.ServiceDesk.Infrastructure.Services.UserService;
 using System;
@@ -115,6 +117,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Extensions.DependencyInjection
             services.AddTransient<ITicketStatusService, TicketStatusService>();
             services.AddTransient<IProfileImageService, ProfileImageService>();
             services.AddTransient<IConversationService, ConversationService>();
+            services.AddTransient<ITicketService, TicketService>();
 
             return services;
         }

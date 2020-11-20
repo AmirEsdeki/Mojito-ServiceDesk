@@ -8,12 +8,13 @@ using Mojito.ServiceDesk.Application.Common.DTOs.TicketLabel.Out;
 using Mojito.ServiceDesk.Application.Common.DTOs.TicketStatus.Out;
 using Mojito.ServiceDesk.Application.Common.DTOs.User.Out;
 using Mojito.ServiceDesk.Application.Common.Mappings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.Out
 {
-    public class GetTicketDTO : BaseDTOGet, IMapFrom<Core.Entities.Ticketing.Ticket>
+    public class GetTicketDTO : BaseDTOGetWithGuidId, IMapFrom<Core.Entities.Ticketing.Ticket>
     {
         public string Identifier { get; set; }
 

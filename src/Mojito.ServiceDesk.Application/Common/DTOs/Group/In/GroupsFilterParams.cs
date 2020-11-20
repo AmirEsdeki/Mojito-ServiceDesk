@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Group.In
     {
         public string Name { get; set; }
 
-        public int? GroupTypeId { get; set; }
+        public int GroupTypeId { get; set; }
     }
 
 }

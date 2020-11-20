@@ -11,7 +11,7 @@ namespace Mojito.ServiceDesk.Core.Entities.Ticketing
         public bool IsPublic { get; set; }
 
         #region relations
-        public string TicketId { get; set; }
+        public Guid TicketId { get; set; }
         public virtual Ticket Ticket { get; set; }
 
         public virtual ICollection<TicketAttachment> Attachment { get; set; }

@@ -37,7 +37,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
         {
             try
             {
-                var query = db.Conversations.Where(w => w.TicketId == arg.TicketId);
+                var query = db.Conversations.Where(w => w.TicketId.ToString() == arg.TicketId);
 
 
                 //to restrict the query access to just admins or those 

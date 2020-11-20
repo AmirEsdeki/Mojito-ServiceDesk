@@ -12,8 +12,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Conversation.In
 
         public string Title { get; set; }
 
-        public DateTime FromDate { get; set; }
+        public DateTime? FromDate { get; set; }
 
-        public DateTime ToDate { get; set; }
+        public DateTime? ToDate { get; set; }
     }
 }

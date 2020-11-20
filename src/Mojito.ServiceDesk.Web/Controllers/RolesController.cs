@@ -28,7 +28,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(GuidIdDTO), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(GuidIdDTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Post([FromBody] GetRoleDTO arg)
@@ -36,7 +36,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
             try
             {
                 var role = await roleService.CreateRole(arg.RoleName);
-                return new ApiResponse(InfoMessages.RoleCreated, role, HttpStatusCode.Created.ToInt());
+                return new ApiResponse(InfoMessages.RoleCreated, role, HttpStatusCode.OK.ToInt());
 
             }
             catch (ValidationException ex)

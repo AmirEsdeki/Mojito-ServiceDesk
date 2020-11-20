@@ -26,9 +26,9 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 
         public int TicketStatusId { get; set; }
 
-        public DateTime FromDate { get; set; }
+        public DateTime? FromDate { get; set; }
 
-        public DateTime ToDate { get; set; }
+        public DateTime? ToDate { get; set; }
 
         public string OrderByProperty { get; set; }
 
