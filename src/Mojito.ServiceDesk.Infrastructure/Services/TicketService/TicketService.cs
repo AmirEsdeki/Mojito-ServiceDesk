@@ -455,6 +455,70 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
             }
         }
 
+        public async Task PassToNextNominee(Guid ticketId)
+        {
+            var ticket = await db.Tickets.FirstOrDefaultAsync(x => x.Id == ticketId);
+
+            #region SettingTicketPipelineRules
+            var thisTicketIssuePipeline = await db.TicketManagingPipelines.
+                Where(w =>
+                (w.CustomerOrganizationId == ticket.CustomerOrganizationId
+                || w.CustomerOrganizationId == 0) //for example intraorganizational tickets has no CustomerOrganizationId because they are not related to a customer
+                && w.TicketIssueId == ticket.TicketIssueId)
+                .ToListAsync();
+
+            if (thisTicketIssuePipeline != null && thisTicketIssuePipeline.Count() != 0)
+            {
+                var stepCount = thisTicketIssuePipeline.Count();
+                var pipeline = thisTicketIssuePipeline.FirstOrDefault(f => f.Step == ticket.CurrentStep + 1);//Finding the next step action in pipeline.
+
+                ticket.CurrentStep = ticket.CurrentStep + 1;
+                ticket.MaximumSteps = stepCount;
+
+                if (pipeline != null)
+                {
+                    //if for this step the pipeline declared a groupid it will assign to the nominee group of ticket
+                    //and we skip through
+                    if (pipeline.NomineeGroupId != 0)
+                        ticket.NomineeGroupId = pipeline.NomineeGroupId;
+
+                    //if in pipeline it has mentioned that for this step it should set to the corrosponding groupId
+                    //based on IssueId this section will do that
+                    else if (pipeline.SetToNomineeGroupBasedOnIssueUrl)
+                    {
+                        //if the ticket has not issue id assigning a nominee will never perform.
+                        if (ticket.IssueUrlId != null)
+                        {
+                            //if the issueUrl is not a real one then assigning a nominee will never perform.
+                            var issueUrl = await db.IssueUrls.FirstOrDefaultAsync(f => f.Id == ticket.IssueUrlId);
+
+                            if (issueUrl != null)
+                                ticket.NomineeGroupId = issueUrl.GroupId;
+                        }
+                    }
+
+                    //if in pipeline it has mentioned that for this step it should set to the corrosponding userId
+                    //based on IssueId this section will do that
+                    else if (pipeline.SetToNomineePersonBasedOnIssueUrl)
+                    {
+                        //if the ticket has not issue id assigning a nominee will never perform.
+                        if (ticket.IssueUrlId != null)
+                        {
+                            //if the issueUrl is not a real one then assigning a nominee will never perform.
+                            var issueUrl = await db.IssueUrls.FirstOrDefaultAsync(f => f.Id == ticket.IssueUrlId);
+                            //it will set the ticket to first user corrosponding to issueurl
+                            if (issueUrl != null)
+                                ticket.AssigneeId = issueUrl.Users.FirstOrDefault().UserId;
+                        }
+                    }
+
+                    await db.SaveChangesAsync();
+                }
+            }
+
+            #endregion
+        }
+
         public async Task SetAsigneeAsync(Guid ticketId, string userId)
         {
             try
@@ -543,70 +607,6 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
             {
                 throw;
             }
-        }
-
-        public async Task PassToNextNominee(Guid ticketId)
-        {
-            var ticket = await db.Tickets.FirstOrDefaultAsync(x => x.Id == ticketId);
-
-            #region SettingTicketPipelineRules
-            var thisTicketIssuePipeline = await db.TicketManagingPipelines.
-                Where(w =>
-                (w.CustomerOrganizationId == ticket.CustomerOrganizationId
-                || w.CustomerOrganizationId == 0) //for example intraorganizational tickets has no CustomerOrganizationId because they are not related to a customer
-                && w.TicketIssueId == ticket.TicketIssueId)
-                .ToListAsync();
-
-            if (thisTicketIssuePipeline != null && thisTicketIssuePipeline.Count() != 0)
-            {
-                var stepCount = thisTicketIssuePipeline.Count();
-                var pipeline = thisTicketIssuePipeline.FirstOrDefault(f => f.Step == ticket.CurrentStep + 1);//Finding the next step action in pipeline.
-
-                ticket.CurrentStep = ticket.CurrentStep + 1;
-                ticket.MaximumSteps = stepCount;
-
-                if (pipeline != null)
-                {
-                    //if for this step the pipeline declared a groupid it will assign to the nominee group of ticket
-                    //and we skip through
-                    if (pipeline.NomineeGroupId != 0)
-                        ticket.NomineeGroupId = pipeline.NomineeGroupId;
-
-                    //if in pipeline it has mentioned that for this step it should set to the corrosponding groupId
-                    //based on IssueId this section will do that
-                    else if (pipeline.SetToNomineeGroupBasedOnIssueUrl)
-                    {
-                        //if the ticket has not issue id assigning a nominee will never perform.
-                        if (ticket.IssueUrlId != null)
-                        {
-                            //if the issueUrl is not a real one then assigning a nominee will never perform.
-                            var issueUrl = await db.IssueUrls.FirstOrDefaultAsync(f => f.Id == ticket.IssueUrlId);
-
-                            if (issueUrl != null)
-                                ticket.NomineeGroupId = issueUrl.GroupId;
-                        }
-                    }
-
-                    //if in pipeline it has mentioned that for this step it should set to the corrosponding userId
-                    //based on IssueId this section will do that
-                    else if (pipeline.SetToNomineePersonBasedOnIssueUrl)
-                    {
-                        //if the ticket has not issue id assigning a nominee will never perform.
-                        if (ticket.IssueUrlId != null)
-                        {
-                            //if the issueUrl is not a real one then assigning a nominee will never perform.
-                            var issueUrl = await db.IssueUrls.FirstOrDefaultAsync(f => f.Id == ticket.IssueUrlId);
-                            //it will set the ticket to first user corrosponding to issueurl
-                            if (issueUrl != null)
-                                ticket.AssigneeId = issueUrl.Users.FirstOrDefault().UserId;
-                        }
-                    }
-
-                    await db.SaveChangesAsync();
-                }
-            }
-
-            #endregion
         }
         #endregion
 
