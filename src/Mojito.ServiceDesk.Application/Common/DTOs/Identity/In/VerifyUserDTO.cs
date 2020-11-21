@@ -7,4 +7,10 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
         public Guid UserId { get; set; }
         public string Code { get; set; }
     }
+
+    public class VerifyUserWithIdentityDTO
+    {
+        public string Identity { get; set; }
+        public string Code { get; set; }
+    }
 }

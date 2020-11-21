@@ -4,4 +4,9 @@
     {
         public string Id { get; set; }
     }
+
+    public class IdentityDTO
+    {
+        public string Identity { get; set; }
+    }
 }

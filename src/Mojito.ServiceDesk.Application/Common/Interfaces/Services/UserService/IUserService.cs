@@ -15,7 +15,11 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
 
         Task<UserTokenDTO> VerifyUserAsync(VerifyUserDTO arg, string ip);
 
-        Task ResendVerificationCodeAsync(string userId);
+        Task<UserTokenDTO> VerifyUserWithIdentityAsync(VerifyUserWithIdentityDTO arg, string ip);
+
+        Task<string> ResendVerificationCodeAsync(string identity);
+
+        Task<UserTokenDTO> ChangePasswordAsync(ChangePasswordDTO arg, string ip);
 
         Task<UserTokenDTO> SignInAsync(SignInDTO arg, string ip);
 
@@ -54,6 +58,7 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
         Task AddIssueUrlAsync(string userId, int issueUrlId);
 
         Task RemoveIssueUrlAsync(string userId, int issueUrlId);
+
         #endregion
 
 

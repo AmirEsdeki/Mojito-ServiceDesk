@@ -63,7 +63,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
                 if (result.Succeeded)
                 {
                     result = await userManager.AddToRoleAsync(user, Roles.User);
-                    SendVerificationCodeAsync(user);
+                    await SendVerificationCodeAsync(user);
                     return new GuidIdDTO()
                     { Id = user.Id };
                 }
@@ -74,6 +74,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
             catch (System.Exception ex)
             {
+                if (ex.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    throw new PhoneNumberNotAvailableException();
+
                 throw;
             }
         }
@@ -86,6 +89,11 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
                 if (user == null)
                     throw new EntityNotFoundException();
+
+                var lockDate = await userManager.GetLockoutEndDateAsync(user);
+                if (lockDate != null
+                    && lockDate.Value > DateTime.Now)
+                    throw new AccountLockedException();
 
                 var result = await userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, arg.Code);
 
@@ -110,6 +118,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
                 else
                 {
+                    await userManager.AccessFailedAsync(user);
                     throw new ValidationException(result.Errors);
                 }
             }
@@ -119,16 +128,125 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
-        public async Task ResendVerificationCodeAsync(string userId)
+        public async Task<UserTokenDTO> ChangePasswordAsync(ChangePasswordDTO arg, string ip)
         {
             try
             {
-                var user = await userManager.FindByIdAsync(userId);
+                var user = await userManager.FindByIdAsync(arg.UserId.ToString());
 
                 if (user == null)
                     throw new EntityNotFoundException();
-                if (!user.PhoneNumberConfirmed)
-                    SendVerificationCodeAsync(user);
+
+                var lockDate = await userManager.GetLockoutEndDateAsync(user);
+                if (lockDate != null
+                    && lockDate.Value > DateTime.Now)
+                    throw new AccountLockedException();
+
+                var result = await userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, arg.Code);
+
+                if (result.Succeeded)
+                {
+                    //change last code to insure security.
+                    var confirmationToken =
+                        await userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+
+                    var resetPassToken = await userManager.GeneratePasswordResetTokenAsync(user);
+
+                    var changePasswordResult = await userManager.ResetPasswordAsync(user, resetPassToken, arg.Password);
+
+                    if (changePasswordResult.Succeeded)
+                    {
+                        var roles = await userManager.GetRolesAsync(user);
+                        var refreshToken = jwtService.GenerateRefreshToken(ip);
+
+                        if (user.RefreshTokens == null)
+                            user.RefreshTokens = new List<RefreshToken>();
+
+                        user.RefreshTokens.Add(refreshToken);
+                        await db.SaveChangesAsync();
+
+                        return new UserTokenDTO(jwtService.GenerateAuthorizationToken(user, roles),
+                           refreshToken.Token);
+                    }
+                    else
+                    {
+                        throw new ValidationException(changePasswordResult.Errors);
+                    }
+                    
+                }
+
+                else
+                {
+                    await userManager.AccessFailedAsync(user);
+                    throw new ValidationException(result.Errors);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<UserTokenDTO> VerifyUserWithIdentityAsync(VerifyUserWithIdentityDTO arg, string ip)
+        {
+            try
+            {
+                var user = await FindUser(arg.Identity);
+
+                if (user == null)
+                    throw new EntityNotFoundException();
+
+                var lockDate = await userManager.GetLockoutEndDateAsync(user);
+                if (lockDate != null
+                    && lockDate.Value > DateTime.Now)
+                    throw new AccountLockedException();
+
+                var result = await userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, arg.Code);
+
+                if (result.Succeeded)
+                {
+                    //change last code to insure security.
+                    var confirmationToken =
+                        await userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+
+                    var roles = await userManager.GetRolesAsync(user);
+                    var refreshToken = jwtService.GenerateRefreshToken(ip);
+
+                    if (user.RefreshTokens == null)
+                        user.RefreshTokens = new List<RefreshToken>();
+
+                    user.RefreshTokens.Add(refreshToken);
+                    await db.SaveChangesAsync();
+
+                    return new UserTokenDTO(jwtService.GenerateAuthorizationToken(user, roles),
+                       refreshToken.Token);
+                }
+
+                else
+                {
+                    await userManager.AccessFailedAsync(user);
+                    throw new ValidationException(result.Errors);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<string> ResendVerificationCodeAsync(string identity)
+        {
+            try
+            {
+                var user = await FindUser(identity);
+
+                if (user == null)
+                    throw new EntityNotFoundException();
+
+                //if (!user.PhoneNumberConfirmed)
+                    await SendVerificationCodeAsync(user);
+
+                return user.Id;
             }
             catch (System.Exception ex)
             {
@@ -140,7 +258,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         {
             try
             {
-                var user = await userManager.FindByNameAsync(arg.Username);
+                var user = await FindUser(arg.Username);
 
                 if (user == null)
                     throw new WrongCredentialsException();
@@ -550,7 +668,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
         #endregion
 
         #region private
-        private async void SendVerificationCodeAsync(User user)
+        private async Task SendVerificationCodeAsync(User user)
         {
             try
             {
@@ -609,6 +727,22 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
             if (!await db.Set<T>().AnyAsync(a => a.Id == entityId))
                 return null;
+
+            return user;
+        }
+
+        private async Task<User> FindUser(string anyThing)
+        {
+            var user = await userManager.FindByIdAsync(anyThing);
+
+            if (user == null)
+                user = await userManager.FindByNameAsync(anyThing);
+
+            if (user == null)
+                user = await userManager.FindByEmailAsync(anyThing);
+
+            if (user == null)
+                user = await db.Users.FirstOrDefaultAsync(f => f.PhoneNumber == anyThing);
 
             return user;
         }

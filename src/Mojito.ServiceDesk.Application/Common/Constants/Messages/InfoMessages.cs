@@ -113,5 +113,7 @@
         public const string TicketHasClosed  = "تیکت با موفقیت بسته شد.";
 
         public const string TicketHasPassedToNextNominee  = "تیکت به نامزد بعدی اختصاص داده شد.";
+
+        public static string PasswordHasChanged = "رمز عبور با موفقیت تغییر یافت.";
     }
 }

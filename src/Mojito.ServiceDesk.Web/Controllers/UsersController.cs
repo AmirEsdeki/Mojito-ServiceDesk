@@ -70,9 +70,10 @@ namespace Mojito.ServiceDesk.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("[action]")]
+        [Route("verify-user")]
         [ProducesResponseType(typeof(AutoWrapperResponseSchema<UserTokenDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> VerifyUser([FromBody] VerifyUserDTO arg)
         {
@@ -101,16 +102,80 @@ namespace Mojito.ServiceDesk.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("[action]")]
-        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [Route("confirm-code")]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<UserTokenDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ApiResponse> ResendVerificationCode([FromBody] GuidIdDTO arg)
+        public async Task<ApiResponse> VerifyUserWithIdentity([FromBody] VerifyUserWithIdentityDTO arg)
         {
             try
             {
-                await userService.ResendVerificationCodeAsync(arg.Id);
-                return new ApiResponse(InfoMessages.CodeHasSent, null, HttpStatusCode.OK.ToInt());
+                var ip = httpService.IpAddress(Request, HttpContext);
+
+                var token = await userService.VerifyUserWithIdentityAsync(arg, ip);
+
+                httpService.SetCookie("refreshToken", token.RefreshToken, Response);
+                return new ApiResponse(InfoMessages.UserVerified, token, HttpStatusCode.OK.ToInt());
+            }
+            catch (ValidationException ex)
+            {
+                throw new ApiException(ex.Errors, ex.StatusCode);
+            }
+            catch (CustomException ex)
+            {
+                throw new ApiException(ex, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("resend-code")]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GuidIdDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> ResendVerificationCode([FromBody] IdentityDTO arg)
+        {
+            try
+            {
+                var userId = await userService.ResendVerificationCodeAsync(arg.Identity);
+                return new ApiResponse(InfoMessages.CodeHasSent, new GuidIdDTO() { Id = userId }, HttpStatusCode.OK.ToInt());
+            }
+            catch (CustomException ex)
+            {
+                throw new ApiException(ex, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("change-password")]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<UserTokenDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> ChangePassword([FromBody] ChangePasswordDTO arg)
+        {
+            try
+            {
+                var ip = httpService.IpAddress(Request, HttpContext);
+
+                var token = await userService.ChangePasswordAsync(arg, ip);
+
+                return new ApiResponse(InfoMessages.PasswordHasChanged, token, HttpStatusCode.OK.ToInt());
+            }
+            catch (ValidationException ex)
+            {
+                throw new ApiException(ex.Errors, ex.StatusCode);
             }
             catch (CustomException ex)
             {
@@ -126,7 +191,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(typeof(AutoWrapperResponseSchema<UserTokenDTO>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> SignIn([FromBody] SignInDTO arg)
         {

@@ -19,5 +19,7 @@
         public const string TokenNotFound  = "توکن یافت نشد.";
 
         public const string UserNameOrEmailNotAvailable  = "این نام کاربری یا ایمیل در دسترس نیست.";
+
+        public const string PhoneNumberNotAvailable = "این شماره تلفن در دسترس نیست.";
     }
 }
