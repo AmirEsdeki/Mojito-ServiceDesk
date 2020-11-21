@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Text;
 
 namespace Mojito.ServiceDesk.Infrastructure.Modules
 {
@@ -8,35 +9,70 @@ namespace Mojito.ServiceDesk.Infrastructure.Modules
             => new IdentityError()
             {
                 Code = nameof(DuplicateEmail),
-                Description = $"توسط شخص دیگری انتخاب شده است '{email}' ایمیل"
+                Description = new StringBuilder()
+                .Append("ایمیل")
+                .Append(" ")
+                .Append(email)
+                .Append(" ")
+                .Append("توسط شخص دیگری انتخاب شده است")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError DuplicateUserName(string userName)
             => new IdentityError()
             {
                 Code = nameof(DuplicateUserName),
-                Description = $"توسط شخص دیگری انتخاب شده است '{userName}' نام کاربری"
+                Description = new StringBuilder()
+                .Append("نام کاربری")
+                .Append(" ")
+                .Append(userName)
+                .Append(" ")
+                .Append("توسط شخص دیگری انتخاب شده است")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError InvalidEmail(string email)
             => new IdentityError()
             {
                 Code = nameof(InvalidEmail),
-                Description = $"یک ایمیل معتبر نیست '{email}' ایمیل"
+                Description = new StringBuilder()
+                .Append("ایمیل")
+                .Append(" ")
+                .Append(email)
+                .Append(" ")
+                .Append("یک ایمیل معتبر نیست")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError DuplicateRoleName(string role)
             => new IdentityError()
             {
                 Code = nameof(DuplicateRoleName),
-                Description = $"قبلا ثبت شده است '{role}' مقام"
+                Description = new StringBuilder()
+                .Append("مقام")
+                .Append(" ")
+                .Append(role)
+                .Append(" ")
+                .Append("قبلا ثبت شده است")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError InvalidRoleName(string role)
             => new IdentityError()
             {
                 Code = nameof(InvalidRoleName),
-                Description = $"معتبر نیست '{role}' نام"
+                Description = new StringBuilder()
+                .Append("نام")
+                .Append(" ")
+                .Append(role)
+                .Append(" ")
+                .Append("معتبر نیست")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError PasswordRequiresDigit()
@@ -71,35 +107,70 @@ namespace Mojito.ServiceDesk.Infrastructure.Modules
             => new IdentityError()
             {
                 Code = nameof(PasswordRequiresUniqueChars),
-                Description = $"کاراکتر منحصر به فرد باشد {uniqueChars} رمز عبور باید حداقل دارای"
+                Description = new StringBuilder()
+                .Append("رمز عبور باید حداقل دارای")
+                .Append(" ")
+                .Append(uniqueChars)
+                .Append(" ")
+                .Append("کاراکتر منحصر به فرد باشد")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError PasswordTooShort(int length)
             => new IdentityError()
             {
                 Code = nameof(PasswordTooShort),
-                Description = $"کاراکتر باشد {length} رمز عبور نباید کمتر از"
+                Description = new StringBuilder()
+                .Append("رمز عبور نباید کمتر از")
+                .Append(" ")
+                .Append(length)
+                .Append(" ")
+                .Append("کاراکتر باشد")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError InvalidUserName(string userName)
             => new IdentityError()
             {
                 Code = nameof(InvalidUserName),
-                Description = $"معتبر نیست '{userName}' نام کاربری"
+                Description = new StringBuilder()
+                .Append("نام کاربری")
+                .Append(" ")
+                .Append(userName)
+                .Append(" ")
+                .Append("معتبر نیست")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError UserNotInRole(string role)
             => new IdentityError()
             {
                 Code = nameof(UserNotInRole),
-                Description = $"نیست '{role}' کاربر مورد نظر در مقام"
+                Description = new StringBuilder()
+                .Append("کاربر مورد نظر در مقام")
+                .Append(" ")
+                .Append(role)
+                .Append(" ")
+                .Append("نیست")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError UserAlreadyInRole(string role)
             => new IdentityError()
             {
                 Code = nameof(UserAlreadyInRole),
-                Description = $"است '{role}' کاربر مورد نظر در مقام"
+                Description = new StringBuilder()
+                .Append("کاربر مورد نظر همین اکنون در مقام")
+                .Append(" ")
+                .Append(role)
+                .Append(" ")
+                .Append("است")
+                .Append(".")
+                .ToString()
             };
 
         public override IdentityError DefaultError()
