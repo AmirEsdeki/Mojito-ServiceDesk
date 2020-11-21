@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 {
     public class PostTicketDTO : BaseDTOPost, IMapFrom<Core.Entities.Ticketing.Ticket>
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Title { get; set; }
 
@@ -15,7 +15,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 
         public int? PriorityId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         public int TicketIssueId { get; set; }
 
         public string Message { get; set; }

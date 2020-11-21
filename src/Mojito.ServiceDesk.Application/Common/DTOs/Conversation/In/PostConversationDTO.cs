@@ -8,7 +8,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Conversation.In
     public class PostConversationDTO : BaseDTOPost, IMapFrom<Core.Entities.Ticketing.Conversation>
     {
         //todo: get the attachment with post data
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         public long? TicketId { get; set; }
 
         public string Message { get; set; }

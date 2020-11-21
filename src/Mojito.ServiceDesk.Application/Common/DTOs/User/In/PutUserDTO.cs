@@ -9,7 +9,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.In
         [StringLength(255)]
         public string Username { get; set; }
 
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "فرمت ایمیل صحیح نمی باشد.")]
         [StringLength(255)]
         public string Email { get; set; }
 

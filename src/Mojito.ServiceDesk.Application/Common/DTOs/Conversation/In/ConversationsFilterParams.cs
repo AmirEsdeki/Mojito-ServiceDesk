@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Conversation.In
 {
     public class ConversationsFilterParams : PaginationParamsDTO, IBaseDTOFilter
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         public string TicketId { get; set; }
 
         public string Title { get; set; }

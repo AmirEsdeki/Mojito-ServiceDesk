@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.TicketStatus.In
 {
     public class PutTicketStatusDTO : BaseDTOPut, IMapFrom<Core.Entities.Ticketing.TicketStatus>
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Title { get; set; }
 

@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.GroupType.In
 {
     public class PostGroupTypeDTO : BaseDTOPost, IMapFrom<Core.Entities.Identity.GroupType>
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Title { get; set; }
 

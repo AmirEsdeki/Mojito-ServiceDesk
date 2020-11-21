@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.CustomerOrganization.In
 {
     public class PutCustomerOrganizationDTO : BaseDTOPut, IMapFrom<Core.Entities.Identity.CustomerOrganization>
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Name { get; set; }
 

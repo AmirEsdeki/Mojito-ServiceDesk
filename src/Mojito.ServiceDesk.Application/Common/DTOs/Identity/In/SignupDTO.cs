@@ -6,37 +6,37 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Identity.In
 {
     public class SignUpDTO : IMapFrom<Core.Entities.Identity.User>
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Username { get; set; }
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
+        [EmailAddress(ErrorMessage = "فرمت ایمیل صحیح نمی باشد.")]
         [StringLength(255)]
         public string Email { get; set; }
 
-        [Required]
-        [Phone]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
+        [Phone(ErrorMessage = "فرمت شماره تلفن صحیح نمی باشد.")]
         [StringLength(255)]
         public string PhoneNumber { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Password { get; set; }
 
-        [Required]
-        [Compare(nameof(Password))]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
+        [Compare(nameof(Password), ErrorMessage = "رمز عبور و تکرار آن یکسان نیست.")]
         public string ConfirmPassword { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string LastName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [Range(0,300)]
         public int CustomerOrganizationId { get; set; }
 

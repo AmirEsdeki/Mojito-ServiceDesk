@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Priority.In
 {
     public class PutPriorityDTO : BaseDTOPut, IMapFrom<Core.Entities.Ticketing.Priority>
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Title { get; set; }
 

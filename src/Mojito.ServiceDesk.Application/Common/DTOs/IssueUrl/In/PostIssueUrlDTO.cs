@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.In
 {
     public class PostIssueUrlDTO : BaseDTOPost, IMapFrom<Core.Entities.Ticketing.IssueUrl>
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Url { get; set; }
 

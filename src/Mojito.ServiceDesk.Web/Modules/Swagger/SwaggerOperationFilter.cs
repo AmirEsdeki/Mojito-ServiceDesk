@@ -21,7 +21,7 @@ public class SwaggerOperationFilter : IOperationFilter
         //        Name = "AuthToken",
         //        In = ParameterLocation.Header,
         //        Description = "user's token",
-        //        Required = true
+        //        Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.") = true
         //    });
         //}
 
@@ -36,7 +36,7 @@ public class SwaggerOperationFilter : IOperationFilter
         //        Name = "AuthToken",
         //        In = ParameterLocation.Header,
         //        Description = "user's token",
-        //        Required = true
+        //        Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.") = true
         //    });
         //}
 
@@ -51,7 +51,7 @@ public class SwaggerOperationFilter : IOperationFilter
         //        Name = "ServiceSecret",
         //        In = ParameterLocation.Header,
         //        Description = "service token",
-        //        Required = false,
+        //        Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.") = false,
         //        Schema = new OpenApiSchema
         //        {
         //            Type = "String",

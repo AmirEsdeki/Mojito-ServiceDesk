@@ -9,7 +9,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.TicketAttachment.In
     {
         public byte[] File { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         public Guid ConversationId { get; set; }
 
         public void Mapping(Profile profile)

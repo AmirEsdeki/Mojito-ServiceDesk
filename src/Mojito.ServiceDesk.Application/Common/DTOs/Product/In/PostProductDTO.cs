@@ -7,11 +7,11 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Product.In
 {
     public class PostProductDTO : BaseDTOPost, IMapFrom<Core.Entities.Proprietary.Product>
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         public int ProductId { get; set; }
 
         public void Mapping(Profile profile)
