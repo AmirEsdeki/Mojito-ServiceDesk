@@ -36,5 +36,4 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.DTOs
         public Guid? CreatedById { get; set; }
         #endregion
     }
-
 }

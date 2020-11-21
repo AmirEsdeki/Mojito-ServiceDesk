@@ -7,7 +7,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.In
 {
     public class PostUserDTO : BaseDTOPost, IMapFrom<Core.Entities.Identity.User>
     {
-        [Required]
+        [Required(ErrorMessage ="تمام فیلدهای اجباری باید دارای مقدار باشند.")]
         [StringLength(255)]
         public string Username { get; set; }
 

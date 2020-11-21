@@ -142,6 +142,9 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             {
                 var user = await userManager.FindByNameAsync(arg.Username);
 
+                if (user == null)
+                    throw new WrongCredentialsException();
+
                 if (user != null && !user.PhoneNumberConfirmed)
                     throw new AccountNotVerifiedException();
 
@@ -149,11 +152,11 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
                 if (result.Succeeded)
                 {
-                    var roles = await userManager.GetRolesAsync(user);
                     var refreshToken = jwtService.GenerateRefreshToken(ip);
                     user.RefreshTokens.Add(refreshToken);
                     await db.SaveChangesAsync();
 
+                    var roles = await userManager.GetRolesAsync(user);
                     return new UserTokenDTO(jwtService.GenerateAuthorizationToken(user, roles),
                        refreshToken.Token);
                 }
