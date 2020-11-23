@@ -287,6 +287,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                 var addedTicket = db.Tickets.Add(ticket);
                 var ticketId = addedTicket.Entity.Id;
 
+                db.TicketTicketLabels.AddRange(
+                    entity.Labels.Select(s => new TicketTicketLabel { TicketId = ticketId, TicketLabelId = s }).ToList()
+                    );
+
                 //a user just can send public messages 
                 // but other roles can make their massage public or private 
                 //(private means it is just visible to employees and not customers)

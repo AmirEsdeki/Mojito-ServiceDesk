@@ -22,6 +22,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 
         public bool IsMessagePublic { get; set; }
 
+        public int[] Labels { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<PostTicketDTO, Core.Entities.Ticketing.Ticket>();

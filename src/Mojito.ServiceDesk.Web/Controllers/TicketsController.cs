@@ -84,7 +84,7 @@ namespace Mojito.ServiceDesk.Web.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GuidIdDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperResponseSchema<GetTicketDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
         public async Task<ApiResponse> Post([FromBody] PostTicketDTO arg)
