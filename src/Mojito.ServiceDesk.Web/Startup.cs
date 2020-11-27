@@ -90,6 +90,7 @@ namespace Mojito.ServiceDesk.Web
             //Enable AutoWrapper
             app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions
             {
+                IsApiOnly=false,
                 ShowStatusCode = true,
                 ShowIsErrorFlagForSuccessfulResponse = true,
                 IsDebug = true,

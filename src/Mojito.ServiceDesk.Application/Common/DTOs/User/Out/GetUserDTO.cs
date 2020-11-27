@@ -28,6 +28,9 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
 
         public bool IsEmployee { get; set; }
 
+        public string ProfileImage { get; set; }
+
+
         public DateTime Created { get; set; }
 
         public DateTime? LastModified { get; set; }
@@ -37,8 +40,6 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
         public PostDTO_Cross Post { get; set; }
 
         public CustomerOrganizationDTO_Cross CustomerOrganization { get; set; }
-
-        public ProfileImageDTO_Cross ProfileImage { get; set; }
 
         public ICollection<GroupDTO_Cross> Groups { get; set; }
 
@@ -54,18 +55,24 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.User.Out
         {
             profile.CreateMap<Core.Entities.Identity.User, GetUserDTO>()
                 .ForMember(dto => dto.Groups, opt => opt.MapFrom(x => x.Groups.Select(y => y.Group).ToList()))
-                .ForMember(dto => dto.IssueUrls, opt => opt.MapFrom(x => x.IssueUrls.Select(y => y.IssueUrl).ToList()));
+                .ForMember(dto => dto.IssueUrls, opt => opt.MapFrom(x => x.IssueUrls.Select(y => y.IssueUrl).ToList()))
+                .ForMember(dto => dto.ProfileImage, opt => opt.MapFrom(x => Convert.ToBase64String(x.ProfileImage.Image)));
         }
     }
 
     public class UserDTO_Cross : IMapFrom<Core.Entities.Identity.User>
     {
         public string Id { get; set; }
+
         public string FullName { get; set; }
+
+        public string ProfileImage { get; set; }
+
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Core.Entities.Identity.User, UserDTO_Cross>();
+            profile.CreateMap<Core.Entities.Identity.User, UserDTO_Cross>()
+                .ForMember(dto => dto.ProfileImage, opt => opt.MapFrom(x => Convert.ToBase64String(x.ProfileImage.Image)));
         }
     }
     

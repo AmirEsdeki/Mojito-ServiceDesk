@@ -11,6 +11,11 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.IssueUrl.In
         [StringLength(255)]
         public string Url { get; set; }
 
+        [Required(ErrorMessage = "تمام فیلدهای اجباری باید دارای مقدار باشند.")]
+        public int GroupId { get; set; }
+
+        [Required(ErrorMessage = "تمام فیلدهای اجباری باید دارای مقدار باشند.")]
+        public int ProductId { get; set; }
 
         public void Mapping(Profile profile)
         {
