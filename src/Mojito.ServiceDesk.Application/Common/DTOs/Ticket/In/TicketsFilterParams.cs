@@ -16,7 +16,7 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Ticket.In
 
         public bool OnlyOpenedByUser { get; set; }
 
-        public bool OnlyIfUserHasParticipatedInConversation { get; set; }
+        public bool OnlyIfUserHasCreated { get; set; }
 
         public bool IsClosed { get; set; }
 

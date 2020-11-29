@@ -114,6 +114,8 @@
 
         public const string TicketHasPassedToNextNominee  = "تیکت به نامزد بعدی اختصاص داده شد.";
 
-        public static string PasswordHasChanged = "رمز عبور با موفقیت تغییر یافت.";
+        public const string PasswordHasChanged = "رمز عبور با موفقیت تغییر یافت.";
+
+        public const string AddedToRole = "نقش به کاربر اختصاص داده شد.";
     }
 }

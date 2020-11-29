@@ -294,6 +294,32 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
             }
         }
 
+
+        public async Task SetRole(string role, string userId)
+        {
+            try
+            {
+                var user = await FindUser(userId);
+
+                if (user == null)
+                    throw new WrongCredentialsException();
+
+                if (user != null && !user.PhoneNumberConfirmed)
+                    throw new AccountNotVerifiedException();
+
+                var result = await userManager.AddToRoleAsync(user, role);
+
+                if (!result.Succeeded)
+                {
+                    throw new CustomException(result.Errors.ToList()[0].Description, 400);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> RevokeTokenAsync(string token, string ipAddress)
         {
             var user = db.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
@@ -746,6 +772,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.UserService
 
             return user;
         }
+
         #endregion
     }
 }

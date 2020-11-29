@@ -9,19 +9,15 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
         private string[] roles;
         public string[] Roles
         {
-            //get
-            //{
-            //    roles.ForEach(f => f.ToLower());
-            //    return roles;
-            //}
             get
             {
-                return new string[] { "user" };
+                roles.ForEach(f => f.ToLower());
+                return roles;
             }
-            //set
-            //{
-            //    roles = value;
-            //}
+            set
+            {
+                roles = value;
+            }
         }
 
         public Guid? Id
@@ -43,15 +39,12 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
 
         public string IsVerified { get; set; }
 
-        //public bool IsCompanyMember { get; set; }
-        public bool IsCompanyMember => false;
+        public bool IsCompanyMember { get; set; }
 
         public int[] Groups { get; set; }
 
-        //public int CustomerOrganizationId { get; set; }
-        public int CustomerOrganizationId => 1;
+        public int CustomerOrganizationId { get; set; }
 
-        //public string IdToString { get; set; }
-        public string IdToString => "75683f59-286b-4cb9-9b41-905da2c3e135";
+        public string IdToString { get; set; }
     }
 }

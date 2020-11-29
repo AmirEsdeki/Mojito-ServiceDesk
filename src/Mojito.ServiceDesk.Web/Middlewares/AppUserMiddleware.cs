@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Mojito.ServiceDesk.Application.Common.Extensions;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using System.Threading.Tasks;
+using Mojito.ServiceDesk.Web.Modules.Extension;
 
 namespace Mojito.ServiceDesk.Web.Middlewares
 {
@@ -16,7 +16,15 @@ namespace Mojito.ServiceDesk.Web.Middlewares
 
         public async Task Invoke(HttpContext httpContext, IAppUser appUser)
         {
-            //appUser.IdToString = httpContext.User.Identity.Name;
+            var user = httpContext.User;
+
+            appUser.IdToString = user.Identity.Name;
+            appUser.Roles = new string[] { user.GetRole() };
+            appUser.Groups =  user.GetGroups();
+            appUser.IsCompanyMember = user.IsCompanyMember();
+            appUser.CustomerOrganizationId = user.GetCustomerOrganizationId();
+
+
             await next(httpContext);
         }
     }

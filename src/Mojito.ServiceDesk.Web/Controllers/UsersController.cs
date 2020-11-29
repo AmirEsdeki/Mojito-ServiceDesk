@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace Mojito.ServiceDesk.Web.Controllers
 {
-    //[Authorize(Roles ="user")]
+    [Authorize(Roles ="user")]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -200,6 +200,29 @@ namespace Mojito.ServiceDesk.Web.Controllers
                 var ip = httpService.IpAddress(Request, HttpContext);
                 var token = await userService.SignInAsync(arg, ip);
                 return new ApiResponse(InfoMessages.SuccesfullySignedIn, token, HttpStatusCode.OK.ToInt());
+            }
+            catch (CustomException ex)
+            {
+                throw new ApiException(ex, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPut]
+        [Route("{userId}/add-role/{role}")]
+        [ProducesResponseType(typeof(ApiResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(AutoWrapperErrorSchema), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ApiResponse> SetRole(string userId, string role)
+        {
+            try
+            {
+                await userService.SetRole(role, userId);
+                return new ApiResponse(InfoMessages.AddedToRole, null, HttpStatusCode.OK.ToInt());
             }
             catch (CustomException ex)
             {

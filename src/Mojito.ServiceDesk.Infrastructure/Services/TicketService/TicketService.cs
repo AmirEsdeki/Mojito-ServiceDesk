@@ -47,7 +47,27 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
 
                 #region AllOfTheTicketsThatUserCanAccess
                 if (arg.OnlyTicketsOfGroup)
-                    query = db.Tickets.Where(w => appUser.Groups.Any(a => a == w.NomineeGroupId));
+                {
+                    var groups = appUser.Groups;
+                        query = db.Tickets;
+
+                    if (groups.Length > 1)
+                    {
+
+                        foreach (var group in groups)
+                        {
+                            query = query.Where(w => w.NomineeGroupId.HasValue && w.NomineeGroupId == group);
+                        }
+                    }
+                    else
+                    {
+                        //if user has no group with this trick we return nothing.
+                        //returning null, or use of take & skip has some bugs when comes to ui.
+                        query = query.Where(w => w.NomineeGroupId == int.MaxValue);
+                    }
+                }
+                    //query = db.Tickets.Where(w => appUser.Groups.Any(a => 
+                    //w.NomineeGroupId.HasValue && a == w.NomineeGroupId.Value));
 
                 else if (arg.OnlyTicketsOfAssignee)
                     query = db.Tickets.Where(w => w.AssigneeId == appUser.Id.ToString());
@@ -58,7 +78,7 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.TicketService
                 else if (arg.OnlyClosedByUser)
                     query = db.Tickets.Where(w => w.ClosedById == appUser.Id.ToString());
 
-                else if (arg.OnlyIfUserHasParticipatedInConversation)
+                else if (arg.OnlyIfUserHasCreated)
                     query = db.Tickets.Where(w => w.Conversations.Any(a => a.CreatedById == appUser.Id));
 
                 //if none of above is true it means that the user want to see all of the tickets

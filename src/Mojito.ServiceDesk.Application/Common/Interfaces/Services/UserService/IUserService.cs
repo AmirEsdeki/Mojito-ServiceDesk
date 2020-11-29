@@ -23,6 +23,8 @@ namespace Mojito.ServiceDesk.Application.Common.Interfaces.Services.UserService
 
         Task<UserTokenDTO> SignInAsync(SignInDTO arg, string ip);
 
+        Task SetRole(string role, string userId);
+
         Task<UserTokenDTO> RefreshTokenAsync(string token, string ipAddress);
 
         Task<bool> RevokeTokenAsync(string token, string ipAddress);

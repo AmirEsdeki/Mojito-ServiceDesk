@@ -2,9 +2,11 @@
 using Microsoft.IdentityModel.Tokens;
 using Mojito.ServiceDesk.Application.Common.Interfaces.Services.JWTService;
 using Mojito.ServiceDesk.Core.Entities.Identity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -40,7 +42,10 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.JWTService
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, rolesObj[0]),
                     new Claim("FullName", user.FullName),
-                    new Claim("IsVerified", user.PhoneNumberConfirmed.ToString())
+                    new Claim("IsVerified", user.PhoneNumberConfirmed.ToString()),
+                    new Claim("IsCompanyMember", user.IsCompanyMember.ToString()),
+                    new Claim("CustomerOrganizationId", user.CustomerOrganizationId.ToString()),
+                    new Claim("Groups", JsonConvert.SerializeObject(user.Groups.Select(s => s.GroupId).ToArray())),
                 }),
                 Expires = DateTime.Now.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
