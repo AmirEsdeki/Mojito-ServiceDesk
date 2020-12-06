@@ -76,8 +76,18 @@ namespace Mojito.ServiceDesk.Infrastructure.Services.ConversationService
                 var list = await new PaginatedListBuilder<Conversation, GetConversationDTO>(mapper)
                     .CreateAsync(query, arg.PageNumber, arg.PageSize);
 
+                foreach (var item in list.Items)
+                {
+                    var creatorUser = await db.Users.FirstOrDefaultAsync(u => u.Id == item.CreatedById.ToString());
+                    item.FullName = creatorUser.FullName;
+                    if(creatorUser.ProfileImage!=null && creatorUser.ProfileImage.ImageThumbnail != null)
+                        item.ProfileImage = Convert.ToBase64String(creatorUser.ProfileImage.ImageThumbnail);
+                    else if(creatorUser.ProfileImage != null && creatorUser.ProfileImage.Image != null)
+                        item.ProfileImage = Convert.ToBase64String(creatorUser.ProfileImage.Image);
+                }
+
                 list.Items.ForEach(async f => f.FullName =
-                    (await db.Users.FirstOrDefaultAsync(u => u.Id == f.CreatedById.ToString())).FullName
+                    (await db.Users.FirstOrDefaultAsync(u => u.Id == f.CreatedById.ToString())).FullName 
                 );
 
                 return list;

@@ -13,6 +13,8 @@ namespace Mojito.ServiceDesk.Application.Common.DTOs.Conversation.Out
 
         public string FullName { get; set; }
 
+        public string ProfileImage { get; set; }
+
         public Guid? TicketId { get; set; }
 
         public int AttachmentsCount { get; set; }
